@@ -1,15 +1,72 @@
 import 'package:flutter/material.dart';
+import 'package:prueba2/HomePage.dart';
+import 'package:prueba2/Menu.dart';
 
-class Meraki extends StatelessWidget {
+class Meraki extends StatefulWidget {
+  // Cambiamos a StatefulWidget
+  @override
+  _MerakiState createState() => _MerakiState();
+}
+
+class _MerakiState extends State<Meraki> {
+  int selectedDrawerIndex = 0; // Índice inicial del menú seleccionado
+
+  void onSelectDrawerItem(int index) {
+    setState(() {
+      selectedDrawerIndex = index; // Actualiza el índice seleccionado
+    });
+    Navigator.pop(context); // Cierra el menú después de seleccionar
+    // Aquí puedes agregar la navegación a otras páginas según el índice
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Parque Temático Meraki',
-            style:
-                TextStyle(fontFamily: 'Raleway', fontWeight: FontWeight.bold)),
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                // Navegar a la página de inicio
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+              },
+              child: Image.asset(
+                'assets/logo.png', // Ruta de tu logo
+                height: 40, // Altura del logo
+              ),
+            ),
+            SizedBox(width: 10), // Espaciado entre el logo y el título
+            Flexible(
+              child: Text(
+                'Parque Temático Meraki',
+                overflow: TextOverflow.ellipsis, // Comportamiento de recorte
+                maxLines: 1, // Limitar a una línea
+                style: TextStyle(
+                    fontFamily: 'Raleway', fontWeight: FontWeight.bold),
+              ),
+            ),
+          ],
+        ),
         backgroundColor: Colors.teal[800],
-        elevation: 6,
+        automaticallyImplyLeading: false, // Elimina la flecha de regresar
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                // Abre el menú lateral a la derecha
+                Scaffold.of(context).openEndDrawer();
+              },
+            ),
+          ),
+        ],
+      ),
+      endDrawer: Menu(
+        selectedDrawerIndex: selectedDrawerIndex,
+        onSelectDrawerItem: onSelectDrawerItem,
       ),
       body: SingleChildScrollView(
         child: Container(

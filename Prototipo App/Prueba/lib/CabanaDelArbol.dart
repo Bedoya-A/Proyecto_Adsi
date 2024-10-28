@@ -40,8 +40,23 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
         title: Text('Cabaña del Árbol'),
         backgroundColor: Colors.green[800],
         centerTitle: true,
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Image.asset(
+            'assets/logo.png', // Cambia esta ruta por la de tu logo
+            fit: BoxFit.contain,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.menu),
+            onPressed: () {
+              Scaffold.of(context).openDrawer();
+            },
+          ),
+        ],
       ),
-      drawer: Menu(
+      endDrawer: Menu(
         selectedDrawerIndex: selectedDrawerIndex,
         onSelectDrawerItem: onSelectDrawerItem,
       ),
@@ -286,7 +301,7 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                               ),
                               SizedBox(height: 8),
                               Text(
-                                'Parqueadero gratuito.',
+                                'Parqueadero gratuito para los huéspedes.',
                                 style: TextStyle(
                                     fontSize: 16, color: Colors.black87),
                               ),
@@ -387,24 +402,22 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
     );
   }
 
-  Widget servicioTarjeta(IconData icon, String servicio, double size) {
+  Widget servicioTarjeta(IconData icono, String texto, double size) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 5),
-      elevation: 3,
       child: ListTile(
-        leading: Icon(icon, color: Colors.green[600]),
-        title: Text(servicio, style: TextStyle(fontSize: size)),
+        leading: Icon(icono, size: size, color: Colors.green[700]),
+        title: Text(texto, style: TextStyle(fontSize: 16)),
       ),
     );
   }
 
   Widget precioItem(String dia, String precio, Color color) {
-    return ListTile(
-      title: Text(dia),
-      trailing: Text(
-        '\$$precio',
-        style: TextStyle(fontSize: 20, color: color),
-      ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(dia, style: TextStyle(fontSize: 18)),
+        Text(precio, style: TextStyle(fontSize: 18, color: color)),
+      ],
     );
   }
 }

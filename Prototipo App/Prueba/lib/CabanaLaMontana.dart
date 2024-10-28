@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prueba2/Menu.dart';
+import 'package:prueba2/HomePage.dart'; // Asegúrate de que la ruta sea correcta
 
 class CabanaLaMontana extends StatefulWidget {
   @override
@@ -38,11 +39,48 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cabaña La Montaña'),
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                // Navegar a la página de inicio
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+              },
+              child: Image.asset(
+                'assets/logo.png', // Ruta de tu logo
+                height: 40, // Altura del logo
+              ),
+            ),
+            SizedBox(width: 10), // Espaciado entre el logo y el título
+            Flexible(
+              // Usar Flexible para evitar el desbordamiento
+              child: Text(
+                'Cabaña La Montaña',
+                overflow:
+                    TextOverflow.ellipsis, // Agregar comportamiento de recorte
+                maxLines: 1, // Limitar a una línea
+              ),
+            ),
+          ],
+        ),
         backgroundColor: Colors.green[700],
-        centerTitle: true,
+        automaticallyImplyLeading: false, // Elimina la flecha de regresar
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context)
+                    .openEndDrawer(); // Abre el menú lateral a la derecha
+              },
+            ),
+          ),
+        ],
       ),
-      drawer: Menu(
+      endDrawer: Menu(
         selectedDrawerIndex: selectedDrawerIndex,
         onSelectDrawerItem: onSelectDrawerItem,
       ),
@@ -241,58 +279,44 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
       children: [
         infoCard(
           title: '💵 PRECIOS',
-          content: '• Lunes a Jueves: \$60.000 por noche\n'
-              '• Viernes o Domingos: \$70.000 por noche\n'
-              '• Sábados o día antes de festivo: \$100.000 por noche',
+          content: '• Lunes a Jueves: \$80,000\n• Viernes a Domingo: \$120,000',
         ),
+        SizedBox(height: 10),
         infoCard(
-          title: '🚶 SENDERISMO',
-          content:
-              '30 minutos (1.2 km) desde la entrada del parque hasta la cabaña.',
+          title: '🚶‍♂️ SENDERISMO',
+          content: '¡Explora los hermosos senderos que rodean la cabaña!',
         ),
+        SizedBox(height: 10),
         infoCard(
-          title: '🍽 DESAYUNO OPCIONAL',
-          content:
-              'Huevos al gusto, patacón, arroz, café o chocolate (10.000 adicionales).',
+          title: '🥐 DESAYUNO',
+          content: 'Incluido en tu reserva para comenzar el día con energía.',
         ),
+        SizedBox(height: 20),
       ],
     );
   }
 
-  Widget servicioTarjeta(IconData icono, String texto, double fontSize) {
+  // Método para crear una tarjeta de servicio
+  Widget servicioTarjeta(IconData icon, String title, double iconSize) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 6.0),
-      elevation: 4.0,
+      elevation: 5,
+      margin: EdgeInsets.symmetric(vertical: 5),
       child: ListTile(
-        leading: Icon(icono, size: 30, color: Colors.green[700]),
-        title: Text(
-          texto,
-          style: TextStyle(
-            fontSize: fontSize,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        leading: Icon(icon, size: iconSize, color: Colors.green),
+        title: Text(title, style: TextStyle(fontSize: 16)),
       ),
     );
   }
 
+  // Método para crear una tarjeta de información
   Widget infoCard({required String title, required String content}) {
     return Card(
-      elevation: 5.0,
-      margin: EdgeInsets.symmetric(vertical: 8.0),
+      elevation: 5,
+      margin: EdgeInsets.symmetric(vertical: 5),
       child: ListTile(
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-            color: Colors.green[700],
-          ),
-        ),
-        subtitle: Text(
-          content,
-          style: TextStyle(fontSize: 16, color: Colors.black87),
-        ),
+        title: Text(title,
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        subtitle: Text(content, style: TextStyle(fontSize: 16)),
       ),
     );
   }

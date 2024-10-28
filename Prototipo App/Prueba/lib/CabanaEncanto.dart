@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
-import 'dart:io';
-
 import 'package:prueba2/Menu.dart';
+import 'package:prueba2/HomePage.dart'; // Asegúrate de que la ruta sea correcta
 
 class CabanaEncanto extends StatefulWidget {
   const CabanaEncanto({super.key});
@@ -12,9 +10,6 @@ class CabanaEncanto extends StatefulWidget {
 }
 
 class _CabanaEncantoState extends State<CabanaEncanto> {
-  File? _image; // Para almacenar la imagen seleccionada
-  final _picker = ImagePicker();
-
   final _formKey = GlobalKey<FormState>();
   final _nameController = TextEditingController();
   final _phoneController = TextEditingController();
@@ -22,16 +17,6 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
   final _dateEndController = TextEditingController();
   final _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
-
-  // Función para seleccionar una imagen desde la galería
-  Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
-    }
-  }
 
   Future<void> _selectDate(TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
@@ -58,10 +43,47 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Cabaña El Encanto'),
+        title: Row(
+          children: [
+            GestureDetector(
+              onTap: () {
+                // Navegar a la página de inicio
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => HomePage()),
+                );
+              },
+              child: Image.asset(
+                'assets/logo.png', // Ruta de tu logo
+                height: 40, // Altura del logo
+              ),
+            ),
+            const SizedBox(width: 10), // Espaciado entre el logo y el título
+            Flexible(
+              child: Text(
+                'Cabaña El Encanto',
+                overflow: TextOverflow.ellipsis, // Comportamiento de recorte
+                maxLines: 1, // Limitar a una línea
+              ),
+            ),
+          ],
+        ),
         backgroundColor: Colors.brown[400],
+        automaticallyImplyLeading: false, // Elimina la flecha de regresar
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: const Icon(Icons.menu),
+              onPressed: () {
+                // Abre el menú lateral a la derecha
+                Scaffold.of(context).openEndDrawer();
+              },
+            ),
+          ),
+        ],
       ),
-      drawer: Menu(
+      endDrawer: Menu(
+        // Cambia a endDrawer si quieres el menú a la derecha
         selectedDrawerIndex: selectedDrawerIndex,
         onSelectDrawerItem: onSelectDrawerItem,
       ),
@@ -240,42 +262,33 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text("Entre Lunes y Jueves",
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        Text("1 Pareja: \$120.000"),
-        Text("2 Parejas: \$140.000"),
-        const SizedBox(height: 10),
-        Text("Viernes o Domingo",
-            style: TextStyle(fontWeight: FontWeight.bold)),
-        Text("1 Pareja: \$180.000"),
-        Text("2 Parejas: \$210.000"),
-        const SizedBox(height: 10),
-        Text("Sábado, festivo o día antes de festivo",
-            style: TextStyle(fontWeight: FontWeight.bold)),
+        Text("Viernes", style: TextStyle(fontWeight: FontWeight.bold)),
         Text("1 Pareja: \$200.000"),
-        Text("2 Parejas: \$230.000"),
+        Text("2 Parejas: \$220.000"),
+        const SizedBox(height: 10),
+        Text("Sábado", style: TextStyle(fontWeight: FontWeight.bold)),
+        Text("1 Pareja: \$220.000"),
+        Text("2 Parejas: \$240.000"),
       ],
     );
   }
 
-  // Widget para los campos de texto del formulario
+  // Widget para el campo de texto
   Widget _buildTextField(String label, TextEditingController controller,
       TextInputType keyboardType, IconData icon,
-      {Function()? onTap}) {
+      {VoidCallback? onTap}) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
       onTap: onTap,
       decoration: InputDecoration(
         labelText: label,
+        border: OutlineInputBorder(),
         prefixIcon: Icon(icon),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
       ),
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Por favor, ingrese $label';
+          return 'Por favor ingresa $label';
         }
         return null;
       },

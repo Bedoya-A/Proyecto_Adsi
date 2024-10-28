@@ -9,17 +9,21 @@ class MiradorTesorito extends StatelessWidget {
       appBar: AppBar(
         title: Row(
           children: [
-            GestureDetector(
-              onTap: () {
-                // Navegar a la página de inicio
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              },
-              child: Image.asset(
-                'assets/logo.png', // Ruta de tu logo
-                height: 40, // Altura del logo
+            MouseRegion(
+              cursor: SystemMouseCursors
+                  .click, // Cambia el cursor al pasar sobre el logo
+              child: GestureDetector(
+                onTap: () {
+                  // Navegar a la página de inicio
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                  );
+                },
+                child: Image.asset(
+                  'assets/logo.png', // Ruta de tu logo
+                  height: 40, // Altura del logo
+                ),
               ),
             ),
             SizedBox(width: 10), // Espaciado entre el logo y el título
