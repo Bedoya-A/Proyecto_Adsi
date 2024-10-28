@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prueba2/Menu.dart';
-import 'package:prueba2/HomePage.dart'; // Asegúrate de que la ruta sea correcta
+import 'package:prueba2/HomePage.dart'; // Ensure the path is correct
 
 class CabanaLaMontana extends StatefulWidget {
   @override
@@ -15,8 +15,9 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
   final _dateEndController = TextEditingController();
   final _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
+  bool _isHomeIconVisible = false; // Add the missing variable
 
-  // Lógica para seleccionar fechas
+  // Logic for date selection
   void _selectDate(TextEditingController controller) async {
     final picked = await showDatePicker(
       context: context,
@@ -24,7 +25,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
       firstDate: DateTime.now(),
       lastDate: DateTime(2025),
     );
-    if (picked != null && picked != DateTime.now()) {
+    if (picked != null) {
       controller.text = "${picked.toLocal()}".split(' ')[0];
     }
   }
@@ -35,46 +36,72 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     });
   }
 
+  void _onLogoTap() {
+    setState(() {
+      _isHomeIconVisible = !_isHomeIconVisible; // Toggle visibility
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            GestureDetector(
-              onTap: () {
-                // Navegar a la página de inicio
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              },
-              child: Image.asset(
-                'assets/logo.png', // Ruta de tu logo
-                height: 40, // Altura del logo
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  _onLogoTap(); // Toggle logo visibility
+
+                  // Navigate after the animation
+                  Future.delayed(Duration(milliseconds: 350), () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  });
+                },
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 350),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child: _isHomeIconVisible
+                      ? Icon(
+                          Icons.home,
+                          key: ValueKey('homeIcon'),
+                          size: 40,
+                          color: Colors.white,
+                        )
+                      : CircleAvatar(
+                          key: ValueKey('logoIcon'),
+                          radius: 20,
+                          backgroundImage: AssetImage('assets/logo.png'),
+                        ),
+                ),
               ),
             ),
-            SizedBox(width: 10), // Espaciado entre el logo y el título
+            SizedBox(width: 10),
             Flexible(
-              // Usar Flexible para evitar el desbordamiento
               child: Text(
                 'Cabaña La Montaña',
-                overflow:
-                    TextOverflow.ellipsis, // Agregar comportamiento de recorte
-                maxLines: 1, // Limitar a una línea
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
           ],
         ),
         backgroundColor: Colors.green[700],
-        automaticallyImplyLeading: false, // Elimina la flecha de regresar
+        automaticallyImplyLeading: false,
         actions: [
           Builder(
             builder: (context) => IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
-                Scaffold.of(context)
-                    .openEndDrawer(); // Abre el menú lateral a la derecha
+                Scaffold.of(context).openEndDrawer();
               },
             ),
           ),
@@ -98,16 +125,13 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Imagen destacada
                 Image.asset(
-                  'assets/cabanamontana.png', // Cambia por la imagen adecuada
+                  'assets/cabanamontana.png',
                   width: 400,
                   height: 400,
                   fit: BoxFit.cover,
                 ),
                 SizedBox(height: 10),
-
-                // Descripción general
                 Text(
                   '¡Un lugar mágico donde la naturaleza te envuelve! 🌿🏞\n\n'
                   'La Montaña te ofrece una experiencia inolvidable, perfecta para aventureros que buscan tranquilidad y conexión con la naturaleza. '
@@ -116,8 +140,6 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
                   textAlign: TextAlign.justify,
                 ),
                 SizedBox(height: 20),
-
-                // Distancia
                 Text(
                   '📍 A solo 10 minutos de la Universidad de Ibagué en el barrio Ambalá',
                   style: TextStyle(
@@ -127,14 +149,8 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
-
-                // Sección de servicios
                 buildServiciosSection(),
-
-                // Sección de precios, senderismo, desayuno
                 buildInfoSection(),
-
-                // Formulario de reserva
                 _buildSectionTitle("Reserva tu experiencia"),
                 Form(
                   key: _formKey,
@@ -163,7 +179,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Lógica para enviar la reserva
+                            // Add your logic to handle the reservation
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text('Reserva realizada con éxito')));
                           }
@@ -221,7 +237,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
         prefixIcon: Icon(icon),
         border: OutlineInputBorder(),
       ),
-      onTap: onTap, // Llama a la función de selección de fecha si está definida
+      onTap: onTap,
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Por favor ingrese $label';
@@ -242,7 +258,6 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     );
   }
 
-  // Método para construir la sección de servicios
   Widget buildServiciosSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -250,10 +265,9 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
         Text(
           '✨ SERVICIOS ✨',
           style: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.green[800],
-          ),
+              fontSize: 24,
+              fontWeight: FontWeight.bold,
+              color: Colors.green[800]),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: 10),
@@ -272,7 +286,6 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     );
   }
 
-  // Método para construir la sección de información
   Widget buildInfoSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -296,7 +309,6 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     );
   }
 
-  // Método para crear una tarjeta de servicio
   Widget servicioTarjeta(IconData icon, String title, double iconSize) {
     return Card(
       elevation: 5,
@@ -308,7 +320,6 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     );
   }
 
-  // Método para crear una tarjeta de información
   Widget infoCard({required String title, required String content}) {
     return Card(
       elevation: 5,

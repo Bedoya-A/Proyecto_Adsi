@@ -3,13 +3,13 @@ import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/Menu.dart';
 
 class Meraki extends StatefulWidget {
-  // Cambiamos a StatefulWidget
   @override
   _MerakiState createState() => _MerakiState();
 }
 
 class _MerakiState extends State<Meraki> {
   int selectedDrawerIndex = 0; // Índice inicial del menú seleccionado
+  bool _isHomeIconVisible = false; // Control for logo visibility
 
   void onSelectDrawerItem(int index) {
     setState(() {
@@ -19,23 +19,52 @@ class _MerakiState extends State<Meraki> {
     // Aquí puedes agregar la navegación a otras páginas según el índice
   }
 
+  void _onLogoTap() {
+    setState(() {
+      _isHomeIconVisible =
+          !_isHomeIconVisible; // Cambia la visibilidad del ícono
+    });
+
+    // Espera a que la animación termine antes de navegar
+    Future.delayed(Duration(milliseconds: 350), () {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+        (Route<dynamic> route) => false,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Row(
           children: [
-            GestureDetector(
-              onTap: () {
-                // Navegar a la página de inicio
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              },
-              child: Image.asset(
-                'assets/logo.png', // Ruta de tu logo
-                height: 40, // Altura del logo
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap:
+                    _onLogoTap, // Cambia la visibilidad del ícono al hacer clic
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 350),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child: _isHomeIconVisible
+                      ? Icon(
+                          Icons.home,
+                          key: ValueKey('homeIcon'),
+                          size: 40, // Tamaño del ícono de inicio
+                          color: Colors.white,
+                        )
+                      : CircleAvatar(
+                          key: ValueKey('logoIcon'),
+                          radius: 20, // Radio del logo
+                          backgroundImage: AssetImage('assets/logo.png'),
+                        ),
+                ),
               ),
             ),
             SizedBox(width: 10), // Espaciado entre el logo y el título

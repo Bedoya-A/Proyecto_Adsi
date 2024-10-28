@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:photo_view/photo_view.dart';
 import 'Menu.dart';
+import 'HomePage.dart'; // Asegúrate de importar tu página de inicio
 
 class Transporte extends StatefulWidget {
   @override
@@ -9,6 +10,7 @@ class Transporte extends StatefulWidget {
 
 class _TransporteState extends State<Transporte> {
   int _selectedDrawerIndex = 9; // índice del menú seleccionado
+  bool _isHomeIconVisible = false; // Estado del ícono de inicio
 
   void _onSelectDrawerItem(int index) {
     setState(() {
@@ -17,14 +19,82 @@ class _TransporteState extends State<Transporte> {
     Navigator.pop(context); // Cierra el menú
   }
 
+  void _onLogoTap() {
+    // Alternar visibilidad del icono de inicio
+    setState(() {
+      _isHomeIconVisible = !_isHomeIconVisible;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Transporte en Ibagué'),
-        backgroundColor: Colors.blue[800],
+        title: Row(
+          children: [
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  _onLogoTap(); // Cambia la visibilidad del ícono al hacer clic
+
+                  // Espera a que la animación termine antes de navegar
+                  Future.delayed(Duration(milliseconds: 350), () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  });
+                },
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 350),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child: _isHomeIconVisible
+                      ? Icon(
+                          Icons.home,
+                          key: ValueKey('homeIcon'),
+                          size: 40, // Tamaño del ícono de inicio
+                          color: Colors.white,
+                        )
+                      : CircleAvatar(
+                          key: ValueKey('logoIcon'),
+                          radius: 20, // Radio del logo
+                          backgroundImage: AssetImage('assets/logo.png'),
+                        ),
+                ),
+              ),
+            ),
+            SizedBox(width: 10), // Espaciado entre el logo y el título
+            Flexible(
+              // Usar Flexible para evitar el desbordamiento
+              child: Text(
+                'Servicios de Transporte',
+                overflow:
+                    TextOverflow.ellipsis, // Agregar comportamiento de recorte
+                maxLines: 1, // Limitar a una línea
+              ),
+            ),
+          ],
+        ),
+        backgroundColor: Colors.blue[700],
+        automaticallyImplyLeading: false, // Elimina la flecha de regresar
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context)
+                    .openEndDrawer(); // Abre el menú lateral a la derecha
+              },
+            ),
+          ),
+        ],
       ),
-      drawer: Menu(
+      endDrawer: Menu(
         selectedDrawerIndex: _selectedDrawerIndex,
         onSelectDrawerItem: _onSelectDrawerItem,
       ),

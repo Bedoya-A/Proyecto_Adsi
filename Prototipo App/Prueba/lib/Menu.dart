@@ -27,10 +27,9 @@ class _MenuState extends State<Menu> with SingleTickerProviderStateMixin {
   bool _isExpandedCalambeo = false;
   bool _isExpandedAmbala = false;
 
-  // Controlador de animación para la rotación del ícono
   late AnimationController _rotationController;
-  bool _isSelectedCorredores = false; // Estado de selección
-  bool _isHomeIconVisible = false; // Estado para mostrar el ícono de inicio
+  bool _isSelectedCorredores = false;
+  bool _isHomeIconVisible = false;
 
   @override
   void initState() {
@@ -69,19 +68,7 @@ class _MenuState extends State<Menu> with SingleTickerProviderStateMixin {
 
   void _onLogoTap() {
     setState(() {
-      _isHomeIconVisible =
-          true; // Muestra el ícono de inicio al hacer clic en el logo
-    });
-    Future.delayed(Duration(seconds: 1), () {
-      setState(() {
-        _isHomeIconVisible =
-            false; // Oculta el ícono de inicio después de 1 segundo
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(builder: (context) => HomePage()),
-          (Route<dynamic> route) => false, // Elimina todas las rutas anteriores
-        );
-      });
+      _isHomeIconVisible = !_isHomeIconVisible;
     });
   }
 
@@ -96,18 +83,39 @@ class _MenuState extends State<Menu> with SingleTickerProviderStateMixin {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                GestureDetector(
-                  onTap: _onLogoTap,
-                  child: _isHomeIconVisible
-                      ? Icon(
-                          Icons.home,
-                          size: 80, // Tamaño del ícono de inicio
-                          color: Colors.white,
-                        )
-                      : CircleAvatar(
-                          radius: 40,
-                          backgroundImage: AssetImage('assets/logo.png'),
-                        ),
+                MouseRegion(
+                  cursor: SystemMouseCursors.click,
+                  child: GestureDetector(
+                    onTap: () {
+                      _onLogoTap();
+                      Future.delayed(Duration(milliseconds: 450), () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (context) => HomePage()),
+                          (Route<dynamic> route) => false,
+                        );
+                      });
+                    },
+                    child: AnimatedSwitcher(
+                      duration: Duration(milliseconds: 350),
+                      transitionBuilder:
+                          (Widget child, Animation<double> animation) {
+                        return ScaleTransition(scale: animation, child: child);
+                      },
+                      child: _isHomeIconVisible
+                          ? Icon(
+                              Icons.home,
+                              key: ValueKey('homeIcon'),
+                              size: 80,
+                              color: Colors.white,
+                            )
+                          : CircleAvatar(
+                              key: ValueKey('logoIcon'),
+                              radius: 40,
+                              backgroundImage: AssetImage('assets/logo.png'),
+                            ),
+                    ),
+                  ),
                 ),
                 SizedBox(height: 10),
                 Text(
@@ -140,7 +148,6 @@ class _MenuState extends State<Menu> with SingleTickerProviderStateMixin {
             },
             children: _isExpandedCorredores
                 ? [
-                    // Sección Calambeo
                     ExpansionTile(
                       leading: Icon(Icons.nature_people)
                           .animate()
@@ -179,7 +186,6 @@ class _MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                             ]
                           : [],
                     ),
-                    // Sección Ambalá
                     ExpansionTile(
                       leading: Icon(Icons.nature_people)
                           .animate()

@@ -2,7 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:prueba2/HomePage.dart';
 import 'Menu.dart'; // Importa el menú que creaste
 
-class Autoctonos extends StatelessWidget {
+class Autoctonos extends StatefulWidget {
+  @override
+  _AutoctonosState createState() => _AutoctonosState();
+}
+
+class _AutoctonosState extends State<Autoctonos> {
+  bool _isHomeIconVisible =
+      false; // Variable para controlar la visibilidad del ícono
+
+  void _onLogoTap() {
+    setState(() {
+      _isHomeIconVisible =
+          !_isHomeIconVisible; // Cambia la visibilidad del ícono
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -10,19 +25,38 @@ class Autoctonos extends StatelessWidget {
         title: Row(
           children: [
             MouseRegion(
-              cursor: SystemMouseCursors
-                  .click, // Cambia el cursor al pasar sobre el logo
+              cursor: SystemMouseCursors.click,
               child: GestureDetector(
                 onTap: () {
-                  // Navegar a la página de inicio
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomePage()),
-                  );
+                  _onLogoTap(); // Cambia la visibilidad del ícono al hacer clic
+
+                  // Espera a que la animación termine antes de navegar
+                  Future.delayed(Duration(milliseconds: 350), () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  });
                 },
-                child: Image.asset(
-                  'assets/logo.png', // Ruta de tu logo
-                  height: 40, // Altura del logo
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 350),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child: _isHomeIconVisible
+                      ? Icon(
+                          Icons.home,
+                          key: ValueKey('homeIcon'),
+                          size: 40, // Tamaño del ícono de inicio
+                          color: Colors.white,
+                        )
+                      : CircleAvatar(
+                          key: ValueKey('logoIcon'),
+                          radius: 20, // Radio del logo
+                          backgroundImage: AssetImage('assets/logo.png'),
+                        ),
                 ),
               ),
             ),

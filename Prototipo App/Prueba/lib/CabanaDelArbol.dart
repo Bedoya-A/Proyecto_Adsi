@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:prueba2/Menu.dart';
+import 'package:prueba2/HomePage.dart'; // Importa tu HomePage para la navegación
 
 class CabanaDelArbol extends StatefulWidget {
   @override
@@ -14,6 +15,7 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
   final TextEditingController _dateEndController = TextEditingController();
   final TextEditingController _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
+  bool _isHomeIconVisible = false; // Controla la visibilidad del ícono
 
   Future<void> _selectDate(TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
@@ -33,26 +35,87 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
     });
   }
 
+  void _onLogoTap() {
+    setState(() {
+      _isHomeIconVisible =
+          !_isHomeIconVisible; // Cambia la visibilidad del ícono
+    });
+
+    // Espera a que la animación termine antes de navegar
+    Future.delayed(Duration(milliseconds: 350), () {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+        (Route<dynamic> route) => false,
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cabaña del Árbol'),
-        backgroundColor: Colors.green[800],
-        centerTitle: true,
-        leading: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Image.asset(
-            'assets/logo.png', // Cambia esta ruta por la de tu logo
-            fit: BoxFit.contain,
-          ),
+        title: Row(
+          children: [
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  _onLogoTap(); // Cambia la visibilidad del ícono al hacer clic
+
+                  // Espera a que la animación termine antes de navegar
+                  Future.delayed(Duration(milliseconds: 350), () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  });
+                },
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 350),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child: _isHomeIconVisible
+                      ? Icon(
+                          Icons.home,
+                          key: ValueKey('homeIcon'),
+                          size: 40, // Tamaño del ícono de inicio
+                          color: Colors.white,
+                        )
+                      : CircleAvatar(
+                          key: ValueKey('logoIcon'),
+                          radius: 20, // Radio del logo
+                          backgroundImage: AssetImage('assets/logo.png'),
+                        ),
+                ),
+              ),
+            ),
+            SizedBox(width: 10), // Espaciado entre el logo y el título
+            Flexible(
+              // Usar Flexible para evitar el desbordamiento
+              child: Text(
+                'Cabaña del arbol',
+                overflow:
+                    TextOverflow.ellipsis, // Agregar comportamiento de recorte
+                maxLines: 1, // Limitar a una línea
+              ),
+            ),
+          ],
         ),
+        backgroundColor: Colors.green[700],
+        automaticallyImplyLeading: false, // Elimina la flecha de regresar
         actions: [
-          IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              Scaffold.of(context).openDrawer();
-            },
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context)
+                    .openEndDrawer(); // Abre el menú lateral a la derecha
+              },
+            ),
           ),
         ],
       ),
@@ -230,94 +293,11 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                     ),
                   ),
                 ),
-
-                SizedBox(height: 20),
-
-                // Información de senderismo en tarjeta
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Icon(Icons.directions_walk,
-                            color: Colors.green[700], size: 24),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '🚶 SENDERISMO:',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green[900],
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                '20 minutos de senderismo (800m)',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black87),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                SizedBox(height: 20),
-
-                // Información adicional de parqueadero en tarjeta
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Icon(Icons.local_parking,
-                            color: Colors.green[700], size: 24),
-                        SizedBox(width: 8),
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                '🚗 PARQUEADERO:',
-                                style: TextStyle(
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.green[900],
-                                ),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'Parqueadero gratuito para los huéspedes.',
-                                style: TextStyle(
-                                    fontSize: 16, color: Colors.black87),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
                 SizedBox(height: 20),
 
                 // Formulario de reserva
                 Text(
-                  '📅 RESERVA TU ESTANCIA',
+                  '📅 RESERVA',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -331,65 +311,49 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                     children: [
                       TextFormField(
                         controller: _nameController,
-                        decoration:
-                            InputDecoration(labelText: 'Nombre completo'),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Por favor ingresa tu nombre';
-                          }
-                          return null;
-                        },
+                        decoration: InputDecoration(labelText: 'Nombre'),
+                        validator: (value) =>
+                            value!.isEmpty ? 'Ingresa tu nombre' : null,
                       ),
                       TextFormField(
                         controller: _phoneController,
                         decoration: InputDecoration(labelText: 'Teléfono'),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Por favor ingresa tu número de teléfono';
-                          }
-                          return null;
-                        },
+                        validator: (value) =>
+                            value!.isEmpty ? 'Ingresa tu teléfono' : null,
                       ),
                       TextFormField(
                         controller: _dateStartController,
                         decoration:
-                            InputDecoration(labelText: 'Fecha de inicio'),
+                            InputDecoration(labelText: 'Fecha de Inicio'),
                         readOnly: true,
                         onTap: () => _selectDate(_dateStartController),
+                        validator: (value) =>
+                            value!.isEmpty ? 'Selecciona una fecha' : null,
                       ),
                       TextFormField(
                         controller: _dateEndController,
-                        decoration: InputDecoration(labelText: 'Fecha de fin'),
+                        decoration: InputDecoration(labelText: 'Fecha de Fin'),
                         readOnly: true,
                         onTap: () => _selectDate(_dateEndController),
+                        validator: (value) =>
+                            value!.isEmpty ? 'Selecciona una fecha' : null,
                       ),
                       TextFormField(
                         controller: _numPeopleController,
                         decoration:
-                            InputDecoration(labelText: 'Número de personas'),
-                        keyboardType: TextInputType.number,
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Por favor ingresa el número de personas';
-                          }
-                          return null;
-                        },
+                            InputDecoration(labelText: 'Número de Personas'),
+                        validator: (value) => value!.isEmpty
+                            ? 'Ingresa el número de personas'
+                            : null,
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Aquí puedes agregar la lógica para manejar la reserva.
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                  content: Text('Reserva realizada con éxito')),
-                            );
+                            // Procesar la reserva
                           }
                         },
                         child: Text('Reservar'),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.green[600],
-                        ),
                       ),
                     ],
                   ),
@@ -402,22 +366,24 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
     );
   }
 
-  Widget servicioTarjeta(IconData icono, String texto, double size) {
+  Widget servicioTarjeta(IconData icon, String text, double size) {
     return Card(
+      elevation: 4,
+      margin: EdgeInsets.symmetric(vertical: 5),
       child: ListTile(
-        leading: Icon(icono, size: size, color: Colors.green[700]),
-        title: Text(texto, style: TextStyle(fontSize: 16)),
+        leading: Icon(icon, size: size),
+        title: Text(text),
       ),
     );
   }
 
-  Widget precioItem(String dia, String precio, Color color) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(dia, style: TextStyle(fontSize: 18)),
-        Text(precio, style: TextStyle(fontSize: 18, color: color)),
-      ],
+  Widget precioItem(String dayType, String price, Color color) {
+    return ListTile(
+      title: Text(dayType),
+      trailing: Text(
+        '\$' + price,
+        style: TextStyle(color: color, fontSize: 18),
+      ),
     );
   }
 }

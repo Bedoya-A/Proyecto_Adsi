@@ -15,10 +15,11 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
   final _dateEndController = TextEditingController();
   final _numPeopleController = TextEditingController();
 
-  // Inicializar el índice seleccionado para el menú
-  int selectedDrawerIndex = 1;
+  // State variables
+  bool _isHomeIconVisible = false; // Control for logo visibility
+  int selectedDrawerIndex = 1; // Selected index for menu
 
-  // Lógica para seleccionar fechas
+  // Date selection logic
   void _selectDate(TextEditingController controller) async {
     final picked = await showDatePicker(
       context: context,
@@ -31,13 +32,18 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     }
   }
 
-  // Función para seleccionar el ítem del menú
+  // Function to select drawer item
   void onSelectDrawerItem(int index) {
     setState(() {
       selectedDrawerIndex = index;
     });
+    // You can handle navigation to other pages if necessary
+  }
 
-    // Aquí puedes gestionar la navegación a otras páginas si es necesario
+  void _onLogoTap() {
+    setState(() {
+      _isHomeIconVisible = !_isHomeIconVisible; // Toggle icon visibility
+    });
   }
 
   @override
@@ -49,15 +55,40 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
         centerTitle: true,
         leading: Padding(
           padding: const EdgeInsets.all(8.0),
-          child: InkWell(
-            onTap: () {
-              // Navegar a la página principal al tocar el logo
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-            },
-            child: Image.asset('assets/logo.png'), // Tu logo aquí
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                _onLogoTap(); // Change icon visibility on click
+
+                // Wait for animation to finish before navigating
+                Future.delayed(Duration(milliseconds: 350), () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                    (Route<dynamic> route) => false,
+                  );
+                });
+              },
+              child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 350),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return ScaleTransition(scale: animation, child: child);
+                },
+                child: _isHomeIconVisible
+                    ? Icon(
+                        Icons.home,
+                        key: ValueKey('homeIcon'),
+                        size: 40, // Size of home icon
+                        color: Colors.white,
+                      )
+                    : CircleAvatar(
+                        key: ValueKey('logoIcon'),
+                        radius: 20, // Radius of the logo
+                        backgroundImage: AssetImage('assets/logo.png'),
+                      ),
+              ),
+            ),
           ),
         ),
         actions: [
@@ -66,7 +97,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context)
-                    .openEndDrawer(); // Abre el menú lateral a la derecha
+                    .openEndDrawer(); // Open the right-side menu
               },
             ),
           ),
@@ -90,20 +121,20 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Imagen destacada
+                // Featured image
                 Container(
                   height: 320,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
-                          'assets/cabañaparaiso.jpg'), // Cambia a tu imagen
+                          'assets/cabañaparaiso.jpg'), // Change to your image
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
                 SizedBox(height: 15),
-                // Descripción llamativa
+                // Attention-grabbing description
                 Text(
                   '🌲 Vive una experiencia única en nuestra cabaña del árbol, un refugio mágico en las alturas. Rodeado de la naturaleza y con la mejor vista de Ibagué, aquí podrás relajarte, desconectar y disfrutar de una escapada que recordarás para siempre.',
                   style: TextStyle(
@@ -114,7 +145,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                   textAlign: TextAlign.justify,
                 ),
                 SizedBox(height: 20),
-                // Sección de servicios
+                // Services section
                 _buildSectionTitle("SERVICIOS"),
                 Column(
                   children: [
@@ -133,23 +164,23 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                   ],
                 ),
                 SizedBox(height: 20),
-                // Ubicación en tarjeta
+                // Location card
                 crearTarjeta(Icons.location_on, 'UBICACIÓN',
                     'Estamos a 10 minutos de la Universidad de Ibagué en el barrio Ambalá. Puedes llegar en uber, moto o carro hasta la entrada del lugar. Trae toda la comida y bebida que desees.\nIngreso: 4pm - 6pm\nSalida: Al otro día antes de medio día'),
-                // Precios en tarjeta
+                // Prices card
                 crearTarjeta(Icons.attach_money, 'PRECIOS',
                     'Lunes a jueves: \$120.000\nViernes y domingo: \$180.000\nSábado, festivo o día antes de festivo: \$200.000'),
-                // Senderismo en tarjeta
+                // Hiking card
                 crearTarjeta(Icons.directions_walk, 'SENDERISMO',
                     '15 minutos desde la entrada hasta la cabaña. Reserva la cabaña completa para disfrutar sin compartir.'),
-                // Parqueadero en tarjeta
+                // Parking card
                 crearTarjeta(Icons.local_parking, 'PARQUEADERO',
                     'Moto \$8,000 | Carro \$12,000'),
                 SizedBox(height: 20),
-                // Nueva tarjeta: Confirmación de disponibilidad
+                // New card: Availability confirmation
                 crearTarjeta(Icons.phone, 'CONFIRMA DISPONIBILIDAD',
                     'Confirma disponibilidad y abona la mitad para reservar:\nNequi 3208947802 - Jorge John\nCuenta Ahorros Bancolombia 86960992140'),
-                // Sección de reserva
+                // Reservation section
                 _buildSectionTitle("Reserva tu experiencia"),
                 Form(
                   key: _formKey,
@@ -178,7 +209,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Lógica para enviar la reserva
+                            // Logic to send the reservation
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text('Reserva realizada con éxito')));
                           }
@@ -204,7 +235,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Mostrar cuadro de diálogo al presionar el ícono de teléfono
+          // Show dialog when pressing phone icon
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -230,7 +261,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     );
   }
 
-  // Función para crear tarjetas personalizadas
+  // Function to create custom cards
   Widget crearTarjeta(IconData icono, String titulo, String descripcion) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 10.0),
@@ -271,7 +302,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     );
   }
 
-  // Función para construir los campos de texto del formulario
+  // Function to build text fields for the form
   Widget _buildTextField(String label, TextEditingController controller,
       TextInputType keyboardType, IconData icon,
       {VoidCallback? onTap}) {
@@ -294,7 +325,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     );
   }
 
-  // Función para construir títulos de secciones
+  // Function to build section titles
   Widget _buildSectionTitle(String title) {
     return Text(
       title,
@@ -306,7 +337,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     );
   }
 
-  // Función para crear tarjetas de servicio
+  // Function to create service cards
   Widget servicioTarjeta(IconData icon, String nombre, double size) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),

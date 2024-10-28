@@ -5,7 +5,16 @@ import 'package:prueba2/ModeloEstado.dart';
 import 'package:prueba2/PaginaBienvenida.dart';
 import 'package:prueba2/PaginaOferta.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  // Cambiado a StatefulWidget
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  bool _isHomeIconVisible =
+      false; // Agregado para manejar la visibilidad del ícono
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,22 +22,47 @@ class HomePage extends StatelessWidget {
         automaticallyImplyLeading: false,
         title: Row(
           children: [
-            GestureDetector(
-              onTap: () {
-                // Navegar a la misma página para refrescar
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomePage()),
-                );
-              },
-              child: Image.asset(
-                'assets/logo.png', // Ruta de tu logo
-                height: 30, // Reducir la altura del logo
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _isHomeIconVisible =
+                        !_isHomeIconVisible; // Cambia la visibilidad del ícono al hacer clic
+                  });
+
+                  // Espera a que la animación termine antes de navegar
+                  Future.delayed(Duration(milliseconds: 350), () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  });
+                },
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 350),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child: _isHomeIconVisible
+                      ? Icon(
+                          Icons.home,
+                          key: ValueKey('homeIcon'),
+                          size: 40, // Tamaño del ícono de inicio
+                          color: Colors.white,
+                        )
+                      : CircleAvatar(
+                          key: ValueKey('logoIcon'),
+                          radius: 20, // Radio del logo
+                          backgroundImage: AssetImage('assets/logo.png'),
+                        ),
+                ),
               ),
             ),
             SizedBox(width: 10), // Espaciado entre el logo y el título
             Flexible(
-              // Usar Flexible para el título
               child: Text(
                 'AppExplora Calambeo - Ambalá',
                 overflow: TextOverflow.ellipsis, // Evitar overflow
