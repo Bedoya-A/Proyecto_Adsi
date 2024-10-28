@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 
 class PaginaBienvenida extends StatelessWidget {
-  const PaginaBienvenida({Key? key}) : super(key: key);
+  final VoidCallback onComenzar; // Callback para el botón
+
+  const PaginaBienvenida({Key? key, required this.onComenzar})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -73,9 +76,7 @@ class PaginaBienvenida extends StatelessWidget {
                       ),
                       SizedBox(height: 30),
                       ElevatedButton(
-                        onPressed: () {
-                          // Acción para iniciar
-                        },
+                        onPressed: onComenzar, // Llama al callback
                         style: ElevatedButton.styleFrom(
                           backgroundColor: Colors.green, // Color del botón
                           padding: EdgeInsets.symmetric(

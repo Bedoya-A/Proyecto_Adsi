@@ -6,14 +6,13 @@ import 'package:prueba2/PaginaBienvenida.dart';
 import 'package:prueba2/PaginaOferta.dart';
 
 class HomePage extends StatefulWidget {
-  // Cambiado a StatefulWidget
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _isHomeIconVisible =
-      false; // Agregado para manejar la visibilidad del ícono
+  bool _isHomeIconVisible = false; // Para manejar la visibilidad del ícono
+  PageController _pageController = PageController(); // Controlador de la página
 
   @override
   Widget build(BuildContext context) {
@@ -50,22 +49,22 @@ class _HomePageState extends State<HomePage> {
                       ? Icon(
                           Icons.home,
                           key: ValueKey('homeIcon'),
-                          size: 40, // Tamaño del ícono de inicio
+                          size: 40,
                           color: Colors.white,
                         )
                       : CircleAvatar(
                           key: ValueKey('logoIcon'),
-                          radius: 20, // Radio del logo
+                          radius: 20,
                           backgroundImage: AssetImage('assets/logo.png'),
                         ),
                 ),
               ),
             ),
-            SizedBox(width: 10), // Espaciado entre el logo y el título
+            SizedBox(width: 10),
             Flexible(
               child: Text(
                 'AppExplora Calambeo - Ambalá',
-                overflow: TextOverflow.ellipsis, // Evitar overflow
+                overflow: TextOverflow.ellipsis,
               ),
             ),
           ],
@@ -98,61 +97,67 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget buildPageView() {
-    return Consumer<AppState>(
-      builder: (context, appState, child) {
-        PageController _pageController =
-            PageController(initialPage: appState.currentPage);
-
-        return Stack(
-          children: [
-            PageView(
-              controller: _pageController,
-              onPageChanged: (int page) {
-                appState.setCurrentPage(page);
-              },
-              children: [
-                _buildPageTransition(
-                    PaginaBienvenida(key: ValueKey(0))), // Transición
-                _buildPageTransition(
-                    PaginaOferta(key: ValueKey(1))), // Transición
-              ],
-            ),
-            // Flecha izquierda para retroceder
-            if (appState.currentPage > 0)
-              Positioned(
-                left: 10,
-                top: MediaQuery.of(context).size.height / 2 - 30,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-                  onPressed: () {
-                    _pageController.previousPage(
-                      duration: Duration(milliseconds: 300),
-                      curve: Curves.easeInOut,
-                    );
-                    appState.setCurrentPage(appState.currentPage - 1);
-                  },
-                ),
-              ),
-            // Flecha derecha para avanzar
-            if (appState.currentPage < 1)
-              Positioned(
-                right: 10,
-                top: MediaQuery.of(context).size.height / 2 - 30,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_forward_ios, color: Colors.white),
-                  onPressed: () {
+    return Consumer<AppState>(builder: (context, appState, child) {
+      return Stack(
+        children: [
+          PageView(
+            controller: _pageController,
+            onPageChanged: (int page) {
+              appState.setCurrentPage(page);
+            },
+            children: [
+              _buildPageTransition(
+                PaginaBienvenida(
+                  onComenzar: () {
                     _pageController.nextPage(
                       duration: Duration(milliseconds: 300),
                       curve: Curves.easeInOut,
                     );
-                    appState.setCurrentPage(appState.currentPage + 1);
+                    appState.setCurrentPage(
+                        1); // Cambia al índice de la página de ofertas
                   },
                 ),
               ),
-          ],
-        );
-      },
-    );
+              _buildPageTransition(
+                PaginaOferta(key: ValueKey(1)),
+              ),
+            ],
+          ),
+          // Flecha izquierda para retroceder
+          if (appState.currentPage > 0)
+            Positioned(
+              left: 10,
+              top: MediaQuery.of(context).size.height / 2 - 30,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                onPressed: () {
+                  _pageController.previousPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                  appState.setCurrentPage(appState.currentPage - 1);
+                },
+              ),
+            ),
+          // Flecha derecha para avanzar
+          if (appState.currentPage < 1)
+            Positioned(
+              right: 10,
+              top: MediaQuery.of(context).size.height / 2 - 30,
+              child: IconButton(
+                icon: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                onPressed: () {
+                  _pageController.nextPage(
+                    duration: Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                  );
+                  appState.setCurrentPage(appState.currentPage + 1);
+                },
+              ),
+            ),
+        ],
+      );
+    });
   }
 
   Widget _buildPageTransition(Widget page) {
