@@ -133,11 +133,12 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Banner con imagen
               Container(
-                height: 200,
+                height: 200, // Altura del banner
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/banner.jpg'),
+                    image: AssetImage('assets/banner.jpg'), // Ruta de tu imagen
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(10),
@@ -184,7 +185,8 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
                   '• Almuerzo\n'
                   '• Bici paseo aéreo\n'
                   '• Seguro de turismo\n'),
-              Divider(thickness: 2, color: Colors.teal[800]),
+              Divider(
+                  thickness: 2, color: Colors.teal[800]), // Línea separadora
               SizedBox(height: 20),
               _buildAnimatedHeader('Restaurante', Icons.restaurant_menu),
               _buildExpandableMenu('Entradas', Icons.local_restaurant, [
@@ -198,13 +200,38 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
               _buildExpandableMenu('Carnes Res', Icons.local_dining, [
                 'Carne a la plancha - \$35.000: Jugosa y deliciosa.',
               ]),
+              _buildExpandableMenu('Cerdo', Icons.fastfood_rounded, [
+                'Costillas + papa criolla - \$38.000: ¡Irresistibles!',
+              ]),
+              _buildExpandableMenu('Pollo', Icons.hourglass_bottom_outlined, [
+                'Pierna pernil + ensalada - \$25.000: Placer en cada bocado.',
+              ]),
+              _buildExpandableMenu('Sancocho de Gallina', Icons.soup_kitchen, [
+                'Porción - \$30.000: Un clásico reconfortante.',
+                'Porción para 4 - \$100.000: Ideal para compartir.',
+              ]),
+              _buildExpandableMenu('Comidas Rápidas', Icons.fastfood, [
+                'Salchipapa - \$20.000: Un favorito de todos.',
+                'Nuggets + papas - \$20.000: Perfecto para los niños.',
+              ]),
+              _buildExpandableMenu('Picada de la Casa', Icons.local_pizza, [
+                'Picada para compartir - \$30.000: ¡Disfruta en grupo!',
+              ]),
               SizedBox(height: 20),
               _buildAnimatedHeader('Cafetería', Icons.local_cafe),
               _buildExpandableMenu('Bebidas de la Casa', Icons.local_drink, [
                 'Agua - \$10.000\nLeche - \$12.000: Refrescos esenciales.',
                 'Jugos de frutas: Naturaleza en cada sorbo.',
               ]),
-              Divider(thickness: 2, color: Colors.teal[800]),
+              _buildExpandableMenu('Bebidas Calientes', Icons.local_cafe, [
+                'Aromáticas - \$5.000\nCafé - \$2.000: Calidez en cada taza.',
+              ]),
+              _buildExpandableMenu('Productos Meraki', Icons.shopping_basket, [
+                'Café premium - \$30.000: Para los amantes del café.',
+                'Miel de abejas - \$30.000: Dulzura natural.',
+              ]),
+              Divider(
+                  thickness: 2, color: Colors.teal[800]), // Línea separadora
               SizedBox(height: 20),
               _buildAnimatedHeader(
                   'Actividades al Aire Libre', Icons.nature_people),
@@ -246,10 +273,9 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
             Text(
               title,
               style: TextStyle(
-                fontSize: 26,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white),
             ),
           ],
         ),
@@ -274,30 +300,34 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
       margin: const EdgeInsets.symmetric(vertical: 12),
       child: ListTile(
         title: Text(title,
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
-        subtitle: Text(
-          '$description\n$additionalInfo',
-          style: TextStyle(fontSize: 16, color: Colors.grey[700]),
-        ),
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal[800])),
+        subtitle: Text('$description\n$additionalInfo'),
       ),
     );
   }
 
   Widget _buildExpandableMenu(String title, IconData icon, List<String> items) {
     return ExpansionTile(
-      leading: Icon(icon, color: Colors.teal[800]),
-      title: Text(
-        title,
-        style: TextStyle(
-          fontSize: 20,
-          fontWeight: FontWeight.bold,
-          color: Colors.teal[900],
-        ),
+      title: Row(
+        children: [
+          Icon(icon, color: Colors.teal[800]),
+          SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal[800]),
+          ),
+        ],
       ),
       children: items
           .map((item) => Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Text(item, style: TextStyle(fontSize: 16)),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(item),
               ))
           .toList(),
     );

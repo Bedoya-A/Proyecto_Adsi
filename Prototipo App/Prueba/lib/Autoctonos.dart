@@ -12,11 +12,38 @@ class _AutoctonosState extends State<Autoctonos> {
   bool _isHomeIconVisible =
       false; // Variable para controlar la visibilidad del ícono
 
+  final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _dateStartController = TextEditingController();
+  final TextEditingController _dateEndController = TextEditingController();
+  final TextEditingController _numPeopleController = TextEditingController();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   void _onLogoTap() {
     setState(() {
       _isHomeIconVisible =
           !_isHomeIconVisible; // Cambia la visibilidad del ícono
     });
+
+    // Espera a que la animación termine antes de navegar
+    Future.delayed(Duration(milliseconds: 350), () {
+      Navigator.pushAndRemoveUntil(
+        context,
+        MaterialPageRoute(builder: (context) => HomePage()),
+        (Route<dynamic> route) => false,
+      );
+    });
+  }
+
+  @override
+  void dispose() {
+    // Limpia los controladores de texto para liberar recursos
+    _nameController.dispose();
+    _phoneController.dispose();
+    _dateStartController.dispose();
+    _dateEndController.dispose();
+    _numPeopleController.dispose();
+    super.dispose();
   }
 
   @override
@@ -28,18 +55,7 @@ class _AutoctonosState extends State<Autoctonos> {
             MouseRegion(
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
-                onTap: () {
-                  _onLogoTap(); // Cambia la visibilidad del ícono al hacer clic
-
-                  // Espera a que la animación termine antes de navegar
-                  Future.delayed(Duration(milliseconds: 350), () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      (Route<dynamic> route) => false,
-                    );
-                  });
-                },
+                onTap: _onLogoTap,
                 child: AnimatedSwitcher(
                   duration: Duration(milliseconds: 350),
                   transitionBuilder:
@@ -88,7 +104,6 @@ class _AutoctonosState extends State<Autoctonos> {
       endDrawer: Menu(
         selectedDrawerIndex: 0, // Usa el índice actual
         onSelectDrawerItem: (int index) {
-          // Lógica para seleccionar la página basada en el índice
           if (index == 0) {
             Navigator.pushReplacement(
               context,
@@ -157,7 +172,7 @@ class _AutoctonosState extends State<Autoctonos> {
           ),
         ),
         child: Text(
-          'Mirador Autóctonos',
+          'Mirador Autoctonos',
           style: TextStyle(
             color: Colors.white,
             fontSize: 42,
@@ -188,6 +203,8 @@ class _AutoctonosState extends State<Autoctonos> {
             _buildSections(),
             SizedBox(height: 20),
             _buildMenu(),
+            SizedBox(height: 20),
+            _buildReservationForm(context),
             SizedBox(height: 20),
             _buildFooter(),
           ],
@@ -278,13 +295,29 @@ class _AutoctonosState extends State<Autoctonos> {
             borderRadius: BorderRadius.circular(8),
           ),
           padding: EdgeInsets.all(10),
-          child: Text(
-            'Nuestro MENÚ',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
+          child: Stack(
+            children: [
+              Positioned(
+                top: 2,
+                left: 2,
+                child: Text(
+                  'Nuestro MENÚ',
+                  style: TextStyle(
+                    fontSize: 26,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.black.withOpacity(0.3),
+                  ),
+                ),
+              ),
+              Text(
+                'Nuestro MENÚ',
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+            ],
           ),
         ),
         SizedBox(height: 10),
@@ -356,17 +389,120 @@ class _AutoctonosState extends State<Autoctonos> {
     );
   }
 
+  Widget _buildReservationForm(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.all(10.0),
+      child: Card(
+        elevation: 4,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Form(
+            key: _formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Reserva tu mesa',
+                  style: TextStyle(
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal[800],
+                  ),
+                ),
+                SizedBox(height: 10),
+                _buildTextField(_nameController, 'Nombre', Icons.person),
+                SizedBox(height: 10),
+                _buildTextField(_phoneController, 'Teléfono', Icons.phone),
+                SizedBox(height: 10),
+                _buildTextField(
+                    _dateStartController, 'Fecha Inicio', Icons.date_range),
+                SizedBox(height: 10),
+                _buildTextField(
+                    _dateEndController, 'Fecha Fin', Icons.date_range),
+                SizedBox(height: 10),
+                _buildTextField(
+                    _numPeopleController, 'Número de Personas', Icons.group),
+                SizedBox(height: 20),
+                Center(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) {
+                        _showReservationDialog(context);
+                      }
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal[800],
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10)),
+                    ),
+                    child: Text(
+                      'Reservar',
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTextField(
+      TextEditingController controller, String labelText, IconData icon) {
+    return TextFormField(
+      controller: controller,
+      decoration: InputDecoration(
+        prefixIcon: Icon(icon, color: Colors.teal[700]),
+        labelText: labelText,
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+      ),
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Por favor ingrese $labelText';
+        }
+        return null;
+      },
+    );
+  }
+
+  void _showReservationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Reserva Exitosa'),
+          content: Text(
+              'Tu reserva ha sido realizada con éxito. Nos pondremos en contacto contigo pronto.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Cerrar'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   Widget _buildFooter() {
     return Center(
-      child: Column(
-        children: [
-          Text(
-            '¡Gracias por visitarnos!',
-            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-          ),
-          SizedBox(height: 10),
-          Text('Mirador Tesorito - Donde el campo y el sabor se unen.'),
-        ],
+      child: Text(
+        'Te esperamos en el Mirador Autoctonos!',
+        style: TextStyle(fontSize: 18, color: Colors.white),
       ),
     );
   }
