@@ -293,11 +293,94 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                     ),
                   ),
                 ),
+
+                SizedBox(height: 20),
+
+                // Información de senderismo en tarjeta
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.directions_walk,
+                            color: Colors.green[700], size: 24),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '🚶 SENDERISMO:',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green[900],
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                '20 minutos de senderismo (800m)',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.black87),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                SizedBox(height: 20),
+
+                // Información adicional de parqueadero en tarjeta
+                Card(
+                  elevation: 4,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: Row(
+                      children: [
+                        Icon(Icons.local_parking,
+                            color: Colors.green[700], size: 24),
+                        SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '🚗 PARQUEADERO:',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.green[900],
+                                ),
+                              ),
+                              SizedBox(height: 8),
+                              Text(
+                                'Parqueadero gratuito.',
+                                style: TextStyle(
+                                    fontSize: 16, color: Colors.black87),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
                 SizedBox(height: 20),
 
                 // Formulario de reserva
                 Text(
-                  '📅 RESERVA',
+                  '📅 RESERVA TU ESTANCIA',
                   style: TextStyle(
                     fontSize: 24,
                     fontWeight: FontWeight.bold,
@@ -311,49 +394,65 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                     children: [
                       TextFormField(
                         controller: _nameController,
-                        decoration: InputDecoration(labelText: 'Nombre'),
-                        validator: (value) =>
-                            value!.isEmpty ? 'Ingresa tu nombre' : null,
+                        decoration:
+                            InputDecoration(labelText: 'Nombre completo'),
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Por favor ingresa tu nombre';
+                          }
+                          return null;
+                        },
                       ),
                       TextFormField(
                         controller: _phoneController,
                         decoration: InputDecoration(labelText: 'Teléfono'),
-                        validator: (value) =>
-                            value!.isEmpty ? 'Ingresa tu teléfono' : null,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Por favor ingresa tu número de teléfono';
+                          }
+                          return null;
+                        },
                       ),
                       TextFormField(
                         controller: _dateStartController,
                         decoration:
-                            InputDecoration(labelText: 'Fecha de Inicio'),
+                            InputDecoration(labelText: 'Fecha de inicio'),
                         readOnly: true,
                         onTap: () => _selectDate(_dateStartController),
-                        validator: (value) =>
-                            value!.isEmpty ? 'Selecciona una fecha' : null,
                       ),
                       TextFormField(
                         controller: _dateEndController,
-                        decoration: InputDecoration(labelText: 'Fecha de Fin'),
+                        decoration: InputDecoration(labelText: 'Fecha de fin'),
                         readOnly: true,
                         onTap: () => _selectDate(_dateEndController),
-                        validator: (value) =>
-                            value!.isEmpty ? 'Selecciona una fecha' : null,
                       ),
                       TextFormField(
                         controller: _numPeopleController,
                         decoration:
-                            InputDecoration(labelText: 'Número de Personas'),
-                        validator: (value) => value!.isEmpty
-                            ? 'Ingresa el número de personas'
-                            : null,
+                            InputDecoration(labelText: 'Número de personas'),
+                        keyboardType: TextInputType.number,
+                        validator: (value) {
+                          if (value!.isEmpty) {
+                            return 'Por favor ingresa el número de personas';
+                          }
+                          return null;
+                        },
                       ),
                       SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Procesar la reserva
+                            // Aquí puedes agregar la lógica para manejar la reserva.
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                  content: Text('Reserva realizada con éxito')),
+                            );
                           }
                         },
                         child: Text('Reservar'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green[600],
+                        ),
                       ),
                     ],
                   ),
@@ -366,23 +465,23 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
     );
   }
 
-  Widget servicioTarjeta(IconData icon, String text, double size) {
+  Widget servicioTarjeta(IconData icon, String servicio, double size) {
     return Card(
-      elevation: 4,
       margin: EdgeInsets.symmetric(vertical: 5),
+      elevation: 3,
       child: ListTile(
-        leading: Icon(icon, size: size),
-        title: Text(text),
+        leading: Icon(icon, color: Colors.green[600]),
+        title: Text(servicio, style: TextStyle(fontSize: size)),
       ),
     );
   }
 
-  Widget precioItem(String dayType, String price, Color color) {
+  Widget precioItem(String dia, String precio, Color color) {
     return ListTile(
-      title: Text(dayType),
+      title: Text(dia),
       trailing: Text(
-        '\$' + price,
-        style: TextStyle(color: color, fontSize: 18),
+        '\$$precio',
+        style: TextStyle(fontSize: 20, color: color),
       ),
     );
   }

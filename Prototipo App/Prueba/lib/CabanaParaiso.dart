@@ -121,20 +121,20 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                // Featured image
+                // Imagen destacada
                 Container(
                   height: 320,
                   decoration: BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage(
-                          'assets/cabañaparaiso.jpg'), // Change to your image
+                          'assets/cabañaparaiso.jpg'), // Cambia a tu imagen
                       fit: BoxFit.cover,
                     ),
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
                 SizedBox(height: 15),
-                // Attention-grabbing description
+                // Descripción llamativa
                 Text(
                   '🌲 Vive una experiencia única en nuestra cabaña del árbol, un refugio mágico en las alturas. Rodeado de la naturaleza y con la mejor vista de Ibagué, aquí podrás relajarte, desconectar y disfrutar de una escapada que recordarás para siempre.',
                   style: TextStyle(
@@ -145,7 +145,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                   textAlign: TextAlign.justify,
                 ),
                 SizedBox(height: 20),
-                // Services section
+                // Sección de servicios
                 _buildSectionTitle("SERVICIOS"),
                 Column(
                   children: [
@@ -164,23 +164,23 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                   ],
                 ),
                 SizedBox(height: 20),
-                // Location card
+                // Ubicación en tarjeta
                 crearTarjeta(Icons.location_on, 'UBICACIÓN',
                     'Estamos a 10 minutos de la Universidad de Ibagué en el barrio Ambalá. Puedes llegar en uber, moto o carro hasta la entrada del lugar. Trae toda la comida y bebida que desees.\nIngreso: 4pm - 6pm\nSalida: Al otro día antes de medio día'),
-                // Prices card
+                // Precios en tarjeta
                 crearTarjeta(Icons.attach_money, 'PRECIOS',
                     'Lunes a jueves: \$120.000\nViernes y domingo: \$180.000\nSábado, festivo o día antes de festivo: \$200.000'),
-                // Hiking card
+                // Senderismo en tarjeta
                 crearTarjeta(Icons.directions_walk, 'SENDERISMO',
                     '15 minutos desde la entrada hasta la cabaña. Reserva la cabaña completa para disfrutar sin compartir.'),
-                // Parking card
+                // Parqueadero en tarjeta
                 crearTarjeta(Icons.local_parking, 'PARQUEADERO',
                     'Moto \$8,000 | Carro \$12,000'),
                 SizedBox(height: 20),
-                // New card: Availability confirmation
+                // Nueva tarjeta: Confirmación de disponibilidad
                 crearTarjeta(Icons.phone, 'CONFIRMA DISPONIBILIDAD',
                     'Confirma disponibilidad y abona la mitad para reservar:\nNequi 3208947802 - Jorge John\nCuenta Ahorros Bancolombia 86960992140'),
-                // Reservation section
+                // Sección de reserva
                 _buildSectionTitle("Reserva tu experiencia"),
                 Form(
                   key: _formKey,
@@ -209,7 +209,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Logic to send the reservation
+                            // Lógica para enviar la reserva
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text('Reserva realizada con éxito')));
                           }
@@ -235,7 +235,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // Show dialog when pressing phone icon
+          // Mostrar cuadro de diálogo al presionar el ícono de teléfono
           showDialog(
             context: context,
             builder: (BuildContext context) {
@@ -261,7 +261,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     );
   }
 
-  // Function to create custom cards
+  // Función para crear tarjetas personalizadas
   Widget crearTarjeta(IconData icono, String titulo, String descripcion) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 10.0),
@@ -281,7 +281,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                 Text(
                   titulo,
                   style: TextStyle(
-                    fontSize: 16,
+                    fontSize: 20,
                     fontWeight: FontWeight.bold,
                     color: Colors.teal[900],
                   ),
@@ -291,10 +291,8 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
             SizedBox(height: 10),
             Text(
               descripcion,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.black87,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.black87),
+              textAlign: TextAlign.justify,
             ),
           ],
         ),
@@ -302,60 +300,61 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     );
   }
 
-  // Function to build text fields for the form
+  // Función para crear servicios
+  Widget servicioTarjeta(IconData icono, String texto, double fontSize) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 6.0),
+      elevation: 2,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: ListTile(
+        leading: Icon(icono, color: Colors.teal[700], size: 28),
+        title: Text(
+          texto,
+          style: TextStyle(fontSize: fontSize, color: Colors.black87),
+        ),
+      ),
+    );
+  }
+
+  // Función para construir campos de texto
   Widget _buildTextField(String label, TextEditingController controller,
       TextInputType keyboardType, IconData icon,
       {VoidCallback? onTap}) {
     return TextFormField(
       controller: controller,
       keyboardType: keyboardType,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(20)),
-      ),
+      onTap: onTap,
       validator: (value) {
         if (value == null || value.isEmpty) {
-          return 'Por favor ingrese $label';
+          return 'Por favor, ingresa $label';
         }
         return null;
       },
-      onTap: onTap,
-      readOnly: onTap != null,
-    );
-  }
-
-  // Function to build section titles
-  Widget _buildSectionTitle(String title) {
-    return Text(
-      title,
-      style: TextStyle(
-        fontSize: 20,
-        fontWeight: FontWeight.bold,
-        color: Colors.teal[900],
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
       ),
     );
   }
 
-  // Function to create service cards
-  Widget servicioTarjeta(IconData icon, String nombre, double size) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 5.0),
-      child: Row(
-        children: [
-          Icon(icon, color: Colors.teal[700], size: size),
-          SizedBox(width: 10),
-          Expanded(
-            child: Text(
-              nombre,
-              style: TextStyle(
-                fontSize: 14,
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-              ),
-            ),
-          ),
-        ],
+  // Función para construir los títulos de sección
+  Widget _buildSectionTitle(String title) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.teal[900],
+        ),
       ),
     );
   }

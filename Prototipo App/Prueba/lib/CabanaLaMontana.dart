@@ -125,13 +125,16 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
+                // Imagen destacada
                 Image.asset(
-                  'assets/cabanamontana.png',
+                  'assets/cabanamontana.png', // Cambia por la imagen adecuada
                   width: 400,
                   height: 400,
                   fit: BoxFit.cover,
                 ),
                 SizedBox(height: 10),
+
+                // Descripción general
                 Text(
                   '¡Un lugar mágico donde la naturaleza te envuelve! 🌿🏞\n\n'
                   'La Montaña te ofrece una experiencia inolvidable, perfecta para aventureros que buscan tranquilidad y conexión con la naturaleza. '
@@ -140,6 +143,8 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
                   textAlign: TextAlign.justify,
                 ),
                 SizedBox(height: 20),
+
+                // Distancia
                 Text(
                   '📍 A solo 10 minutos de la Universidad de Ibagué en el barrio Ambalá',
                   style: TextStyle(
@@ -149,8 +154,14 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 20),
+
+                // Sección de servicios
                 buildServiciosSection(),
+
+                // Sección de precios, senderismo, desayuno
                 buildInfoSection(),
+
+                // Formulario de reserva
                 _buildSectionTitle("Reserva tu experiencia"),
                 Form(
                   key: _formKey,
@@ -179,7 +190,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Add your logic to handle the reservation
+                            // Lógica para enviar la reserva
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                 content: Text('Reserva realizada con éxito')));
                           }
@@ -237,7 +248,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
         prefixIcon: Icon(icon),
         border: OutlineInputBorder(),
       ),
-      onTap: onTap,
+      onTap: onTap, // Llama a la función de selección de fecha si está definida
       validator: (value) {
         if (value == null || value.isEmpty) {
           return 'Por favor ingrese $label';
@@ -258,6 +269,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     );
   }
 
+  // Método para construir la sección de servicios
   Widget buildServiciosSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -265,9 +277,10 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
         Text(
           '✨ SERVICIOS ✨',
           style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-              color: Colors.green[800]),
+            fontSize: 24,
+            fontWeight: FontWeight.bold,
+            color: Colors.green[800],
+          ),
           textAlign: TextAlign.center,
         ),
         SizedBox(height: 10),
@@ -286,48 +299,65 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     );
   }
 
+  // Método para construir la sección de información
   Widget buildInfoSection() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         infoCard(
           title: '💵 PRECIOS',
-          content: '• Lunes a Jueves: \$80,000\n• Viernes a Domingo: \$120,000',
+          content: '• Lunes a Jueves: \$60.000 por noche\n'
+              '• Viernes o Domingos: \$70.000 por noche\n'
+              '• Sábados o día antes de festivo: \$100.000 por noche',
         ),
-        SizedBox(height: 10),
         infoCard(
-          title: '🚶‍♂️ SENDERISMO',
-          content: '¡Explora los hermosos senderos que rodean la cabaña!',
+          title: '🚶 SENDERISMO',
+          content:
+              '30 minutos (1.2 km) desde la entrada del parque hasta la cabaña.',
         ),
-        SizedBox(height: 10),
         infoCard(
-          title: '🥐 DESAYUNO',
-          content: 'Incluido en tu reserva para comenzar el día con energía.',
+          title: '🍽 DESAYUNO OPCIONAL',
+          content:
+              'Huevos al gusto, patacón, arroz, café o chocolate (10.000 adicionales).',
         ),
-        SizedBox(height: 20),
       ],
     );
   }
 
-  Widget servicioTarjeta(IconData icon, String title, double iconSize) {
+  Widget servicioTarjeta(IconData icono, String texto, double fontSize) {
     return Card(
-      elevation: 5,
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: EdgeInsets.symmetric(vertical: 6.0),
+      elevation: 4.0,
       child: ListTile(
-        leading: Icon(icon, size: iconSize, color: Colors.green),
-        title: Text(title, style: TextStyle(fontSize: 16)),
+        leading: Icon(icono, size: 30, color: Colors.green[700]),
+        title: Text(
+          texto,
+          style: TextStyle(
+            fontSize: fontSize,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
       ),
     );
   }
 
   Widget infoCard({required String title, required String content}) {
     return Card(
-      elevation: 5,
-      margin: EdgeInsets.symmetric(vertical: 5),
+      elevation: 5.0,
+      margin: EdgeInsets.symmetric(vertical: 8.0),
       child: ListTile(
-        title: Text(title,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-        subtitle: Text(content, style: TextStyle(fontSize: 16)),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            color: Colors.green[700],
+          ),
+        ),
+        subtitle: Text(
+          content,
+          style: TextStyle(fontSize: 16, color: Colors.black87),
+        ),
       ),
     );
   }
