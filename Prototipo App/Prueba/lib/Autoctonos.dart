@@ -1,6 +1,9 @@
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/PaginaOferta.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'Menu.dart'; // Importa el menú que creaste
 
 class Autoctonos extends StatefulWidget {
@@ -18,6 +21,16 @@ class _AutoctonosState extends State<Autoctonos> {
   final TextEditingController _dateEndController = TextEditingController();
   final TextEditingController _numPeopleController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  final List<String> imgList = [
+    'assets/tesorito1.jpg', // Reemplaza con las rutas de tus imágenes
+    'assets/tesorito2.jpg',
+    'assets/tesorito3.jpg',
+    'assets/tesorito4.jpg',
+    'assets/tesorito5.jpg', // Agregué más imágenes para que se vea el deslizamiento
+  ];
+
+  int _current = 0;
 
   void _onLogoTap() {
     setState(() {
@@ -360,6 +373,60 @@ class _AutoctonosState extends State<Autoctonos> {
           '✔ Poker',
           '✔ Y mucho más...',
         ]),
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            CarouselSlider(
+              items: imgList
+                  .map((item) => Container(
+                        margin: EdgeInsets.symmetric(horizontal: 5.0),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: Image.asset(
+                            item,
+                            fit: BoxFit.cover,
+                            width: 1000,
+                          ),
+                        ),
+                      ))
+                  .toList(),
+              options: CarouselOptions(
+                height: 200.0,
+                autoPlay: true,
+                enlargeCenterPage: true,
+                viewportFraction:
+                    0.33, // Esto permite ver tres imágenes a la vez
+                onPageChanged: (index, reason) {
+                  setState(() {
+                    _current = index;
+                  });
+                },
+              ),
+            ),
+            Positioned(
+              left: 10,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                onPressed: () {
+                  setState(() {
+                    _current = (_current - 1) % imgList.length;
+                  });
+                },
+              ),
+            ),
+            Positioned(
+              right: 10,
+              child: IconButton(
+                icon: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                onPressed: () {
+                  setState(() {
+                    _current = (_current + 1) % imgList.length;
+                  });
+                },
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }
