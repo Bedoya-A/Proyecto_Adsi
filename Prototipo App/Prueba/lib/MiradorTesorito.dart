@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart'; // Asegúrate de agregar esta línea en tu pubspec.yaml
+import 'package:intl/intl.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/PaginaOferta.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MiradorTesorito extends StatefulWidget {
   @override
@@ -20,6 +22,16 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
   final _dateEndController = TextEditingController();
   final _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
+
+  final List<String> imgList = [
+    'assets/tesorito1.jpg',
+    'assets/tesorito2.jpg',
+    'assets/tesorito3.jpg',
+    'assets/tesorito4.jpg',
+    'assets/tesorito5.jpg',
+  ];
+
+  int _current = 0;
 
   @override
   void initState() {
@@ -92,9 +104,7 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
               cursor: SystemMouseCursors.click,
               child: GestureDetector(
                 onTap: () {
-                  _onLogoTap(); // Cambia la visibilidad del ícono al hacer clic
-
-                  // Espera a que la animación termine antes de navegar
+                  _onLogoTap();
                   Future.delayed(Duration(milliseconds: 350), () {
                     Navigator.pushAndRemoveUntil(
                       context,
@@ -124,10 +134,10 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
                 ),
               ),
             ),
-            SizedBox(width: 10), // Espaciado entre el logo y el título
+            SizedBox(width: 10),
             Flexible(
               child: Text(
-                'Mirador Tersorito',
+                'Mirador Tesorito',
                 overflow: TextOverflow.ellipsis,
                 maxLines: 1,
               ),
@@ -135,21 +145,20 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
           ],
         ),
         backgroundColor: Colors.green[700],
-        automaticallyImplyLeading: false, // Elimina la flecha de regresar
+        automaticallyImplyLeading: false,
         actions: [
           Builder(
             builder: (context) => IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
-                Scaffold.of(context)
-                    .openEndDrawer(); // Abre el menú lateral a la derecha
+                Scaffold.of(context).openEndDrawer();
               },
             ),
           ),
         ],
       ),
       endDrawer: Menu(
-        selectedDrawerIndex: 0, // Usa el índice actual
+        selectedDrawerIndex: 0,
         onSelectDrawerItem: (int index) {
           if (index == 0) {
             Navigator.pushReplacement(
@@ -171,7 +180,7 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
             end: Alignment.bottomRight,
             colors: [
               Color.fromARGB(255, 70, 254, 236),
-              Color.fromARGB(255, 199, 245, 223)
+              Color.fromARGB(255, 199, 245, 223),
             ],
           ),
         ),
@@ -187,9 +196,65 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
               SizedBox(height: 20),
               _buildInteractiveCards(context),
               SizedBox(height: 20),
-              Divider(color: Colors.teal, thickness: 2), // Divider para separar
-              _buildMenuSection(), // Sección de menú
-              Divider(color: Colors.teal, thickness: 2), // Divider
+              Divider(color: Colors.teal, thickness: 2),
+              _buildMenuSection(),
+              Divider(color: Colors.teal, thickness: 2),
+              SizedBox(height: 20),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  CarouselSlider(
+                    items: imgList
+                        .map((item) => Container(
+                              margin: EdgeInsets.symmetric(horizontal: 5.0),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(8.0),
+                                child: Image.asset(
+                                  item,
+                                  fit: BoxFit.cover,
+                                  width: 1000,
+                                ),
+                              ),
+                            ))
+                        .toList(),
+                    options: CarouselOptions(
+                      height: 200.0,
+                      autoPlay: true,
+                      enlargeCenterPage: true,
+                      viewportFraction: 0.33,
+                      onPageChanged: (index, reason) {
+                        setState(() {
+                          _current = index;
+                        });
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    left: 10,
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                      onPressed: () {
+                        setState(() {
+                          _current = (_current - 1) % imgList.length;
+                        });
+                      },
+                    ),
+                  ),
+                  Positioned(
+                    right: 10,
+                    child: IconButton(
+                      icon: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                      onPressed: () {
+                        setState(() {
+                          _current = (_current + 1) % imgList.length;
+                        });
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(height: 20),
+              Center(child: _buildVideoLink()),
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.6),
@@ -224,41 +289,40 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Lógica para enviar la reserva
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text('Reserva realizada con éxito')));
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text('Reserva enviada')));
                           }
                         },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 14, horizontal: 32),
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                        ),
-                        child: Text('Confirmar Reserva',
-                            style: TextStyle(fontSize: 18)),
+                        child: Text("Reservar"),
                       ),
                     ],
                   ),
                 ),
               ),
-              SizedBox(height: 20),
             ],
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Acción de reserva
-        },
-        backgroundColor: Colors.teal,
-        child: Icon(Icons.book_online),
+    );
+  }
+
+  Widget _buildVideoLink() {
+    return GestureDetector(
+      onTap: () {
+        launchUrl(
+            Uri.parse('https://youtube.com/shorts/ZwwYu4h6BSQ?feature=share'));
+      },
+      child: Text(
+        "Ver video del Mirador Tesorito",
+        style: TextStyle(
+          color: Colors.blue,
+          fontSize: 16,
+          decoration: TextDecoration.underline,
+        ),
       ),
     );
   }
 
-  // Sección de encabezado con imagen
   Widget _buildHeaderSection() {
     return Stack(
       children: [
