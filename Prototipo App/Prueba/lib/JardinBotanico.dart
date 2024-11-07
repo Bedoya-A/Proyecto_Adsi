@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/PaginaOferta.dart';
 import 'package:prueba2/ServiciosJardinBotanico.dart';
@@ -15,11 +16,7 @@ class _JardinBotanicoState extends State<JardinBotanico>
     with TickerProviderStateMixin {
   bool _isHomeIconVisible = false;
   late TabController _tabController;
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _dateStartController = TextEditingController();
-  final _numPeopleController = TextEditingController();
+
   int selectedDrawerIndex = 1;
 
   @override
@@ -40,18 +37,6 @@ class _JardinBotanicoState extends State<JardinBotanico>
     });
   }
 
-  void _selectDate(TextEditingController controller) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2025),
-    );
-    if (picked != null) {
-      controller.text = "${picked.toLocal()}".split(' ')[0];
-    }
-  }
-
   void onSelectDrawerItem(int index) {
     setState(() {
       selectedDrawerIndex = index;
@@ -67,6 +52,34 @@ class _JardinBotanicoState extends State<JardinBotanico>
         MaterialPageRoute(builder: (context) => PaginaOferta()),
       );
     }
+  }
+
+  void _openReservationForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Reserva tu experiencia'),
+          content: ReservationForm(
+            onSubmit: (name, phone, dateStart, numPeople) {
+              // Aquí puedes manejar el envío de la reserva o mostrar un mensaje de confirmación
+              print(
+                  "Reserva enviada:\nNombre: $name\nTeléfono: $phone\nFecha de Inicio: $dateStart\nNúmero de Personas: $numPeople");
+              Navigator.of(context)
+                  .pop(); // Cierra el diálogo después de enviar
+            },
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Cierra el diálogo sin enviar
+              },
+              child: Text('Cancelar'),
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -172,7 +185,13 @@ class _JardinBotanicoState extends State<JardinBotanico>
             _buildVideoLink(),
             SizedBox(height: 30),
             _buildSectionTitle("Reserva tu experiencia"),
-            _buildReservationForm(),
+            SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: _openReservationForm,
+              child: Text('Reserva'),
+              style:
+                  ElevatedButton.styleFrom(backgroundColor: Colors.green[700]),
+            ),
           ],
         ),
       ),
@@ -236,60 +255,6 @@ class _JardinBotanicoState extends State<JardinBotanico>
             fontSize: 16,
             color: Colors.blue,
             decoration: TextDecoration.underline),
-      ),
-    );
-  }
-
-  Widget _buildReservationForm() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          _buildTextField(
-              "Nombre", _nameController, TextInputType.text, Icons.person),
-          SizedBox(height: 10),
-          _buildTextField("Número de Teléfono", _phoneController,
-              TextInputType.phone, Icons.phone),
-          SizedBox(height: 10),
-          _buildTextField("Fecha de Inicio", _dateStartController,
-              TextInputType.none, Icons.calendar_today,
-              onTap: () => _selectDate(_dateStartController)),
-          SizedBox(height: 10),
-          _buildTextField("Número de Personas", _numPeopleController,
-              TextInputType.number, Icons.group),
-          SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                // Aquí puedes agregar la lógica para enviar la reserva
-              }
-            },
-            child: Text("Reservar"),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildTextField(String label, TextEditingController controller,
-      TextInputType inputType, IconData icon,
-      {Function()? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: TextFormField(
-        controller: controller,
-        keyboardType: inputType,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon),
-          border: OutlineInputBorder(),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Por favor, ingresa tu $label';
-          }
-          return null;
-        },
       ),
     );
   }

@@ -1,9 +1,7 @@
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/PaginaOferta.dart';
-import 'package:url_launcher/url_launcher.dart';
 import 'Menu.dart'; // Importa el menú que creaste
 
 class Autoctonos extends StatefulWidget {
