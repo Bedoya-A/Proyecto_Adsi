@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/PaginaOferta.dart';
 import 'Menu.dart'; // Importa el menú que creaste
+import 'package:url_launcher/url_launcher.dart';
 
 class Autoctonos extends StatefulWidget {
   @override
@@ -21,11 +22,11 @@ class _AutoctonosState extends State<Autoctonos> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final List<String> imgList = [
-    'assets/tesorito1.jpg', // Reemplaza con las rutas de tus imágenes
-    'assets/tesorito2.jpg',
-    'assets/tesorito3.jpg',
-    'assets/tesorito4.jpg',
-    'assets/tesorito5.jpg', // Agregué más imágenes para que se vea el deslizamiento
+    'assets/autoctonos1.jpg', // Reemplaza con las rutas de tus imágenes
+    'assets/autoctonos2.jpg',
+    'assets/autoctonos3.jpg',
+    'assets/autoctonos4.jpg',
+    'assets/autoctonos5.jpg', // Agregué más imágenes para que se vea el deslizamiento
   ];
 
   int _current = 0;
@@ -44,6 +45,15 @@ class _AutoctonosState extends State<Autoctonos> {
         (Route<dynamic> route) => false,
       );
     });
+  }
+
+  Future<void> _launchYoutube() async {
+    const url = 'https://youtu.be/yJMtFwHefzY';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -80,7 +90,7 @@ class _AutoctonosState extends State<Autoctonos> {
                           size: 40,
                           color: Colors.white,
                         )
-                      : CircleAvatar(
+                      : const CircleAvatar(
                           key: ValueKey('logoIcon'),
                           radius: 20,
                           backgroundImage: AssetImage('assets/logo.png'),
@@ -88,8 +98,8 @@ class _AutoctonosState extends State<Autoctonos> {
                 ),
               ),
             ),
-            SizedBox(width: 10), // Espaciado entre el logo y el título
-            Flexible(
+            const SizedBox(width: 10), // Espaciado entre el logo y el título
+            const Flexible(
               child: Text(
                 'Autóctonos',
                 overflow: TextOverflow.ellipsis,
@@ -103,7 +113,7 @@ class _AutoctonosState extends State<Autoctonos> {
         actions: [
           Builder(
             builder: (context) => IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context)
                     .openEndDrawer(); // Abre el menú lateral a la derecha
@@ -123,7 +133,7 @@ class _AutoctonosState extends State<Autoctonos> {
           } else if (index == 1) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => PaginaOferta()),
+              MaterialPageRoute(builder: (context) => const PaginaOferta()),
             );
           }
         },
@@ -140,7 +150,7 @@ class _AutoctonosState extends State<Autoctonos> {
           print('Llamando al mirador...');
         },
         backgroundColor: Colors.green,
-        child: Icon(Icons.phone, size: 30, color: Colors.white),
+        child: const Icon(Icons.phone, size: 30, color: Colors.white),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
@@ -166,14 +176,14 @@ class _AutoctonosState extends State<Autoctonos> {
     return Container(
       height: 220,
       width: double.infinity,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/image.png'),
+          image: AssetImage('assets/autoctonos.jpg'),
           fit: BoxFit.cover,
         ),
       ),
       child: Container(
-        padding: EdgeInsets.only(left: 16, bottom: 16),
+        padding: const EdgeInsets.only(left: 16, bottom: 16),
         alignment: Alignment.bottomLeft,
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -182,7 +192,7 @@ class _AutoctonosState extends State<Autoctonos> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Text(
+        child: const Text(
           'Mirador Autoctonos',
           style: TextStyle(
             color: Colors.white,
@@ -425,7 +435,40 @@ class _AutoctonosState extends State<Autoctonos> {
             ),
           ],
         ),
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton.icon(
+              onPressed: _launchYoutube,
+              icon: Icon(Icons.video_library, color: Colors.white),
+              label: Text(
+                "Ver video en YouTube",
+                style: TextStyle(color: Colors.white),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.teal, // Color del botón
+              ),
+            ),
+          ),
+        ),
       ],
+    );
+  }
+
+  Widget _buildVideoLink() {
+    return GestureDetector(
+      onTap: () {
+        launchUrl(
+            Uri.parse('https://youtube.com/shorts/ZwwYu4h6BSQ?feature=share'));
+      },
+      child: Text(
+        "Ver video del Mirador Tesorito",
+        style: TextStyle(
+          color: Colors.blue,
+          fontSize: 16,
+          decoration: TextDecoration.underline,
+        ),
+      ),
     );
   }
 

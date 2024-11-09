@@ -1,6 +1,9 @@
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/Menu.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Meraki extends StatefulWidget {
   @override
@@ -13,6 +16,15 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
 
   late AnimationController _controller;
   late Animation<Offset> _offsetAnimation;
+  final List<String> imgList = [
+    'assets/meraki1.png',
+    'assets/meraki2.png',
+    'assets/meraki3.png',
+    'assets/meraki4.png',
+    'assets/meraki5.png',
+  ];
+
+  int _current = 0;
 
   @override
   void initState() {
@@ -56,6 +68,15 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
         (Route<dynamic> route) => false,
       );
     });
+  }
+
+  Future<void> _launchYoutube() async {
+    const url = 'https://youtu.be/0jr2g7aHcdU';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   @override
@@ -135,10 +156,10 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
             children: [
               // Banner con imagen
               Container(
-                height: 200, // Altura del banner
+                height: 400, // Altura del banner
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/banner.jpg'), // Ruta de tu imagen
+                    image: AssetImage('assets/meraki.png'), // Ruta de tu imagen
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(10),
@@ -230,6 +251,7 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
                 'Café premium - \$30.000: Para los amantes del café.',
                 'Miel de abejas - \$30.000: Dulzura natural.',
               ]),
+
               Divider(
                   thickness: 2, color: Colors.teal[800]), // Línea separadora
               SizedBox(height: 20),
@@ -241,6 +263,82 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
                 'Bicicletas aéreas - \$50.000: ¡Captura momentos únicos!',
                 'Camping para 2 - \$250.000: Conéctate con la naturaleza.',
               ]),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CarouselSlider(
+                      items: imgList
+                          .map((item) => Container(
+                                margin: EdgeInsets.symmetric(horizontal: 5.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                  child: Image.asset(
+                                    item,
+                                    fit: BoxFit.cover,
+                                    width: 1000,
+                                  ),
+                                ),
+                              ))
+                          .toList(),
+                      options: CarouselOptions(
+                        height: 200.0,
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                        viewportFraction: 0.33,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _current = index;
+                          });
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      left: 10,
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                        onPressed: () {
+                          setState(() {
+                            _current = (_current - 1) % imgList.length;
+                          });
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      right: 10,
+                      child: IconButton(
+                        icon:
+                            Icon(Icons.arrow_forward_ios, color: Colors.white),
+                        onPressed: () {
+                          setState(() {
+                            _current = (_current + 1) % imgList.length;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: ElevatedButton.icon(
+                    onPressed: _launchYoutube,
+                    icon: Icon(Icons.video_library,
+                        color: Colors.white), // Cambia el color del icono
+                    label: Text(
+                      "Ver video Parque Temático Meraki en YouTube",
+                      style: TextStyle(
+                          color: Colors.white), // Cambia el color del texto
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal, // Color del botón
+                    ),
+                  ),
+                ),
+              ),
+
               _buildText('Descubre cómo se prepara el café y el chocolate.'),
               SizedBox(height: 20),
               _buildAnimatedHeader('4 Factores', Icons.list),
