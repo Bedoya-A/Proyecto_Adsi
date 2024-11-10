@@ -16,6 +16,9 @@ class _JardinBotanicoState extends State<JardinBotanico>
     with TickerProviderStateMixin {
   bool _isHomeIconVisible = false;
   late TabController _tabController;
+  double _rating = 0; // Initial rating value
+  TextEditingController _reviewController = TextEditingController();
+  List<Map<String, dynamic>> _reviews = [];
 
   int selectedDrawerIndex = 1;
 
@@ -82,6 +85,41 @@ class _JardinBotanicoState extends State<JardinBotanico>
     );
   }
 
+  Future<void> _launchYoutube() async {
+    const url = 'https://youtu.be/7CdXUBEqdIU';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Widget _buildStarRating() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _rating = index + 1.0;
+            });
+          },
+          child: Icon(
+            Icons.star,
+            color: _rating > index ? Colors.amber : Colors.grey,
+            size: 30,
+          ),
+        );
+      }),
+    );
+  }
+
+  void _removeReview(int index) {
+    setState(() {
+      _reviews.removeAt(index);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -92,6 +130,8 @@ class _JardinBotanicoState extends State<JardinBotanico>
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Colors.white,
+          labelColor: Colors.white,
+          unselectedLabelColor: Colors.white70,
           tabs: [
             Tab(text: 'Jardín Botánico'),
             Tab(text: 'Servicios'),
@@ -176,22 +216,88 @@ class _JardinBotanicoState extends State<JardinBotanico>
             SizedBox(height: 10),
             _buildDescription(),
             SizedBox(height: 20),
-            _buildSectionTitle("60 Hectáreas Llenas de Magia"),
+            _buildSectionTitleText("60 Hectáreas Llenas de Magia"),
             SizedBox(height: 10),
             _buildMagicDescription(),
             SizedBox(height: 20),
             _buildExplorationZones(),
             SizedBox(height: 30),
-            _buildVideoLink(),
+
+            Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: ElevatedButton.icon(
+                  onPressed: _launchYoutube,
+                  icon: Icon(Icons.video_library,
+                      color: const Color.fromARGB(255, 0, 0, 0)),
+                  label: Text(
+                    "Ver video en YouTube",
+                    style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                  ),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor:
+                        Color.fromARGB(255, 101, 161, 154), // Color del botón
+                  ),
+                ),
+              ),
+            ),
             SizedBox(height: 30),
-            _buildSectionTitle("Reserva tu experiencia"),
+            _buildSectionTitleText("Reserva tu experiencia"),
             SizedBox(height: 10),
             ElevatedButton(
               onPressed: _openReservationForm,
-              child: Text('Reserva'),
-              style:
-                  ElevatedButton.styleFrom(backgroundColor: Colors.green[700]),
+              child: Text(
+                'Reserva',
+                style: TextStyle(
+                    color: Colors.white), // Color blanco para el texto
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green[700],
+              ),
             ),
+
+            SizedBox(height: 30),
+            SizedBox(height: 20),
+            Padding(
+              padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0), // Espacio horizontal
+              child:
+                  _buildSectionTitleWithIcon("DEJA TU RESEÑA", Icons.star_rate),
+            ),
+            SizedBox(height: 20), // Separación adicional
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: _buildStarRating(),
+            ),
+            SizedBox(height: 20), // Separación adicional
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: TextField(
+                controller: _reviewController,
+                decoration: InputDecoration(
+                  labelText: 'Escribe tu reseña',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 4,
+              ),
+            ),
+            SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _reviews.add({
+                      'rating': _rating,
+                      'review': _reviewController.text,
+                    });
+                    _reviewController.clear();
+                  });
+                },
+                child: Text('Enviar Reseña'),
+              ),
+            ),
+            SizedBox(height: 20),
           ],
         ),
       ),
@@ -243,27 +349,45 @@ class _JardinBotanicoState extends State<JardinBotanico>
     );
   }
 
-  Widget _buildVideoLink() {
-    return GestureDetector(
-      onTap: () {
-        launchUrl(
-            Uri.parse('https://youtu.be/7CdXUBEqdIU?si=iMD1IlOyxAKS9QDF'));
-      },
-      child: Text(
-        'Ver video del Jardin Botanico San Jorge en Youtube',
-        style: TextStyle(
-            fontSize: 16,
-            color: Colors.blue,
-            decoration: TextDecoration.underline),
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title) {
+  // Método que solo recibe el título
+  Widget _buildSectionTitleText(String title) {
     return Text(
       title,
       style: TextStyle(
           fontSize: 24, fontWeight: FontWeight.bold, color: Colors.green[900]),
+    );
+  }
+
+// Método que recibe el título y el ícono
+  Widget _buildSectionTitleWithIcon(String title, IconData icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color.fromARGB(255, 60, 157, 79),
+            Color.fromARGB(255, 117, 240, 36)
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 24, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

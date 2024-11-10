@@ -20,6 +20,9 @@ class _AutoctonosState extends State<Autoctonos> {
   final TextEditingController _dateEndController = TextEditingController();
   final TextEditingController _numPeopleController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  double _rating = 0; // Initial rating value
+  TextEditingController _reviewController = TextEditingController();
+  List<Map<String, dynamic>> _reviews = [];
 
   final List<String> imgList = [
     'assets/autoctonos1.jpg', // Reemplaza con las rutas de tus imágenes
@@ -54,6 +57,33 @@ class _AutoctonosState extends State<Autoctonos> {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  Widget _buildStarRating() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _rating = index + 1.0;
+            });
+          },
+          child: Icon(
+            Icons.star,
+            color: _rating > index ? Colors.amber : Colors.grey,
+            size: 30,
+          ),
+        );
+      }),
+    );
+  }
+
+  // Function to remove review
+  void _removeReview(int index) {
+    setState(() {
+      _reviews.removeAt(index);
+    });
   }
 
   @override
@@ -440,35 +470,20 @@ class _AutoctonosState extends State<Autoctonos> {
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton.icon(
               onPressed: _launchYoutube,
-              icon: Icon(Icons.video_library, color: Colors.white),
+              icon: Icon(Icons.video_library,
+                  color: const Color.fromARGB(255, 0, 0, 0)),
               label: Text(
                 "Ver video en YouTube",
-                style: TextStyle(color: Colors.white),
+                style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal, // Color del botón
+                backgroundColor:
+                    const Color.fromARGB(255, 154, 244, 235), // Color del botón
               ),
             ),
           ),
         ),
       ],
-    );
-  }
-
-  Widget _buildVideoLink() {
-    return GestureDetector(
-      onTap: () {
-        launchUrl(
-            Uri.parse('https://youtube.com/shorts/ZwwYu4h6BSQ?feature=share'));
-      },
-      child: Text(
-        "Ver video del Mirador Tesorito",
-        style: TextStyle(
-          color: Colors.blue,
-          fontSize: 16,
-          decoration: TextDecoration.underline,
-        ),
-      ),
     );
   }
 
@@ -544,16 +559,74 @@ class _AutoctonosState extends State<Autoctonos> {
                       padding:
                           EdgeInsets.symmetric(horizontal: 30, vertical: 15),
                       shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
                     child: Text(
                       'Reservar',
                       style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                   ),
+                ),
+                SizedBox(height: 30), // Espaciado adicional
+                // Sección de reseñas
+                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+                SizedBox(height: 20), // Separación adicional
+                _buildStarRating(),
+                SizedBox(height: 20), // Separación adicional
+                TextField(
+                  controller: _reviewController,
+                  decoration: InputDecoration(
+                    labelText: 'Escribe tu reseña',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 4,
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
+                    });
+                  },
+                  child: Text('Enviar Reseña'),
+                ),
+                SizedBox(height: 20),
+                // Mostrar las reseñas con opción de eliminar
+                Column(
+                  children: _reviews.map((review) {
+                    int index = _reviews.indexOf(review); // Obtener índice
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      elevation: 4,
+                      child: ListTile(
+                        title: Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber),
+                            SizedBox(width: 5),
+                            Text('${review['rating']} estrellas'),
+                          ],
+                        ),
+                        subtitle: Text(review['review']),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            setState(() {
+                              _reviews.removeAt(index); // Eliminar reseña
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
             ),
@@ -582,6 +655,38 @@ class _AutoctonosState extends State<Autoctonos> {
         }
         return null;
       },
+    );
+  }
+
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color.fromARGB(255, 60, 157, 79),
+            Color.fromARGB(255, 117, 240, 36)
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 24, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ],
+      ),
     );
   }
 

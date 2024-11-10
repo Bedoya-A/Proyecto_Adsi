@@ -1,6 +1,10 @@
+import 'package:carousel_slider/carousel_options.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/HomePage.dart';
+import 'package:flutter/services.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CabanaEncanto extends StatefulWidget {
   const CabanaEncanto({super.key});
@@ -18,6 +22,20 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
   final _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
   bool _isHomeIconVisible = false; // Inicializa la variable
+  double _rating = 0; // Initial rating value
+  TextEditingController _reviewController = TextEditingController();
+
+  // List to store reviews
+  List<Map<String, dynamic>> _reviews = [];
+
+  final List<String> imgList = [
+    'assets/encanto1.png',
+    'assets/encanto2.png',
+    'assets/encanto3.png',
+    'assets/encanto4.png',
+    'assets/encanto5.png',
+  ];
+  int _current = 0;
 
   Future<void> _selectDate(TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
@@ -43,6 +61,41 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
   void onSelectDrawerItem(int index) {
     setState(() {
       selectedDrawerIndex = index;
+    });
+  }
+
+  Future<void> _launchYoutube() async {
+    const url = 'https://youtu.be/ev2h6MBlMhM';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Widget _buildStarRating() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _rating = index + 1.0;
+            });
+          },
+          child: Icon(
+            Icons.star,
+            color: _rating > index ? Colors.amber : Colors.grey,
+            size: 30,
+          ),
+        );
+      }),
+    );
+  }
+
+  void _removeReview(int index) {
+    setState(() {
+      _reviews.removeAt(index);
     });
   }
 
@@ -116,20 +169,16 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.tealAccent,
-              Colors.blueAccent,
-              Colors.purpleAccent,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [Color.fromARGB(255, 153, 255, 204), Colors.teal],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Imagen destacada
                 Image.asset(
@@ -140,24 +189,153 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
                 ),
                 const SizedBox(height: 10),
 
-                // Descripción de características
+                // Sección de características
                 _buildSectionCard(
-                    "Características", Icons.star, _buildFeatureList()),
+                  "Características",
+                  Icons.star,
+                  _buildFeatureList(),
+                ),
 
-                // Ubicación
+                // Slider de imágenes
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CarouselSlider(
+                      items: imgList.map((item) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.asset(item,
+                                fit: BoxFit.cover, width: 1000),
+                          ),
+                        );
+                      }).toList(),
+                      options: CarouselOptions(
+                        height: 200.0,
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                        viewportFraction: 0.33,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _current = index;
+                          });
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      left: 10,
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                        onPressed: () {
+                          setState(() {
+                            _current = (_current - 1) % imgList.length;
+                          });
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      right: 10,
+                      child: IconButton(
+                        icon:
+                            Icon(Icons.arrow_forward_ios, color: Colors.white),
+                        onPressed: () {
+                          setState(() {
+                            _current = (_current + 1) % imgList.length;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Botón para ver el video (debajo del carousel)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton.icon(
+                      onPressed: _launchYoutube,
+                      icon: Icon(
+                        Icons.video_library,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
+                      label: Text(
+                        "Ver video en YouTube",
+                        style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(
+                            255, 101, 161, 154), // Color del botón
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Secciones adicionales
                 _buildSectionCard(
                     "Ubicación", Icons.location_on, _buildLocationText()),
-
-                // Sección de precios
                 _buildSectionCard("Precios", Icons.money, _buildPriceList()),
-
-                // Senderismo
                 _buildSectionCard(
                     "Senderismo", Icons.hiking, _buildHikingText()),
-
-                // Formulario de reserva
-                _buildSectionCard("Reserva tu experiencia", Icons.bookmark,
-                    _buildReservationForm()),
+                _buildSectionCard(
+                    "Parqueadero", Icons.local_parking, _buildParkingText()),
+                _buildSectionCard(
+                    "Ingreso", Icons.access_time, _buildIngresoText()),
+                _buildSectionCard(
+                    "Salida", Icons.exit_to_app, _buildSalidaText()),
+                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+                SizedBox(height: 20),
+                _buildStarRating(),
+                SizedBox(height: 20),
+                TextField(
+                  controller: _reviewController,
+                  decoration: InputDecoration(
+                    labelText: 'Escribe tu reseña',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 4,
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
+                    });
+                  },
+                  child: Text('Enviar Reseña'),
+                ),
+                SizedBox(height: 20),
+                // Mostrar las reseñas con opción de eliminar
+                Column(
+                  children: _reviews.map((review) {
+                    int index = _reviews.indexOf(review);
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      elevation: 4,
+                      child: ListTile(
+                        title: Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber),
+                            SizedBox(width: 5),
+                            Text('${review['rating']} estrellas'),
+                          ],
+                        ),
+                        subtitle: Text(review['review']),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () =>
+                              _removeReview(index), // Eliminar reseña
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ],
             ),
           ),
@@ -166,54 +344,50 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     );
   }
 
-  // Widget para las tarjetas de sección
+  // Widget para los títulos con icono, fondo de degradado y tarjeta
   Widget _buildSectionCard(String title, IconData icon, Widget content) {
-    return Container(
+    return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          colors: [
-            Colors.white.withOpacity(0.9),
-            Colors.white.withOpacity(0.6),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 10.0,
-            offset: const Offset(0, 4),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 5,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.orangeAccent, Colors.purpleAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(icon, color: Colors.white),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: content,
           ),
         ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(icon, color: Colors.brown[700]),
-                  const SizedBox(width: 8),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.brown[700],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              content,
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -265,16 +439,6 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           "Puedes subir toda la comida y bebida que desees, ya que nosotros no vendemos.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
-        const SizedBox(height: 10),
-        Text(
-          "Ingreso: Puedes llegar desde las 4:00 pm, máximo a las 6:00 pm.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          "Salida: Al otro día antes del mediodía.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
       ],
     );
   }
@@ -299,31 +463,90 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     );
   }
 
-  // Widget para el texto de senderismo
+  // Widget para el senderismo
   Widget _buildHikingText() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "De la entrada hasta la cabaña son 10 minutos de senderismo (400 metros). Por este valor reservas la cabaña entera, no la compartes con nadie, es una cabaña rústica, el plan no es de lujo.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          "Parqueadero: moto a \$8.000 y carro a \$12.000.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
+            "De la entrada hasta la cabaña son 10 minutos de senderismo (400 metros)."),
         const SizedBox(height: 10),
         Text(
           "En la entrada te reciben, llevan y entregan la cabaña.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
-        const SizedBox(height: 10),
+      ],
+    );
+  }
+
+  // Widget para el parqueadero
+  Widget _buildParkingText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         Text(
-          "Confirmamos disponibilidad y reserva del lugar a través de este formulario.",
+          " moto a \$8.000 y carro a \$12.000.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
       ],
+    );
+  }
+
+  // Widget para el ingreso
+  Widget _buildIngresoText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "El ingreso a la cabaña es a partir de las 2:00 PM. Si llegas más temprano, puedes esperar en la entrada o en la zona común.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ],
+    );
+  }
+
+  // Widget para la salida
+  Widget _buildSalidaText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "La salida es a las 12:00 PM. Si necesitas un poco más de tiempo, puedes pedirlo con anticipación.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.orangeAccent, Colors.purpleAccent],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(15),
+          topRight: Radius.circular(15),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 24, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -332,14 +555,13 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     return Form(
       key: _formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextFormField(
             controller: _nameController,
             decoration: const InputDecoration(labelText: 'Nombre'),
             validator: (value) {
-              if (value!.isEmpty) {
-                return 'Por favor ingresa tu nombre';
+              if (value == null || value.isEmpty) {
+                return 'Por favor ingrese su nombre';
               }
               return null;
             },
@@ -348,8 +570,8 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
             controller: _phoneController,
             decoration: const InputDecoration(labelText: 'Teléfono'),
             validator: (value) {
-              if (value!.isEmpty) {
-                return 'Por favor ingresa tu número de teléfono';
+              if (value == null || value.isEmpty) {
+                return 'Por favor ingrese su teléfono';
               }
               return null;
             },
@@ -362,7 +584,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           ),
           TextFormField(
             controller: _dateEndController,
-            decoration: const InputDecoration(labelText: 'Fecha de fin'),
+            decoration: const InputDecoration(labelText: 'Fecha de salida'),
             readOnly: true,
             onTap: () => _selectDate(_dateEndController),
           ),
@@ -370,8 +592,8 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
             controller: _numPeopleController,
             decoration: const InputDecoration(labelText: 'Número de personas'),
             validator: (value) {
-              if (value!.isEmpty) {
-                return 'Por favor ingresa el número de personas';
+              if (value == null || value.isEmpty) {
+                return 'Por favor ingrese el número de personas';
               }
               return null;
             },
@@ -380,17 +602,10 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                // Aquí puedes enviar los datos a tu base de datos o API
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Reserva enviada')),
-                );
+                // Procesa la reserva
               }
             },
-            child: const Text('Reservar'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.brown[600],
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-            ),
+            child: const Text('Confirmar Reserva'),
           ),
         ],
       ),
