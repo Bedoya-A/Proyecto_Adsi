@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/PaginaOferta.dart';
@@ -15,13 +15,10 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
     with TickerProviderStateMixin {
   bool _isHomeIconVisible = false;
   List<AnimationController> _controllers = [];
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _dateStartController = TextEditingController();
-  final _dateEndController = TextEditingController();
-  final _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
+  double _rating = 0; // Initial rating value
+  TextEditingController _reviewController = TextEditingController();
+  List<Map<String, dynamic>> _reviews = [];
 
   final List<String> imgList = [
     'assets/tesorito1.jpg',
@@ -45,32 +42,6 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
     );
   }
 
-  @override
-  void dispose() {
-    for (var controller in _controllers) {
-      controller.dispose();
-    }
-    _nameController.dispose();
-    _phoneController.dispose();
-    _dateStartController.dispose();
-    _dateEndController.dispose();
-    _numPeopleController.dispose();
-    super.dispose();
-  }
-
-  void _selectDate(TextEditingController controller) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2025),
-    );
-    if (picked != null) {
-      String formattedDate = DateFormat('dd/MM/yyyy').format(picked);
-      controller.text = formattedDate;
-    }
-  }
-
   void _onLogoTap() {
     setState(() {
       _isHomeIconVisible = !_isHomeIconVisible;
@@ -92,6 +63,57 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
         MaterialPageRoute(builder: (context) => PaginaOferta()),
       );
     }
+  }
+
+  Future<void> _launchYoutube() async {
+    const url = 'https://youtube.com/shorts/ZwwYu4h6BSQ?feature=share';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Widget _buildStarRating() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _rating = index + 1.0;
+            });
+          },
+          child: Icon(
+            Icons.star,
+            color: _rating > index ? Colors.amber : Colors.grey,
+            size: 30,
+          ),
+        );
+      }),
+    );
+  }
+
+  void _removeReview(int index) {
+    setState(() {
+      _reviews.removeAt(index);
+    });
+  }
+
+  void _showReservationForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ReservationForm(
+            onSubmit: (name, phone, date, numPeople) {
+              // Lógica para manejar la reserva
+              print('Reserva: $name, $phone, $date, $numPeople');
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -258,49 +280,53 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.6),
-                child: _buildSectionTitle("Reserva tu experiencia"),
+                child: _buildSectionTitle("Califica tu experiencia"),
               ),
+              SizedBox(height: 20), // Separación adicional
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.6),
-                child: Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      _buildTextField("Nombre", _nameController,
-                          TextInputType.text, Icons.person),
-                      SizedBox(height: 10),
-                      _buildTextField("Número de Teléfono", _phoneController,
-                          TextInputType.phone, Icons.phone),
-                      SizedBox(height: 10),
-                      _buildTextField("Fecha de Inicio", _dateStartController,
-                          TextInputType.none, Icons.calendar_today,
-                          onTap: () => _selectDate(_dateStartController)),
-                      SizedBox(height: 10),
-                      _buildTextField("Fecha de Fin", _dateEndController,
-                          TextInputType.none, Icons.calendar_today,
-                          onTap: () => _selectDate(_dateEndController)),
-                      SizedBox(height: 10),
-                      _buildTextField(
-                          "Número de Personas",
-                          _numPeopleController,
-                          TextInputType.number,
-                          Icons.group),
-                      SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text('Reserva enviada')));
-                          }
-                        },
-                        child: Text("Reservar"),
-                      ),
-                    ],
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: _buildStarRating(),
+              ),
+              SizedBox(height: 20), // Separación adicional
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: TextField(
+                  controller: _reviewController,
+                  decoration: InputDecoration(
+                    labelText: 'Escribe tu reseña',
+                    border: OutlineInputBorder(),
                   ),
+                  maxLines: 4,
                 ),
               ),
+              SizedBox(height: 10),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
+                    });
+                  },
+                  child: Text('Enviar Reseña'),
+                ),
+              ),
+              SizedBox(height: 20),
             ],
           ),
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 20, bottom: 20),
+        child: FloatingActionButton(
+          onPressed:
+              _showReservationForm, // Función para mostrar el formulario de reserva
+          backgroundColor: Colors.green[700],
+          child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
         ),
       ),
     );
@@ -419,6 +445,13 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
             Icons.place,
             Colors.orange,
           ),
+          SizedBox(height: 10), // Espacio entre el texto y la imagen
+          Image.asset(
+            'assets/mapamiradorTesorito.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
+            width: 450, // O ajusta el tamaño según lo necesites
+            fit: BoxFit
+                .cover, // Ajuste de la imagen (puedes usar BoxFit.fill, BoxFit.contain, etc.)
+          ),
           _buildInfoCard(
             'Horarios: \nLunes a Viernes: 3:00 pm - 11:00 pm\nSábados, Domingos y Festivos: 11:00 am - 11:00 pm',
             Icons.access_time,
@@ -521,31 +554,6 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
               ],
               Icons.icecream),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTextField(String label, TextEditingController controller,
-      TextInputType keyboardType, IconData icon,
-      {VoidCallback? onTap}) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      onTap: onTap,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Por favor, ingresa $label';
-        }
-        return null;
-      },
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
       ),
     );
   }

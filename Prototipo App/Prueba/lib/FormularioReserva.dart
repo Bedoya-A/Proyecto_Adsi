@@ -60,6 +60,18 @@ class _ReservationFormState extends State<ReservationForm> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            // Título del formulario
+            Text(
+              'Reserva',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+                color: Colors.green[700],
+              ),
+            ),
+            SizedBox(height: 20), // Espacio entre el título y el formulario
+
+            // Campos del formulario
             TextFormField(
               controller: _nameController,
               decoration: InputDecoration(labelText: 'Nombre completo'),

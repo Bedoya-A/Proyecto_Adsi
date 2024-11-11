@@ -1,7 +1,13 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/HomePage.dart';
+<<<<<<< HEAD
 import 'package:flutter/services.dart';
+=======
+import 'package:url_launcher/url_launcher.dart';
+>>>>>>> main
 
 class CabanaEncanto extends StatefulWidget {
   const CabanaEncanto({super.key});
@@ -11,29 +17,22 @@ class CabanaEncanto extends StatefulWidget {
 }
 
 class _CabanaEncantoState extends State<CabanaEncanto> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _dateStartController = TextEditingController();
-  final _dateEndController = TextEditingController();
-  final _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
   bool _isHomeIconVisible = false; // Inicializa la variable
+  double _rating = 0; // Initial rating value
+  TextEditingController _reviewController = TextEditingController();
 
-  Future<void> _selectDate(TextEditingController controller) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-    if (pickedDate != null) {
-      setState(() {
-        controller.text =
-            "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-      });
-    }
-  }
+  // List to store reviews
+  List<Map<String, dynamic>> _reviews = [];
+
+  final List<String> imgList = [
+    'assets/encanto1.png',
+    'assets/encanto2.png',
+    'assets/encanto3.png',
+    'assets/encanto4.png',
+    'assets/encanto5.png',
+  ];
+  int _current = 0;
 
   void _onLogoTap() {
     setState(() {
@@ -45,6 +44,57 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     setState(() {
       selectedDrawerIndex = index;
     });
+  }
+
+  Future<void> _launchYoutube() async {
+    const url = 'https://youtu.be/ev2h6MBlMhM';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Widget _buildStarRating() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _rating = index + 1.0;
+            });
+          },
+          child: Icon(
+            Icons.star,
+            color: _rating > index ? Colors.amber : Colors.grey,
+            size: 30,
+          ),
+        );
+      }),
+    );
+  }
+
+  void _removeReview(int index) {
+    setState(() {
+      _reviews.removeAt(index);
+    });
+  }
+
+  void _showReservationForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ReservationForm(
+            onSubmit: (name, phone, date, numPeople) {
+              // Lógica para manejar la reserva
+              print('Reserva: $name, $phone, $date, $numPeople');
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -117,20 +167,16 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [
-              Colors.tealAccent,
-              Colors.blueAccent,
-              Colors.purpleAccent,
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [Color.fromARGB(255, 153, 255, 204), Colors.teal],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 // Imagen destacada
                 Image.asset(
@@ -143,18 +189,99 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
 
                 // Sección de características
                 _buildSectionCard(
-                    "Características", Icons.star, _buildFeatureList()),
+                  "Características",
+                  Icons.star,
+                  _buildFeatureList(),
+                ),
 
+<<<<<<< HEAD
                 // Sección de ubicación
+=======
+                // Slider de imágenes
+                Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    CarouselSlider(
+                      items: imgList.map((item) {
+                        return Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.asset(item,
+                                fit: BoxFit.cover, width: 1000),
+                          ),
+                        );
+                      }).toList(),
+                      options: CarouselOptions(
+                        height: 200.0,
+                        autoPlay: true,
+                        enlargeCenterPage: true,
+                        viewportFraction: 0.33,
+                        onPageChanged: (index, reason) {
+                          setState(() {
+                            _current = index;
+                          });
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      left: 10,
+                      child: IconButton(
+                        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                        onPressed: () {
+                          setState(() {
+                            _current = (_current - 1) % imgList.length;
+                          });
+                        },
+                      ),
+                    ),
+                    Positioned(
+                      right: 10,
+                      child: IconButton(
+                        icon:
+                            Icon(Icons.arrow_forward_ios, color: Colors.white),
+                        onPressed: () {
+                          setState(() {
+                            _current = (_current + 1) % imgList.length;
+                          });
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 10),
+
+                // Botón para ver el video (debajo del carousel)
+                Center(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: ElevatedButton.icon(
+                      onPressed: _launchYoutube,
+                      icon: Icon(
+                        Icons.video_library,
+                        color: Color.fromARGB(255, 0, 0, 0),
+                      ),
+                      label: Text(
+                        "Ver video en YouTube",
+                        style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(
+                            255, 101, 161, 154), // Color del botón
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+
+                // Secciones adicionales
+>>>>>>> main
                 _buildSectionCard(
                     "Ubicación", Icons.location_on, _buildLocationText()),
-
-                // Sección de precios
                 _buildSectionCard("Precios", Icons.money, _buildPriceList()),
-
-                // Senderismo
                 _buildSectionCard(
                     "Senderismo", Icons.hiking, _buildHikingText()),
+<<<<<<< HEAD
 
                 // Parqueadero
                 _buildSectionCard(
@@ -175,9 +302,77 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
                 // Formulario de reserva
                 _buildSectionCard("Reserva tu experiencia", Icons.bookmark,
                     _buildReservationForm()),
+=======
+                _buildSectionCard(
+                    "Parqueadero", Icons.local_parking, _buildParkingText()),
+                _buildSectionCard(
+                    "Ingreso", Icons.access_time, _buildIngresoText()),
+                _buildSectionCard(
+                    "Salida", Icons.exit_to_app, _buildSalidaText()),
+                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+                SizedBox(height: 20),
+                _buildStarRating(),
+                SizedBox(height: 20),
+                TextField(
+                  controller: _reviewController,
+                  decoration: InputDecoration(
+                    labelText: 'Escribe tu reseña',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 4,
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
+                    });
+                  },
+                  child: Text('Enviar Reseña'),
+                ),
+                SizedBox(height: 20),
+                // Mostrar las reseñas con opción de eliminar
+                Column(
+                  children: _reviews.map((review) {
+                    int index = _reviews.indexOf(review);
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      elevation: 4,
+                      child: ListTile(
+                        title: Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber),
+                            SizedBox(width: 5),
+                            Text('${review['rating']} estrellas'),
+                          ],
+                        ),
+                        subtitle: Text(review['review']),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () =>
+                              _removeReview(index), // Eliminar reseña
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+>>>>>>> main
               ],
             ),
           ),
+        ),
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 20, bottom: 20),
+        child: FloatingActionButton(
+          onPressed:
+              _showReservationForm, // Función para mostrar el formulario de reserva
+          backgroundColor: Colors.green[700],
+          child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
         ),
       ),
     );
@@ -278,6 +473,28 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           "Puedes subir toda la comida y bebida que desees, ya que nosotros no vendemos.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
+<<<<<<< HEAD
+=======
+        ClipRRect(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            ),
+            child: Center(
+              child: Image.network(
+                'assets/mapacabanaEncanto.jpg',
+                width: 450, // Ancho deseado
+                height: 350, // Alto deseado
+                fit: BoxFit.contain, // Para que se ajuste sin distorsión
+              ),
+            )),
+        Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        )
+>>>>>>> main
       ],
     );
   }
@@ -314,6 +531,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           "En la entrada te reciben, llevan y entregan la cabaña.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
+<<<<<<< HEAD
       ],
     );
   }
@@ -353,10 +571,13 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           "La salida es a las 12:00 PM. Si necesitas un poco más de tiempo, puedes pedirlo con anticipación.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
+=======
+>>>>>>> main
       ],
     );
   }
 
+<<<<<<< HEAD
   // Widget para el formulario de reserva
   Widget _buildReservationForm() {
     return Form(
@@ -413,6 +634,73 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
               }
             },
             child: const Text('Confirmar Reserva'),
+=======
+  // Widget para el parqueadero
+  Widget _buildParkingText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          " moto a \$8.000 y carro a \$12.000.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ],
+    );
+  }
+
+  // Widget para el ingreso
+  Widget _buildIngresoText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "El ingreso a la cabaña es a partir de las 2:00 PM. Si llegas más temprano, puedes esperar en la entrada o en la zona común.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ],
+    );
+  }
+
+  // Widget para la salida
+  Widget _buildSalidaText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "La salida es a las 12:00 PM. Si necesitas un poco más de tiempo, puedes pedirlo con anticipación.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [Colors.orangeAccent, Colors.purpleAccent],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(15),
+          topRight: Radius.circular(15),
+        ),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 24, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.2,
+            ),
+>>>>>>> main
           ),
         ],
       ),

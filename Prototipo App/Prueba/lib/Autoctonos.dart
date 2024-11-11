@@ -1,8 +1,10 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/PaginaOferta.dart';
 import 'Menu.dart'; // Importa el menú que creaste
+import 'package:url_launcher/url_launcher.dart';
 
 class Autoctonos extends StatefulWidget {
   @override
@@ -13,19 +15,17 @@ class _AutoctonosState extends State<Autoctonos> {
   bool _isHomeIconVisible =
       false; // Variable para controlar la visibilidad del ícono
 
-  final TextEditingController _nameController = TextEditingController();
-  final TextEditingController _phoneController = TextEditingController();
-  final TextEditingController _dateStartController = TextEditingController();
-  final TextEditingController _dateEndController = TextEditingController();
-  final TextEditingController _numPeopleController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  double _rating = 0; // Initial rating value
+  TextEditingController _reviewController = TextEditingController();
+  List<Map<String, dynamic>> _reviews = [];
 
   final List<String> imgList = [
-    'assets/tesorito1.jpg', // Reemplaza con las rutas de tus imágenes
-    'assets/tesorito2.jpg',
-    'assets/tesorito3.jpg',
-    'assets/tesorito4.jpg',
-    'assets/tesorito5.jpg', // Agregué más imágenes para que se vea el deslizamiento
+    'assets/autoctonos1.jpg', // Reemplaza con las rutas de tus imágenes
+    'assets/autoctonos2.jpg',
+    'assets/autoctonos3.jpg',
+    'assets/autoctonos4.jpg',
+    'assets/autoctonos5.jpg', // Agregué más imágenes para que se vea el deslizamiento
   ];
 
   int _current = 0;
@@ -46,15 +46,56 @@ class _AutoctonosState extends State<Autoctonos> {
     });
   }
 
-  @override
-  void dispose() {
-    // Limpia los controladores de texto para liberar recursos
-    _nameController.dispose();
-    _phoneController.dispose();
-    _dateStartController.dispose();
-    _dateEndController.dispose();
-    _numPeopleController.dispose();
-    super.dispose();
+  Future<void> _launchYoutube() async {
+    const url = 'https://youtu.be/yJMtFwHefzY';
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
+
+  Widget _buildStarRating() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _rating = index + 1.0;
+            });
+          },
+          child: Icon(
+            Icons.star,
+            color: _rating > index ? Colors.amber : Colors.grey,
+            size: 30,
+          ),
+        );
+      }),
+    );
+  }
+
+  // Function to remove review
+  void _removeReview(int index) {
+    setState(() {
+      _reviews.removeAt(index);
+    });
+  }
+
+  void _showReservationForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ReservationForm(
+            onSubmit: (name, phone, date, numPeople) {
+              // Lógica para manejar la reserva
+              print('Reserva: $name, $phone, $date, $numPeople');
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -80,7 +121,7 @@ class _AutoctonosState extends State<Autoctonos> {
                           size: 40,
                           color: Colors.white,
                         )
-                      : CircleAvatar(
+                      : const CircleAvatar(
                           key: ValueKey('logoIcon'),
                           radius: 20,
                           backgroundImage: AssetImage('assets/logo.png'),
@@ -88,8 +129,8 @@ class _AutoctonosState extends State<Autoctonos> {
                 ),
               ),
             ),
-            SizedBox(width: 10), // Espaciado entre el logo y el título
-            Flexible(
+            const SizedBox(width: 10), // Espaciado entre el logo y el título
+            const Flexible(
               child: Text(
                 'Autóctonos',
                 overflow: TextOverflow.ellipsis,
@@ -103,7 +144,7 @@ class _AutoctonosState extends State<Autoctonos> {
         actions: [
           Builder(
             builder: (context) => IconButton(
-              icon: Icon(Icons.menu),
+              icon: const Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context)
                     .openEndDrawer(); // Abre el menú lateral a la derecha
@@ -123,7 +164,7 @@ class _AutoctonosState extends State<Autoctonos> {
           } else if (index == 1) {
             Navigator.pushReplacement(
               context,
-              MaterialPageRoute(builder: (context) => PaginaOferta()),
+              MaterialPageRoute(builder: (context) => const PaginaOferta()),
             );
           }
         },
@@ -135,14 +176,15 @@ class _AutoctonosState extends State<Autoctonos> {
           _buildContent(context),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          print('Llamando al mirador...');
-        },
-        backgroundColor: Colors.green,
-        child: Icon(Icons.phone, size: 30, color: Colors.white),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 20, bottom: 20),
+        child: FloatingActionButton(
+          onPressed:
+              _showReservationForm, // Función para mostrar el formulario de reserva
+          backgroundColor: Colors.green[700],
+          child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
+        ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -166,14 +208,14 @@ class _AutoctonosState extends State<Autoctonos> {
     return Container(
       height: 220,
       width: double.infinity,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         image: DecorationImage(
-          image: AssetImage('assets/image.png'),
+          image: AssetImage('assets/autoctonos.jpg'),
           fit: BoxFit.cover,
         ),
       ),
       child: Container(
-        padding: EdgeInsets.only(left: 16, bottom: 16),
+        padding: const EdgeInsets.only(left: 16, bottom: 16),
         alignment: Alignment.bottomLeft,
         decoration: BoxDecoration(
           gradient: LinearGradient(
@@ -182,7 +224,7 @@ class _AutoctonosState extends State<Autoctonos> {
             end: Alignment.bottomCenter,
           ),
         ),
-        child: Text(
+        child: const Text(
           'Mirador Autoctonos',
           style: TextStyle(
             color: Colors.white,
@@ -215,7 +257,7 @@ class _AutoctonosState extends State<Autoctonos> {
             SizedBox(height: 20),
             _buildMenu(),
             SizedBox(height: 20),
-            _buildReservationForm(context),
+            _buildReviewForm(context),
             SizedBox(height: 20),
             _buildFooter(),
           ],
@@ -243,7 +285,18 @@ class _AutoctonosState extends State<Autoctonos> {
   Widget _buildSections() {
     return Column(
       children: [
-        _buildSection('Ubicación', 'Vereda Alcon Tesorito, Ibagué'),
+        _buildSection(
+          'Ubicación',
+          'Vereda Alcon Tesorito, Ibagué',
+          Image.asset(
+            'assets/mapaautoctonos.jpg',
+            width: 450,
+            height: 350,
+            fit: BoxFit.cover,
+          ),
+        ),
+        SizedBox(height: 10), // Espacio entre el texto y la imagen
+
         _buildSection(
           'Desde cuando inició este mirador',
           'Este increíble y maravilloso mirador comenzó a operar en mayo de 2024.',
@@ -259,7 +312,7 @@ class _AutoctonosState extends State<Autoctonos> {
     );
   }
 
-  Widget _buildSection(String title, String content) {
+  Widget _buildSection(String title, String content, [Widget? extraContent]) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 10),
       elevation: 4,
@@ -290,6 +343,10 @@ class _AutoctonosState extends State<Autoctonos> {
               content,
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
+            if (extraContent != null) ...[
+              SizedBox(height: 10),
+              extraContent,
+            ],
           ],
         ),
       ),
@@ -425,6 +482,24 @@ class _AutoctonosState extends State<Autoctonos> {
             ),
           ],
         ),
+        Center(
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: ElevatedButton.icon(
+              onPressed: _launchYoutube,
+              icon: Icon(Icons.video_library,
+                  color: const Color.fromARGB(255, 0, 0, 0)),
+              label: Text(
+                "Ver video en YouTube",
+                style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+              ),
+              style: ElevatedButton.styleFrom(
+                backgroundColor:
+                    const Color.fromARGB(255, 154, 244, 235), // Color del botón
+              ),
+            ),
+          ),
+        ),
       ],
     );
   }
@@ -454,7 +529,7 @@ class _AutoctonosState extends State<Autoctonos> {
     );
   }
 
-  Widget _buildReservationForm(BuildContext context) {
+  Widget _buildReviewForm(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(10.0),
       child: Card(
@@ -467,50 +542,61 @@ class _AutoctonosState extends State<Autoctonos> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  'Reserva tu mesa',
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.teal[800],
+                SizedBox(height: 30), // Espaciado adicional
+                // Sección de reseñas
+                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+                SizedBox(height: 20), // Separación adicional
+                _buildStarRating(),
+                SizedBox(height: 20), // Separación adicional
+                TextField(
+                  controller: _reviewController,
+                  decoration: InputDecoration(
+                    labelText: 'Escribe tu reseña',
+                    border: OutlineInputBorder(),
                   ),
+                  maxLines: 4,
                 ),
                 SizedBox(height: 10),
-                _buildTextField(_nameController, 'Nombre', Icons.person),
-                SizedBox(height: 10),
-                _buildTextField(_phoneController, 'Teléfono', Icons.phone),
-                SizedBox(height: 10),
-                _buildTextField(
-                    _dateStartController, 'Fecha Inicio', Icons.date_range),
-                SizedBox(height: 10),
-                _buildTextField(
-                    _dateEndController, 'Fecha Fin', Icons.date_range),
-                SizedBox(height: 10),
-                _buildTextField(
-                    _numPeopleController, 'Número de Personas', Icons.group),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
+                    });
+                  },
+                  child: Text('Enviar Reseña'),
+                ),
                 SizedBox(height: 20),
-                Center(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) {
-                        _showReservationDialog(context);
-                      }
-                    },
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.teal[800],
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10)),
-                    ),
-                    child: Text(
-                      'Reservar',
-                      style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white),
-                    ),
-                  ),
+                // Mostrar las reseñas con opción de eliminar
+                Column(
+                  children: _reviews.map((review) {
+                    int index = _reviews.indexOf(review); // Obtener índice
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      elevation: 4,
+                      child: ListTile(
+                        title: Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber),
+                            SizedBox(width: 5),
+                            Text('${review['rating']} estrellas'),
+                          ],
+                        ),
+                        subtitle: Text(review['review']),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () {
+                            setState(() {
+                              _reviews.removeAt(index); // Eliminar reseña
+                            });
+                          },
+                        ),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ],
             ),
@@ -520,46 +606,35 @@ class _AutoctonosState extends State<Autoctonos> {
     );
   }
 
-  Widget _buildTextField(
-      TextEditingController controller, String labelText, IconData icon) {
-    return TextFormField(
-      controller: controller,
-      decoration: InputDecoration(
-        prefixIcon: Icon(icon, color: Colors.teal[700]),
-        labelText: labelText,
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(10),
-        ),
-      ),
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Por favor ingrese $labelText';
-        }
-        return null;
-      },
-    );
-  }
-
-  void _showReservationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Reserva Exitosa'),
-          content: Text(
-              'Tu reserva ha sido realizada con éxito. Nos pondremos en contacto contigo pronto.'),
-          actions: <Widget>[
-            TextButton(
-              child: Text('Cerrar'),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color.fromARGB(255, 60, 157, 79),
+            Color.fromARGB(255, 117, 240, 36)
           ],
-        );
-      },
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 24, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ],
+      ),
     );
   }
 
