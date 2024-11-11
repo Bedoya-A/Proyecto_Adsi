@@ -291,17 +291,27 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                   ),
                   SizedBox(height: 40), // Más espacio entre apartados
                   // Tarjeta de ubicación
+
                   _buildSectionTitle("UBICACIÓN", Icons.location_on),
                   crearTarjeta(
                     Icons.location_on,
                     'Estamos a 10 minutos de la Universidad de Ibagué en el barrio Ambalá...',
+                    Center(
+                      child: Image.asset(
+                        'assets/mapaparaiso.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
+                        width: 450,
+                        height:
+                            350, // Ajuste de la imagen (puedes usar BoxFit.fill, BoxFit.contain, etc.)
+                      ),
+                    ),
                   ),
+
                   Divider(thickness: 2, color: Colors.white),
                   SizedBox(height: 40),
                   // Tarjeta de precios
                   _buildSectionTitle("PRECIOS", Icons.attach_money),
-                  crearTarjeta(
-                      Icons.attach_money, 'Lunes a jueves: \$120.000...'),
+                  crearTarjeta(Icons.attach_money,
+                      'Lunes a jueves: \$120.000\nViernes y domingo: \$180.000\nSábado, festivo o día antes de festivo: \$200.000'),
                   Divider(thickness: 2, color: Colors.white),
                   SizedBox(height: 40),
                   // Tarjeta de senderismo
@@ -320,7 +330,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                   // Nueva tarjeta: Confirmación de disponibilidad
                   _buildSectionTitle("CONFIRMA DISPONIBILIDAD", Icons.phone),
                   crearTarjeta(Icons.phone,
-                      'Confirma disponibilidad y abona tu reserva...'),
+                      "Confirma disponibilidad y abona tu reserva llamando al 312 564 56 78 o escribiendo al WhatsApp"),
                   SizedBox(height: 30),
                   // Sección de reservas
                   SizedBox(height: 30),
@@ -420,13 +430,34 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
   }
 
   // Método para crear las tarjetas de contenido general
-  Widget crearTarjeta(IconData icono, String texto) {
+// Modifica la función crearTarjeta para aceptar un widget adicional
+  Widget crearTarjeta(IconData icon, String content, [Widget? extraContent]) {
     return Card(
+      margin: EdgeInsets.symmetric(vertical: 10),
       elevation: 4,
-      margin: EdgeInsets.symmetric(vertical: 6),
-      child: ListTile(
-        leading: Icon(icono),
-        title: Text(texto),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(icon, color: Colors.teal[900]),
+                SizedBox(width: 8),
+                Text(
+                  content,
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                ),
+              ],
+            ),
+            if (extraContent != null) ...[
+              SizedBox(height: 10),
+              extraContent,
+            ],
+          ],
+        ),
       ),
     );
   }

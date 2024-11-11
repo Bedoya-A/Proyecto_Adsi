@@ -324,37 +324,53 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                           ),
                           textAlign: TextAlign.center,
                         ),
-                        Card(
-                          elevation: 4,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Column(
-                              children: [
-                                Text(
-                                  'Estamos a 10 minutos de la Universidad de Ibagué en el barrio Ambalá. '
-                                  'Puedes llegar en Uber, moto o carro hasta la entrada del lugar. Puedes llevar toda la comida y bebida que desees, nosotros no vendemos.',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.black87),
-                                  textAlign: TextAlign.justify,
-                                ),
-                                SizedBox(height: 10),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Icon(Icons.directions_walk,
-                                        color: Colors.green[700]),
-                                    SizedBox(width: 8),
-                                    Text(
-                                      '20 minutos de senderismo (800m)',
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.black87),
-                                    ),
-                                  ],
-                                ),
-                              ],
+                        ClipRRect(
+                            borderRadius: BorderRadius.only(
+                              topLeft: Radius.circular(10),
+                              topRight: Radius.circular(10),
+                            ),
+                            child: Image.network(
+                              'assets/mapacabanaArbol.jpg',
+                              width: 400, // Ancho deseado
+                              height: 300, // Alto deseado
+                              fit: BoxFit
+                                  .contain, // Para que se ajuste sin distorsión
+                            )),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: Card(
+                            elevation: 4,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                            child: Padding(
+                              padding: const EdgeInsets.all(16.0),
+                              child: Column(
+                                children: [
+                                  Text(
+                                    'Estamos a 10 minutos de la Universidad de Ibagué en el barrio Ambalá. '
+                                    'Puedes llegar en Uber, moto o carro hasta la entrada del lugar. Puedes llevar toda la comida y bebida que desees, nosotros no vendemos.',
+                                    style: TextStyle(
+                                        fontSize: 16, color: Colors.black87),
+                                    textAlign: TextAlign.justify,
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(Icons.directions_walk,
+                                          color: Colors.green[700]),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        '20 minutos de senderismo (800m)',
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black87),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),

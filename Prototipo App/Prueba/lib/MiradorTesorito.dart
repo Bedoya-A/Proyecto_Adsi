@@ -424,6 +424,13 @@ Widget _buildInteractiveCards(BuildContext context) {
           Icons.place,
           Colors.orange,
         ),
+        SizedBox(height: 10), // Espacio entre el texto y la imagen
+        Image.asset(
+          'assets/mapamiradorTesorito.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
+          width: 450, // O ajusta el tamaño según lo necesites
+          fit: BoxFit
+              .cover, // Ajuste de la imagen (puedes usar BoxFit.fill, BoxFit.contain, etc.)
+        ),
         _buildInfoCard(
           'Horarios: \nLunes a Viernes: 3:00 pm - 11:00 pm\nSábados, Domingos y Festivos: 11:00 am - 11:00 pm',
           Icons.access_time,

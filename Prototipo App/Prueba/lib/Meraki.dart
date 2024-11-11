@@ -200,6 +200,14 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
               _buildAnimatedHeader('Ubicación', Icons.location_on),
               _buildText('Vereda Villa Vista, Avenida Ambalá'),
               _buildText('Inaugurado hace 14 años.'),
+              SizedBox(height: 10), // Espacio entre el texto y la imagen
+              Center(
+                child: Image.asset(
+                  'assets/mapaMeraki.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
+                  width: 450,
+                  height: 350,
+                ),
+              ),
               SizedBox(height: 20),
               _buildAnimatedHeader('Ofrecemos', Icons.attractions),
               _buildListTile(

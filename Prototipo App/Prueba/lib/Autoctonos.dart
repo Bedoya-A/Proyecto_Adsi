@@ -283,7 +283,18 @@ class _AutoctonosState extends State<Autoctonos> {
   Widget _buildSections() {
     return Column(
       children: [
-        _buildSection('Ubicación', 'Vereda Alcon Tesorito, Ibagué'),
+        _buildSection(
+          'Ubicación',
+          'Vereda Alcon Tesorito, Ibagué',
+          Image.asset(
+            'assets/mapaautoctonos.jpg',
+            width: 450,
+            height: 350,
+            fit: BoxFit.cover,
+          ),
+        ),
+        SizedBox(height: 10), // Espacio entre el texto y la imagen
+
         _buildSection(
           'Desde cuando inició este mirador',
           'Este increíble y maravilloso mirador comenzó a operar en mayo de 2024.',
@@ -299,7 +310,7 @@ class _AutoctonosState extends State<Autoctonos> {
     );
   }
 
-  Widget _buildSection(String title, String content) {
+  Widget _buildSection(String title, String content, [Widget? extraContent]) {
     return Card(
       margin: EdgeInsets.symmetric(vertical: 10),
       elevation: 4,
@@ -330,6 +341,10 @@ class _AutoctonosState extends State<Autoctonos> {
               content,
               style: TextStyle(fontSize: 16, color: Colors.black),
             ),
+            if (extraContent != null) ...[
+              SizedBox(height: 10),
+              extraContent,
+            ],
           ],
         ),
       ),

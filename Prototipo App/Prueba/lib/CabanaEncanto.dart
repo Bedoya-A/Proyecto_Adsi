@@ -439,6 +439,25 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           "Puedes subir toda la comida y bebida que desees, ya que nosotros no vendemos.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
+        ClipRRect(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(10),
+              topRight: Radius.circular(10),
+            ),
+            child: Center(
+              child: Image.network(
+                'assets/mapacabanaEncanto.jpg',
+                width: 450, // Ancho deseado
+                height: 350, // Alto deseado
+                fit: BoxFit.contain, // Para que se ajuste sin distorsión
+              ),
+            )),
+        Card(
+          elevation: 4,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        )
       ],
     );
   }

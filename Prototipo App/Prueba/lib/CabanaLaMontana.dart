@@ -206,6 +206,13 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
                       color: Colors.black54),
                   textAlign: TextAlign.center,
                 ),
+                SizedBox(height: 10), // Espacio entre el texto y la imagen
+                Image.asset(
+                  'assets/mapaMontana.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
+                  width: 450, // O ajusta el tamaño según lo necesites
+                  height:
+                      350, // Ajuste de la imagen (puedes usar BoxFit.fill, BoxFit.contain, etc.)
+                ),
                 SizedBox(height: 20),
 
                 // Sección de servicios

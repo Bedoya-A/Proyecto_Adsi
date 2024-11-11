@@ -317,10 +317,24 @@ class _JardinBotanicoState extends State<JardinBotanico>
   }
 
   Widget _buildDescription() {
-    return Text(
-      'El Jardín Botánico San Jorge se localiza en los cerros noroccidentales de Ibagué en el Departamento del Tolima. '
-      'Se encuentra ubicado en la antigua Granja San Jorge, vía Calambeo, a cinco minutos del centro de la ciudad.',
-      style: TextStyle(fontSize: 16),
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'El Jardín Botánico San Jorge se localiza en los cerros noroccidentales de Ibagué en el Departamento del Tolima. '
+          'Se encuentra ubicado en la antigua Granja San Jorge, vía Calambeo, a cinco minutos del centro de la ciudad.',
+          style: TextStyle(fontSize: 16),
+        ),
+        SizedBox(height: 10), // Espacio entre el texto y la imagen
+        Center(
+          child: Image.asset(
+            'assets/mapajardin.jpg', // Reemplaza con el nombre de tu imagen
+            width: 450,
+            height:
+                350, // Ajuste de la imagen (puedes cambiar a BoxFit.fill, BoxFit.contain, etc.)
+          ),
+        ),
+      ],
     );
   }
 
