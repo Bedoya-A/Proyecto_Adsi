@@ -11,16 +11,6 @@ class CabanaParaiso extends StatefulWidget {
 }
 
 class _CabanaParaisoState extends State<CabanaParaiso> {
-<<<<<<< HEAD
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _dateStartController = TextEditingController();
-  final _dateEndController = TextEditingController();
-  final _numPeopleController = TextEditingController();
-
-=======
->>>>>>> main
   bool _isHomeIconVisible = false; // Control for logo visibility
   int selectedDrawerIndex = 1; // Selected index for menu
   double _rating = 0; // Initial rating value
@@ -28,8 +18,6 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
 
   // List to store reviews
   List<Map<String, dynamic>> _reviews = [];
-<<<<<<< HEAD
-=======
 
   final List<String> imgList = [
     'assets/paraiso1.png',
@@ -39,7 +27,6 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     'assets/paraiso5.png',
   ];
   int _current = 0;
->>>>>>> main
 
   // Date selection logic
   void _selectDate(TextEditingController controller) async {
@@ -67,8 +54,6 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     });
   }
 
-<<<<<<< HEAD
-=======
   Future<void> _launchYoutube() async {
     const url = 'https://youtu.be/ev2h6MBlMhM';
     if (await canLaunch(url)) {
@@ -78,7 +63,6 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     }
   }
 
->>>>>>> main
   // Build the star rating
   Widget _buildStarRating() {
     return Row(
@@ -107,8 +91,6 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     });
   }
 
-<<<<<<< HEAD
-=======
   void _showReservationForm() {
     showDialog(
       context: context,
@@ -125,7 +107,6 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     );
   }
 
->>>>>>> main
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -229,17 +210,8 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                 Column(
                   children: [
                     servicioTarjeta(Icons.hotel, 'Hospedaje', 25),
-<<<<<<< HEAD
-                    servicioTarjeta(
-                      Icons.kitchen,
-                      'Nevera',
-                      25,
-                    ),
-                    servicioTarjeta(
-=======
                     servicioTarjeta(Icons.kitchen, 'Nevera', 25),
                     servicioTarjeta(
->>>>>>> main
                         Icons.visibility, 'Avistamiento de aves', 25),
                     servicioTarjeta(Icons.bathtub, 'Baño y ducha', 25),
                     servicioTarjeta(Icons.pool, 'Piscina pequeña', 25),
@@ -251,91 +223,6 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                     servicioTarjeta(Icons.fireplace, 'Asador pequeño', 25),
                   ],
                 ),
-<<<<<<< HEAD
-                Divider(
-                    thickness: 2,
-                    color: Colors.white), // Línea separadora más notoria
-                SizedBox(height: 40), // Más espacio entre apartados
-                // Tarjeta de ubicación
-                _buildSectionTitle("UBICACIÓN", Icons.location_on),
-                crearTarjeta(Icons.location_on,
-                    'Estamos a 10 minutos de la Universidad de Ibagué en el barrio Ambalá. Puedes llegar en uber, moto o carro hasta la entrada del lugar. Trae toda la comida y bebida que desees.\nIngreso: 4pm - 6pm\nSalida: Al otro día antes de medio día'),
-                Divider(
-                    thickness: 2,
-                    color: Colors.white), // Línea separadora más notoria
-                SizedBox(height: 40), // Más espacio entre apartados
-                // Tarjeta de precios
-                _buildSectionTitle("PRECIOS", Icons.attach_money),
-                crearTarjeta(Icons.attach_money,
-                    'Lunes a jueves: \$120.000\nViernes y domingo: \$180.000\nSábado, festivo o día antes de festivo: \$200.000'),
-                Divider(
-                    thickness: 2,
-                    color: Colors.white), // Línea separadora más notoria
-                SizedBox(height: 40), // Más espacio entre apartados
-                // Tarjeta de senderismo
-                _buildSectionTitle("SENDERISMO", Icons.directions_walk),
-                crearTarjeta(Icons.directions_walk,
-                    '15 minutos desde la entrada hasta la cabaña. Reserva la cabaña completa para disfrutar sin compartir.'),
-                Divider(
-                    thickness: 2,
-                    color: Colors.white), // Línea separadora más notoria
-                SizedBox(height: 40), // Más espacio entre apartados
-                // Tarjeta de parqueadero
-                _buildSectionTitle("PARQUEADERO", Icons.local_parking),
-                crearTarjeta(
-                    Icons.local_parking, 'Moto \$8,000 | Carro \$12,000'),
-                Divider(
-                    thickness: 2,
-                    color: Colors.white), // Línea separadora más notoria
-                SizedBox(height: 40), // Más espacio entre apartados
-                SizedBox(height: 20),
-                // Nueva tarjeta: Confirmación de disponibilidad
-                _buildSectionTitle("CONFIRMA DISPONIBILIDAD", Icons.phone),
-                crearTarjeta(Icons.phone,
-                    'Confirma disponibilidad y abona tu reserva llamando al 312 564 56 78 o escribiendo al WhatsApp.'),
-                SizedBox(height: 30), // Espaciado adicional
-                // Sección de reservas
-                _buildSectionTitle(
-                    "RESERVA TU EXPERIENCIA", Icons.calendar_today),
-                SizedBox(height: 20), // Separación adicional
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      _buildTextField("Nombre Completo", _nameController,
-                          TextInputType.name, Icons.person),
-                      SizedBox(height: 10),
-                      _buildTextField("Número de Teléfono", _phoneController,
-                          TextInputType.phone, Icons.phone),
-                      SizedBox(height: 10),
-                      _buildTextField("Fecha de Inicio", _dateStartController,
-                          TextInputType.none, Icons.calendar_today,
-                          onTap: () => _selectDate(_dateStartController)),
-                      SizedBox(height: 10),
-                      _buildTextField("Fecha de Fin", _dateEndController,
-                          TextInputType.none, Icons.calendar_today,
-                          onTap: () => _selectDate(_dateEndController)),
-                      SizedBox(height: 10),
-                      _buildTextField(
-                          "Número de Personas",
-                          _numPeopleController,
-                          TextInputType.number,
-                          Icons.people),
-                      SizedBox(height: 20),
-                      ElevatedButton(
-                        onPressed: () {
-                          if (_formKey.currentState!.validate()) {
-                            showDialog(
-                              context: context,
-                              builder: (context) => AlertDialog(
-                                title: Text('¡Reserva confirmada!'),
-                                content: Text('Reserva realizada con éxito'),
-                              ),
-                            );
-                          }
-                        },
-                        child: Text('Confirmar Reserva'),
-=======
 
                 Padding(
                   padding: const EdgeInsets.all(15.0),
@@ -387,45 +274,10 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                             });
                           },
                         ),
->>>>>>> main
                       ),
                     ],
                   ),
                 ),
-<<<<<<< HEAD
-                SizedBox(height: 30), // Espaciado adicional
-                // Sección de reseñas
-                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
-                SizedBox(height: 20), // Separación adicional
-                _buildStarRating(),
-                SizedBox(height: 20), // Separación adicional
-                TextField(
-                  controller: _reviewController,
-                  decoration: InputDecoration(
-                    labelText: 'Escribe tu reseña',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 4,
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _reviews.add({
-                        'rating': _rating,
-                        'review': _reviewController.text,
-                      });
-                      _reviewController.clear();
-                    });
-                  },
-                  child: Text('Enviar Reseña'),
-                ),
-                SizedBox(height: 20),
-                // Mostrar las reseñas con opción de eliminar
-                Column(
-                  children: _reviews.map((review) {
-                    int index = _reviews.indexOf(review); // Obtener índice
-=======
                 // Botón para ver el video
                 Center(
                   child: Padding(
@@ -526,7 +378,6 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                 Column(
                   children: _reviews.map((review) {
                     int index = _reviews.indexOf(review);
->>>>>>> main
                     return Card(
                       margin: EdgeInsets.symmetric(vertical: 8),
                       elevation: 4,
@@ -553,31 +404,6 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
           ),
         ),
       ),
-<<<<<<< HEAD
-    );
-  }
-
-  // Método para crear un campo de texto genérico
-  Widget _buildTextField(String label, TextEditingController controller,
-      TextInputType inputType, IconData icon,
-      {Function()? onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: TextFormField(
-        controller: controller,
-        keyboardType: inputType,
-        decoration: InputDecoration(
-          labelText: label,
-          prefixIcon: Icon(icon),
-          border: OutlineInputBorder(),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Por favor ingrese un valor';
-          }
-          return null;
-        },
-=======
       floatingActionButton: Padding(
         padding: const EdgeInsets.only(left: 20, bottom: 20),
         child: FloatingActionButton(
@@ -586,64 +412,10 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
           backgroundColor: Colors.green[700],
           child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
         ),
->>>>>>> main
       ),
     );
   }
 
-<<<<<<< HEAD
-  // Método para crear tarjetas de servicios y detalles
-  Widget servicioTarjeta(IconData icon, String texto, double size) {
-    return Card(
-      elevation: 2,
-      margin: EdgeInsets.symmetric(vertical: 6),
-      child: ListTile(
-        leading: Icon(icon, size: size),
-        title: Text(texto),
-      ),
-    );
-  }
-
-  // Método para crear las tarjetas de contenido general
-  Widget crearTarjeta(IconData icono, String texto) {
-    return Card(
-      elevation: 4,
-      margin: EdgeInsets.symmetric(vertical: 6),
-      child: ListTile(
-        leading: Icon(icono),
-        title: Text(texto),
-      ),
-    );
-  }
-
-  // Método para construir los títulos de las secciones
-  Widget _buildSectionTitle(String title, IconData icon) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color.fromARGB(255, 60, 157, 79),
-            Color.fromARGB(255, 117, 240, 36)
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 24, color: Colors.white),
-          SizedBox(width: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              letterSpacing: 1.2,
-            ),
-=======
   // Método para crear un campo de texto genérico
   Widget _buildTextField(String label, TextEditingController controller,
       TextInputType inputType, IconData icon,
@@ -740,7 +512,6 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
               color: Colors.white,
               letterSpacing: 1.2,
             ),
->>>>>>> main
           ),
         ],
       ),

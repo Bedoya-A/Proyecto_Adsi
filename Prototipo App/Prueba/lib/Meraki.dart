@@ -206,7 +206,8 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
                 height: 400, // Altura del banner
                 decoration: BoxDecoration(
                   image: DecorationImage(
-                    image: AssetImage('assets/meraki.png'), // Ruta de tu imagen
+                    image: AssetImage(
+                        'assets/merakiMirador.jpg'), // Ruta de tu imagen
                     fit: BoxFit.cover,
                   ),
                   borderRadius: BorderRadius.circular(10),
@@ -214,14 +215,16 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
               ),
               SizedBox(height: 20),
               _buildAnimatedHeader('Ubicación', Icons.location_on),
-              _buildText('Vereda Villa Vista, Avenida Ambalá'),
-              _buildText('Inaugurado hace 14 años.'),
+              _buildText(
+                  'Ubicados en la Vereda Villa Vista, a lo largo de la Avenida Ambalá, a 15 minutos de Ibagué, con fácil acceso y vistas panorámicas al valle.'),
+              _buildText(
+                  'Inaugurado hace 14 años, este lugar se ha consolidado como un destino único, ofreciendo a sus visitantes una experiencia incomparable de contacto con la naturaleza.'),
               SizedBox(height: 10), // Espacio entre el texto y la imagen
               Center(
                 child: Image.asset(
                   'assets/mapaMeraki.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
-                  width: 450,
-                  height: 350,
+                  width: 500,
+                  height: 400,
                 ),
               ),
               SizedBox(height: 20),

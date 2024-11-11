@@ -283,32 +283,36 @@ class _AutoctonosState extends State<Autoctonos> {
   }
 
   Widget _buildSections() {
-    return Column(
-      children: [
-        _buildSection(
-          'Ubicación',
-          'Vereda Alcon Tesorito, Ibagué',
-          Image.asset(
-            'assets/mapaautoctonos.jpg',
-            width: 450,
-            height: 350,
-            fit: BoxFit.cover,
-          ),
-        ),
-        SizedBox(height: 10), // Espacio entre el texto y la imagen
+    return Center(
+      child: Center(
+        child: Column(
+          children: [
+            _buildSection(
+              'Ubicación',
+              'Se ubica en la vereda Ancón Tesorito parte alta. Para llegar allí debe pasar el barrio Clarita Botero, ubicarse en el paradero de la ruta 50 y subir por la calle destapada aproximadamente 15 minutos en vehículo o 30 minutos a pie.',
+              Image.asset(
+                'assets/mapaautoctonos.jpg',
+                width: 450,
+                height: 350,
+                fit: BoxFit.cover,
+              ),
+            ),
+            SizedBox(height: 10), // Espacio entre el texto y la imagen
 
-        _buildSection(
-          'Desde cuando inició este mirador',
-          'Este increíble y maravilloso mirador comenzó a operar en mayo de 2024.',
+            _buildSection(
+              'Desde cuando inició este mirador',
+              'Este increíble y maravilloso mirador comenzó a operar en mayo de 2024.',
+            ),
+            _buildSection(
+              'Servicios',
+              '• Restaurante sábados, domingos y festivos de 11:00 AM a 10:00 PM\n'
+                  '• Reservas con dos días de anticipación\n'
+                  '• Celebraciones especiales\n'
+                  '• Servicio a domicilio fines de semana',
+            ),
+          ],
         ),
-        _buildSection(
-          'Servicios',
-          '• Restaurante sábados, domingos y festivos de 11:00 AM a 10:00 PM\n'
-              '• Reservas con dos días de anticipación\n'
-              '• Celebraciones especiales\n'
-              '• Servicio a domicilio fines de semana',
-        ),
-      ],
+      ),
     );
   }
 

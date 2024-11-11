@@ -13,10 +13,6 @@ class CabanaDelArbol extends StatefulWidget {
 class _CabanaDelArbolState extends State<CabanaDelArbol> {
   int selectedDrawerIndex = 1;
   bool _isHomeIconVisible = false; // Controla la visibilidad del ícono
-<<<<<<< HEAD
-  List<Map<String, dynamic>> _reviews = [];
-=======
->>>>>>> main
   double _rating = 0; // Initial rating value
   TextEditingController _reviewController = TextEditingController();
 
@@ -54,8 +50,6 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
     });
   }
 
-<<<<<<< HEAD
-=======
   Future<void> _launchYoutube() async {
     const url = 'https://youtu.be/ev2h6MBlMhM';
     if (await canLaunch(url)) {
@@ -66,7 +60,6 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
   }
 
   // Build the star rating
->>>>>>> main
   Widget _buildStarRating() {
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -94,8 +87,6 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
     });
   }
 
-<<<<<<< HEAD
-=======
   void _showReservationForm() {
     showDialog(
       context: context,
@@ -112,7 +103,6 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
     );
   }
 
->>>>>>> main
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -319,67 +309,6 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                           ),
                         ),
                       ),
-<<<<<<< HEAD
-                    ],
-                  ),
-                ),
-                SizedBox(height: 30), // Espaciado adicional
-                // Sección de reseñas
-                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
-                SizedBox(height: 20), // Separación adicional
-                _buildStarRating(),
-                SizedBox(height: 20), // Separación adicional
-                TextField(
-                  controller: _reviewController,
-                  decoration: InputDecoration(
-                    labelText: 'Escribe tu reseña',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 4,
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _reviews.add({
-                        'rating': _rating,
-                        'review': _reviewController.text,
-                      });
-                      _reviewController.clear();
-                    });
-                  },
-                  child: Text('Enviar Reseña'),
-                ),
-                SizedBox(height: 20),
-                // Mostrar las reseñas con opción de eliminar
-                Column(
-                  children: _reviews.map((review) {
-                    int index = _reviews.indexOf(review); // Obtener índice
-                    return Card(
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      elevation: 4,
-                      child: ListTile(
-                        title: Row(
-                          children: [
-                            Icon(Icons.star, color: Colors.amber),
-                            SizedBox(width: 5),
-                            Text('${review['rating']} estrellas'),
-                          ],
-                        ),
-                        subtitle: Text(review['review']),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed: () =>
-                              _removeReview(index), // Eliminar reseña
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),
-          ),
-=======
                       SizedBox(height: 20),
 
                       // Ubicación con interacción
@@ -642,7 +571,6 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
               _showReservationForm, // Función para mostrar el formulario de reserva
           backgroundColor: Colors.green[700],
           child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
->>>>>>> main
         ),
       ),
     );
