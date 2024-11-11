@@ -15,9 +15,13 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
   final _dateEndController = TextEditingController();
   final _numPeopleController = TextEditingController();
 
-  // State variables
   bool _isHomeIconVisible = false; // Control for logo visibility
   int selectedDrawerIndex = 1; // Selected index for menu
+  double _rating = 0; // Initial rating value
+  TextEditingController _reviewController = TextEditingController();
+
+  // List to store reviews
+  List<Map<String, dynamic>> _reviews = [];
 
   // Date selection logic
   void _selectDate(TextEditingController controller) async {
@@ -37,12 +41,39 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
     setState(() {
       selectedDrawerIndex = index;
     });
-    // You can handle navigation to other pages if necessary
   }
 
   void _onLogoTap() {
     setState(() {
       _isHomeIconVisible = !_isHomeIconVisible; // Toggle icon visibility
+    });
+  }
+
+  // Build the star rating
+  Widget _buildStarRating() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _rating = index + 1.0;
+            });
+          },
+          child: Icon(
+            Icons.star,
+            color: _rating > index ? Colors.amber : Colors.grey,
+            size: 30,
+          ),
+        );
+      }),
+    );
+  }
+
+  // Function to remove review
+  void _removeReview(int index) {
+    setState(() {
+      _reviews.removeAt(index);
     });
   }
 
@@ -61,7 +92,6 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
               onTap: () {
                 _onLogoTap(); // Change icon visibility on click
 
-                // Wait for animation to finish before navigating
                 Future.delayed(Duration(milliseconds: 350), () {
                   Navigator.pushAndRemoveUntil(
                     context,
@@ -133,7 +163,7 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                     borderRadius: BorderRadius.circular(15),
                   ),
                 ),
-                SizedBox(height: 15),
+                SizedBox(height: 20), // Espaciado adicional
                 // Descripción llamativa
                 Text(
                   '🌲 Vive una experiencia única en nuestra cabaña del árbol, un refugio mágico en las alturas. Rodeado de la naturaleza y con la mejor vista de Ibagué, aquí podrás relajarte, desconectar y disfrutar de una escapada que recordarás para siempre.',
@@ -144,50 +174,81 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                   ),
                   textAlign: TextAlign.justify,
                 ),
-                SizedBox(height: 20),
+                SizedBox(height: 30), // Espaciado adicional
                 // Sección de servicios
-                _buildSectionTitle("SERVICIOS"),
+                _buildSectionTitle("SERVICIOS", Icons.star),
                 Column(
                   children: [
-                    servicioTarjeta(Icons.hotel, 'Hospedaje', 14),
-                    servicioTarjeta(Icons.kitchen, 'Nevera', 14),
+                    servicioTarjeta(Icons.hotel, 'Hospedaje', 25),
                     servicioTarjeta(
-                        Icons.visibility, 'Avistamiento de aves', 14),
-                    servicioTarjeta(Icons.bathtub, 'Baño y ducha', 14),
-                    servicioTarjeta(Icons.pool, 'Piscina pequeña', 14),
-                    servicioTarjeta(Icons.waterfall_chart, 'Río y cascada', 14),
+                      Icons.kitchen,
+                      'Nevera',
+                      25,
+                    ),
+                    servicioTarjeta(
+                        Icons.visibility, 'Avistamiento de aves', 25),
+                    servicioTarjeta(Icons.bathtub, 'Baño y ducha', 25),
+                    servicioTarjeta(Icons.pool, 'Piscina pequeña', 25),
+                    servicioTarjeta(Icons.waterfall_chart, 'Río y cascada', 25),
                     servicioTarjeta(Icons.games, 'Juegos de mesa', 14),
                     servicioTarjeta(
-                        Icons.landscape, 'La mejor vista de Ibagué', 14),
-                    servicioTarjeta(Icons.bluetooth, 'Cabina Bluetooth', 14),
-                    servicioTarjeta(Icons.fireplace, 'Asador pequeño', 14),
+                        Icons.landscape, 'La mejor vista de Ibagué', 25),
+                    servicioTarjeta(Icons.bluetooth, 'Cabina Bluetooth', 25),
+                    servicioTarjeta(Icons.fireplace, 'Asador pequeño', 25),
                   ],
                 ),
-                SizedBox(height: 20),
-                // Ubicación en tarjeta
-                crearTarjeta(Icons.location_on, 'UBICACIÓN',
+                Divider(
+                    thickness: 2,
+                    color: Colors.white), // Línea separadora más notoria
+                SizedBox(height: 40), // Más espacio entre apartados
+                // Tarjeta de ubicación
+                _buildSectionTitle("UBICACIÓN", Icons.location_on),
+                crearTarjeta(Icons.location_on,
                     'Estamos a 10 minutos de la Universidad de Ibagué en el barrio Ambalá. Puedes llegar en uber, moto o carro hasta la entrada del lugar. Trae toda la comida y bebida que desees.\nIngreso: 4pm - 6pm\nSalida: Al otro día antes de medio día'),
-                // Precios en tarjeta
-                crearTarjeta(Icons.attach_money, 'PRECIOS',
+                Divider(
+                    thickness: 2,
+                    color: Colors.white), // Línea separadora más notoria
+                SizedBox(height: 40), // Más espacio entre apartados
+                // Tarjeta de precios
+                _buildSectionTitle("PRECIOS", Icons.attach_money),
+                crearTarjeta(Icons.attach_money,
                     'Lunes a jueves: \$120.000\nViernes y domingo: \$180.000\nSábado, festivo o día antes de festivo: \$200.000'),
-                // Senderismo en tarjeta
-                crearTarjeta(Icons.directions_walk, 'SENDERISMO',
+                Divider(
+                    thickness: 2,
+                    color: Colors.white), // Línea separadora más notoria
+                SizedBox(height: 40), // Más espacio entre apartados
+                // Tarjeta de senderismo
+                _buildSectionTitle("SENDERISMO", Icons.directions_walk),
+                crearTarjeta(Icons.directions_walk,
                     '15 minutos desde la entrada hasta la cabaña. Reserva la cabaña completa para disfrutar sin compartir.'),
-                // Parqueadero en tarjeta
-                crearTarjeta(Icons.local_parking, 'PARQUEADERO',
-                    'Moto \$8,000 | Carro \$12,000'),
+                Divider(
+                    thickness: 2,
+                    color: Colors.white), // Línea separadora más notoria
+                SizedBox(height: 40), // Más espacio entre apartados
+                // Tarjeta de parqueadero
+                _buildSectionTitle("PARQUEADERO", Icons.local_parking),
+                crearTarjeta(
+                    Icons.local_parking, 'Moto \$8,000 | Carro \$12,000'),
+                Divider(
+                    thickness: 2,
+                    color: Colors.white), // Línea separadora más notoria
+                SizedBox(height: 40), // Más espacio entre apartados
                 SizedBox(height: 20),
                 // Nueva tarjeta: Confirmación de disponibilidad
-                crearTarjeta(Icons.phone, 'CONFIRMA DISPONIBILIDAD',
-                    'Confirma disponibilidad y abona la mitad para reservar:\nNequi 3208947802 - Jorge John\nCuenta Ahorros Bancolombia 86960992140'),
-                // Sección de reserva
-                _buildSectionTitle("Reserva tu experiencia"),
+                _buildSectionTitle("CONFIRMA DISPONIBILIDAD", Icons.phone),
+                crearTarjeta(Icons.phone,
+                    'Confirma disponibilidad y abona tu reserva llamando al 312 564 56 78 o escribiendo al WhatsApp.'),
+                SizedBox(height: 30), // Espaciado adicional
+                // Sección de reservas
+                _buildSectionTitle(
+                    "RESERVA TU EXPERIENCIA", Icons.calendar_today),
+                SizedBox(height: 20), // Separación adicional
                 Form(
                   key: _formKey,
                   child: Column(
                     children: [
-                      _buildTextField("Nombre", _nameController,
-                          TextInputType.text, Icons.person),
+                      _buildTextField("Nombre Completo", _nameController,
+                          TextInputType.name, Icons.person),
                       SizedBox(height: 10),
                       _buildTextField("Número de Teléfono", _phoneController,
                           TextInputType.phone, Icons.phone),
@@ -204,157 +265,163 @@ class _CabanaParaisoState extends State<CabanaParaiso> {
                           "Número de Personas",
                           _numPeopleController,
                           TextInputType.number,
-                          Icons.group),
-                      SizedBox(height: 10),
+                          Icons.people),
+                      SizedBox(height: 20),
                       ElevatedButton(
                         onPressed: () {
                           if (_formKey.currentState!.validate()) {
-                            // Lógica para enviar la reserva
-                            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                content: Text('Reserva realizada con éxito')));
+                            showDialog(
+                              context: context,
+                              builder: (context) => AlertDialog(
+                                title: Text('¡Reserva confirmada!'),
+                                content: Text('Reserva realizada con éxito'),
+                              ),
+                            );
                           }
                         },
-                        style: ElevatedButton.styleFrom(
-                          padding: EdgeInsets.symmetric(
-                              vertical: 14, horizontal: 32),
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(20)),
-                        ),
-                        child: Text('Confirmar Reserva',
-                            style: TextStyle(fontSize: 18)),
+                        child: Text('Confirmar Reserva'),
                       ),
                     ],
                   ),
                 ),
+                SizedBox(height: 30), // Espaciado adicional
+                // Sección de reseñas
+                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+                SizedBox(height: 20), // Separación adicional
+                _buildStarRating(),
+                SizedBox(height: 20), // Separación adicional
+                TextField(
+                  controller: _reviewController,
+                  decoration: InputDecoration(
+                    labelText: 'Escribe tu reseña',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 4,
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
+                    });
+                  },
+                  child: Text('Enviar Reseña'),
+                ),
                 SizedBox(height: 20),
+                // Mostrar las reseñas con opción de eliminar
+                Column(
+                  children: _reviews.map((review) {
+                    int index = _reviews.indexOf(review); // Obtener índice
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      elevation: 4,
+                      child: ListTile(
+                        title: Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber),
+                            SizedBox(width: 5),
+                            Text('${review['rating']} estrellas'),
+                          ],
+                        ),
+                        subtitle: Text(review['review']),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () =>
+                              _removeReview(index), // Eliminar reseña
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ],
             ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // Mostrar cuadro de diálogo al presionar el ícono de teléfono
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return AlertDialog(
-                title: Text('Contacto'),
-                content: Text(
-                    'Llama al +573208947802 para más información o reservas.'),
-                actions: [
-                  TextButton(
-                    child: Text('Cerrar'),
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                  ),
-                ],
-              );
-            },
-          );
+    );
+  }
+
+  // Método para crear un campo de texto genérico
+  Widget _buildTextField(String label, TextEditingController controller,
+      TextInputType inputType, IconData icon,
+      {Function()? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: TextFormField(
+        controller: controller,
+        keyboardType: inputType,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Por favor ingrese un valor';
+          }
+          return null;
         },
-        child: Icon(Icons.phone),
-        backgroundColor: Colors.teal[800],
       ),
     );
   }
 
-  // Función para crear tarjetas personalizadas
-  Widget crearTarjeta(IconData icono, String titulo, String descripcion) {
+  // Método para crear tarjetas de servicios y detalles
+  Widget servicioTarjeta(IconData icon, String texto, double size) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 10.0),
       elevation: 2,
-      shape: RoundedRectangleBorder(
+      margin: EdgeInsets.symmetric(vertical: 6),
+      child: ListTile(
+        leading: Icon(icon, size: size),
+        title: Text(texto),
+      ),
+    );
+  }
+
+  // Método para crear las tarjetas de contenido general
+  Widget crearTarjeta(IconData icono, String texto) {
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.symmetric(vertical: 6),
+      child: ListTile(
+        leading: Icon(icono),
+        title: Text(texto),
+      ),
+    );
+  }
+
+  // Método para construir los títulos de las secciones
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color.fromARGB(255, 60, 157, 79),
+            Color.fromARGB(255, 117, 240, 36)
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(10),
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              children: [
-                Icon(icono, color: Colors.teal[700], size: 24),
-                SizedBox(width: 10),
-                Text(
-                  titulo,
-                  style: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.teal[900],
-                  ),
-                ),
-              ],
+      child: Row(
+        children: [
+          Icon(icon, size: 24, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.2,
             ),
-            SizedBox(height: 10),
-            Text(
-              descripcion,
-              style: TextStyle(fontSize: 16, color: Colors.black87),
-              textAlign: TextAlign.justify,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Función para crear servicios
-  Widget servicioTarjeta(IconData icono, String texto, double fontSize) {
-    return Card(
-      margin: EdgeInsets.symmetric(vertical: 6.0),
-      elevation: 2,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: ListTile(
-        leading: Icon(icono, color: Colors.teal[700], size: 28),
-        title: Text(
-          texto,
-          style: TextStyle(fontSize: fontSize, color: Colors.black87),
-        ),
-      ),
-    );
-  }
-
-  // Función para construir campos de texto
-  Widget _buildTextField(String label, TextEditingController controller,
-      TextInputType keyboardType, IconData icon,
-      {VoidCallback? onTap}) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      onTap: onTap,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Por favor, ingresa $label';
-        }
-        return null;
-      },
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
-      ),
-    );
-  }
-
-  // Función para construir los títulos de sección
-  Widget _buildSectionTitle(String title) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 8.0),
-      child: Text(
-        title,
-        style: TextStyle(
-          fontSize: 18,
-          fontWeight: FontWeight.bold,
-          color: Colors.teal[900],
-        ),
+          ),
+        ],
       ),
     );
   }

@@ -135,25 +135,10 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
                 SizedBox(height: 10),
 
                 // Descripción general
-                Text(
-                  '¡Un lugar mágico donde la naturaleza te envuelve! 🌿🏞\n\n'
-                  'La Montaña te ofrece una experiencia inolvidable, perfecta para aventureros que buscan tranquilidad y conexión con la naturaleza. '
-                  'Descubre las vistas más impresionantes de Ibagué y respira el aire puro de las alturas. ¡Es un refugio que te recargará de energía!',
-                  style: TextStyle(fontSize: 16, color: Colors.black87),
-                  textAlign: TextAlign.justify,
-                ),
-                SizedBox(height: 20),
+                buildDescriptionSection(),
 
                 // Distancia
-                Text(
-                  '📍 A solo 10 minutos de la Universidad de Ibagué en el barrio Ambalá',
-                  style: TextStyle(
-                      fontSize: 16,
-                      fontStyle: FontStyle.italic,
-                      color: Colors.black54),
-                  textAlign: TextAlign.center,
-                ),
-                SizedBox(height: 20),
+                buildDistanceSection(),
 
                 // Sección de servicios
                 buildServiciosSection(),
@@ -266,6 +251,27 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
         style: TextStyle(
             fontSize: 24, fontWeight: FontWeight.bold, color: Colors.black87),
       ),
+    );
+  }
+
+  // Método para construir la sección de descripción
+  Widget buildDescriptionSection() {
+    return Text(
+      '¡Un lugar mágico donde la naturaleza te envuelve! 🌿🏞\n\n'
+      'La Montaña te ofrece una experiencia inolvidable, perfecta para aventureros que buscan tranquilidad y conexión con la naturaleza. '
+      'Descubre las vistas más impresionantes de Ibagué y respira el aire puro de las alturas. ¡Es un refugio que te recargará de energía!',
+      style: TextStyle(fontSize: 16, color: Colors.black87),
+      textAlign: TextAlign.justify,
+    );
+  }
+
+  // Método para construir la sección de distancia
+  Widget buildDistanceSection() {
+    return Text(
+      '📍 A solo 10 minutos de la Universidad de Ibagué en el barrio Ambalá',
+      style: TextStyle(
+          fontSize: 16, fontStyle: FontStyle.italic, color: Colors.black54),
+      textAlign: TextAlign.center,
     );
   }
 

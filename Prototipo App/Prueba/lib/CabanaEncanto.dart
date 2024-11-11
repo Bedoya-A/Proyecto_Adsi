@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/HomePage.dart';
+import 'package:flutter/services.dart';
 
 class CabanaEncanto extends StatefulWidget {
   const CabanaEncanto({super.key});
@@ -140,11 +141,11 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
                 ),
                 const SizedBox(height: 10),
 
-                // Descripción de características
+                // Sección de características
                 _buildSectionCard(
                     "Características", Icons.star, _buildFeatureList()),
 
-                // Ubicación
+                // Sección de ubicación
                 _buildSectionCard(
                     "Ubicación", Icons.location_on, _buildLocationText()),
 
@@ -154,6 +155,22 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
                 // Senderismo
                 _buildSectionCard(
                     "Senderismo", Icons.hiking, _buildHikingText()),
+
+                // Parqueadero
+                _buildSectionCard(
+                    "Parqueadero", Icons.local_parking, _buildParkingText()),
+
+                // Ingreso
+                _buildSectionCard(
+                    "Ingreso", Icons.access_time, _buildIngresoText()),
+
+                // Salida
+                _buildSectionCard(
+                    "Salida", Icons.exit_to_app, _buildSalidaText()),
+
+                // Nueva tarjeta: Confirmación de disponibilidad y contacto
+                _buildSectionCard("Confirma tu disponibilidad y reserva",
+                    Icons.phone, _buildContactInfo()),
 
                 // Formulario de reserva
                 _buildSectionCard("Reserva tu experiencia", Icons.bookmark,
@@ -166,54 +183,50 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     );
   }
 
-  // Widget para las tarjetas de sección
+  // Widget para los títulos con icono, fondo de degradado y tarjeta
   Widget _buildSectionCard(String title, IconData icon, Widget content) {
-    return Container(
+    return Card(
       margin: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        gradient: LinearGradient(
-          colors: [
-            Colors.white.withOpacity(0.9),
-            Colors.white.withOpacity(0.6),
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black26,
-            blurRadius: 10.0,
-            offset: const Offset(0, 4),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(15),
+      ),
+      elevation: 5,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Colors.orangeAccent, Colors.purpleAccent],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15),
+                topRight: Radius.circular(15),
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(icon, color: Colors.white),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: content,
           ),
         ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(16),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Icon(icon, color: Colors.brown[700]),
-                  const SizedBox(width: 8),
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.brown[700],
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 10),
-              content,
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -265,16 +278,6 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           "Puedes subir toda la comida y bebida que desees, ya que nosotros no vendemos.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
-        const SizedBox(height: 10),
-        Text(
-          "Ingreso: Puedes llegar desde las 4:00 pm, máximo a las 6:00 pm.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          "Salida: Al otro día antes del mediodía.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
       ],
     );
   }
@@ -299,28 +302,55 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     );
   }
 
-  // Widget para el texto de senderismo
+  // Widget para el senderismo
   Widget _buildHikingText() {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          "De la entrada hasta la cabaña son 10 minutos de senderismo (400 metros). Por este valor reservas la cabaña entera, no la compartes con nadie, es una cabaña rústica, el plan no es de lujo.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          "Parqueadero: moto a \$8.000 y carro a \$12.000.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
+            "De la entrada hasta la cabaña son 10 minutos de senderismo (400 metros)."),
         const SizedBox(height: 10),
         Text(
           "En la entrada te reciben, llevan y entregan la cabaña.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
-        const SizedBox(height: 10),
+      ],
+    );
+  }
+
+  // Widget para el parqueadero
+  Widget _buildParkingText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
         Text(
-          "Confirmamos disponibilidad y reserva del lugar a través de este formulario.",
+          " moto a \$8.000 y carro a \$12.000.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ],
+    );
+  }
+
+  // Widget para el ingreso
+  Widget _buildIngresoText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "El ingreso a la cabaña es a partir de las 2:00 PM. Si llegas más temprano, puedes esperar en la entrada o en la zona común.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ],
+    );
+  }
+
+  // Widget para la salida
+  Widget _buildSalidaText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "La salida es a las 12:00 PM. Si necesitas un poco más de tiempo, puedes pedirlo con anticipación.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
       ],
@@ -332,14 +362,13 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     return Form(
       key: _formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           TextFormField(
             controller: _nameController,
             decoration: const InputDecoration(labelText: 'Nombre'),
             validator: (value) {
-              if (value!.isEmpty) {
-                return 'Por favor ingresa tu nombre';
+              if (value == null || value.isEmpty) {
+                return 'Por favor ingrese su nombre';
               }
               return null;
             },
@@ -348,8 +377,8 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
             controller: _phoneController,
             decoration: const InputDecoration(labelText: 'Teléfono'),
             validator: (value) {
-              if (value!.isEmpty) {
-                return 'Por favor ingresa tu número de teléfono';
+              if (value == null || value.isEmpty) {
+                return 'Por favor ingrese su teléfono';
               }
               return null;
             },
@@ -362,7 +391,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           ),
           TextFormField(
             controller: _dateEndController,
-            decoration: const InputDecoration(labelText: 'Fecha de fin'),
+            decoration: const InputDecoration(labelText: 'Fecha de salida'),
             readOnly: true,
             onTap: () => _selectDate(_dateEndController),
           ),
@@ -370,8 +399,8 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
             controller: _numPeopleController,
             decoration: const InputDecoration(labelText: 'Número de personas'),
             validator: (value) {
-              if (value!.isEmpty) {
-                return 'Por favor ingresa el número de personas';
+              if (value == null || value.isEmpty) {
+                return 'Por favor ingrese el número de personas';
               }
               return null;
             },
@@ -380,20 +409,35 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           ElevatedButton(
             onPressed: () {
               if (_formKey.currentState!.validate()) {
-                // Aquí puedes enviar los datos a tu base de datos o API
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(content: Text('Reserva enviada')),
-                );
+                // Procesa la reserva
               }
             },
-            child: const Text('Reservar'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.brown[600],
-              padding: const EdgeInsets.symmetric(horizontal: 30, vertical: 12),
-            ),
+            child: const Text('Confirmar Reserva'),
           ),
         ],
       ),
+    );
+  }
+
+  // Widget para la nueva tarjeta de contacto y confirmación
+  Widget _buildContactInfo() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Confirma disponibilidad y abona tu reserva llamando al 3125645678 o escribiendo al WhatsApp.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: () {
+            final url = "https://wa.me/573125645678"; // Enlace de WhatsApp
+            // Usa este enlace para abrir WhatsApp sin dependencias
+            print("Enlace WhatsApp: $url"); // Solo loguea el enlace por ahora
+          },
+          child: Text("Escribir por WhatsApp"),
+        ),
+      ],
     );
   }
 }

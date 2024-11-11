@@ -16,6 +16,9 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
   final TextEditingController _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
   bool _isHomeIconVisible = false; // Controla la visibilidad del ícono
+  List<Map<String, dynamic>> _reviews = [];
+  double _rating = 0; // Initial rating value
+  TextEditingController _reviewController = TextEditingController();
 
   Future<void> _selectDate(TextEditingController controller) async {
     DateTime? pickedDate = await showDatePicker(
@@ -48,6 +51,33 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
         MaterialPageRoute(builder: (context) => HomePage()),
         (Route<dynamic> route) => false,
       );
+    });
+  }
+
+  Widget _buildStarRating() {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: List.generate(5, (index) {
+        return GestureDetector(
+          onTap: () {
+            setState(() {
+              _rating = index + 1.0;
+            });
+          },
+          child: Icon(
+            Icons.star,
+            color: _rating > index ? Colors.amber : Colors.grey,
+            size: 30,
+          ),
+        );
+      }),
+    );
+  }
+
+  // Function to remove review
+  void _removeReview(int index) {
+    setState(() {
+      _reviews.removeAt(index);
     });
   }
 
@@ -457,6 +487,59 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                     ],
                   ),
                 ),
+                SizedBox(height: 30), // Espaciado adicional
+                // Sección de reseñas
+                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+                SizedBox(height: 20), // Separación adicional
+                _buildStarRating(),
+                SizedBox(height: 20), // Separación adicional
+                TextField(
+                  controller: _reviewController,
+                  decoration: InputDecoration(
+                    labelText: 'Escribe tu reseña',
+                    border: OutlineInputBorder(),
+                  ),
+                  maxLines: 4,
+                ),
+                SizedBox(height: 10),
+                ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
+                    });
+                  },
+                  child: Text('Enviar Reseña'),
+                ),
+                SizedBox(height: 20),
+                // Mostrar las reseñas con opción de eliminar
+                Column(
+                  children: _reviews.map((review) {
+                    int index = _reviews.indexOf(review); // Obtener índice
+                    return Card(
+                      margin: EdgeInsets.symmetric(vertical: 8),
+                      elevation: 4,
+                      child: ListTile(
+                        title: Row(
+                          children: [
+                            Icon(Icons.star, color: Colors.amber),
+                            SizedBox(width: 5),
+                            Text('${review['rating']} estrellas'),
+                          ],
+                        ),
+                        subtitle: Text(review['review']),
+                        trailing: IconButton(
+                          icon: Icon(Icons.delete, color: Colors.red),
+                          onPressed: () =>
+                              _removeReview(index), // Eliminar reseña
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
               ],
             ),
           ),
@@ -482,6 +565,38 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
       trailing: Text(
         '\$$precio',
         style: TextStyle(fontSize: 20, color: color),
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            Color.fromARGB(255, 60, 157, 79),
+            Color.fromARGB(255, 117, 240, 36)
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 24, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ],
       ),
     );
   }
