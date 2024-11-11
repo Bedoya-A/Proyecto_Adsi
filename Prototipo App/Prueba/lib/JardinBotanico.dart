@@ -57,34 +57,6 @@ class _JardinBotanicoState extends State<JardinBotanico>
     }
   }
 
-  void _openReservationForm() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Reserva tu experiencia'),
-          content: ReservationForm(
-            onSubmit: (name, phone, dateStart, numPeople) {
-              // Aquí puedes manejar el envío de la reserva o mostrar un mensaje de confirmación
-              print(
-                  "Reserva enviada:\nNombre: $name\nTeléfono: $phone\nFecha de Inicio: $dateStart\nNúmero de Personas: $numPeople");
-              Navigator.of(context)
-                  .pop(); // Cierra el diálogo después de enviar
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop(); // Cierra el diálogo sin enviar
-              },
-              child: Text('Cancelar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
   Future<void> _launchYoutube() async {
     const url = 'https://youtu.be/7CdXUBEqdIU';
     if (await canLaunch(url)) {
@@ -118,6 +90,22 @@ class _JardinBotanicoState extends State<JardinBotanico>
     setState(() {
       _reviews.removeAt(index);
     });
+  }
+
+  void _showReservationForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ReservationForm(
+            onSubmit: (name, phone, date, numPeople) {
+              // Lógica para manejar la reserva
+              print('Reserva: $name, $phone, $date, $numPeople');
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -158,6 +146,15 @@ class _JardinBotanicoState extends State<JardinBotanico>
           _buildJardinBotanicoContent(),
           ServiciosJardinBotanico(),
         ],
+      ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 20, bottom: 20),
+        child: FloatingActionButton(
+          onPressed:
+              _showReservationForm, // Función para mostrar el formulario de reserva
+          backgroundColor: Colors.green[700],
+          child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
+        ),
       ),
     );
   }
@@ -239,20 +236,6 @@ class _JardinBotanicoState extends State<JardinBotanico>
                         Color.fromARGB(255, 101, 161, 154), // Color del botón
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: 30),
-            _buildSectionTitleText("Reserva tu experiencia"),
-            SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _openReservationForm,
-              child: Text(
-                'Reserva',
-                style: TextStyle(
-                    color: Colors.white), // Color blanco para el texto
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green[700],
               ),
             ),
 

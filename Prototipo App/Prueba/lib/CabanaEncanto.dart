@@ -1,9 +1,8 @@
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/HomePage.dart';
-import 'package:flutter/services.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CabanaEncanto extends StatefulWidget {
@@ -14,12 +13,6 @@ class CabanaEncanto extends StatefulWidget {
 }
 
 class _CabanaEncantoState extends State<CabanaEncanto> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _dateStartController = TextEditingController();
-  final _dateEndController = TextEditingController();
-  final _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
   bool _isHomeIconVisible = false; // Inicializa la variable
   double _rating = 0; // Initial rating value
@@ -36,21 +29,6 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     'assets/encanto5.png',
   ];
   int _current = 0;
-
-  Future<void> _selectDate(TextEditingController controller) async {
-    DateTime? pickedDate = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2100),
-    );
-    if (pickedDate != null) {
-      setState(() {
-        controller.text =
-            "${pickedDate.day}/${pickedDate.month}/${pickedDate.year}";
-      });
-    }
-  }
 
   void _onLogoTap() {
     setState(() {
@@ -97,6 +75,22 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     setState(() {
       _reviews.removeAt(index);
     });
+  }
+
+  void _showReservationForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ReservationForm(
+            onSubmit: (name, phone, date, numPeople) {
+              // Lógica para manejar la reserva
+              print('Reserva: $name, $phone, $date, $numPeople');
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -341,6 +335,15 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           ),
         ),
       ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 20, bottom: 20),
+        child: FloatingActionButton(
+          onPressed:
+              _showReservationForm, // Función para mostrar el formulario de reserva
+          backgroundColor: Colors.green[700],
+          child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
+        ),
+      ),
     );
   }
 
@@ -563,68 +566,6 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
               color: Colors.white,
               letterSpacing: 1.2,
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Widget para el formulario de reserva
-  Widget _buildReservationForm() {
-    return Form(
-      key: _formKey,
-      child: Column(
-        children: [
-          TextFormField(
-            controller: _nameController,
-            decoration: const InputDecoration(labelText: 'Nombre'),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Por favor ingrese su nombre';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: _phoneController,
-            decoration: const InputDecoration(labelText: 'Teléfono'),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Por favor ingrese su teléfono';
-              }
-              return null;
-            },
-          ),
-          TextFormField(
-            controller: _dateStartController,
-            decoration: const InputDecoration(labelText: 'Fecha de inicio'),
-            readOnly: true,
-            onTap: () => _selectDate(_dateStartController),
-          ),
-          TextFormField(
-            controller: _dateEndController,
-            decoration: const InputDecoration(labelText: 'Fecha de salida'),
-            readOnly: true,
-            onTap: () => _selectDate(_dateEndController),
-          ),
-          TextFormField(
-            controller: _numPeopleController,
-            decoration: const InputDecoration(labelText: 'Número de personas'),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Por favor ingrese el número de personas';
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 20),
-          ElevatedButton(
-            onPressed: () {
-              if (_formKey.currentState!.validate()) {
-                // Procesa la reserva
-              }
-            },
-            child: const Text('Confirmar Reserva'),
           ),
         ],
       ),

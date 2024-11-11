@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/PaginaOferta.dart';
@@ -15,7 +16,12 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
     with TickerProviderStateMixin {
   bool _isHomeIconVisible = false;
   List<AnimationController> _controllers = [];
-
+  final _formKey = GlobalKey<FormState>();
+  final _nameController = TextEditingController();
+  final _phoneController = TextEditingController();
+  final _dateStartController = TextEditingController();
+  final _dateEndController = TextEditingController();
+  final _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
   double _rating = 0; // Initial rating value
   TextEditingController _reviewController = TextEditingController();
@@ -43,7 +49,6 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
     );
   }
 
-  @override
   void _onLogoTap() {
     setState(() {
       _isHomeIconVisible = !_isHomeIconVisible;
@@ -65,6 +70,22 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
         MaterialPageRoute(builder: (context) => PaginaOferta()),
       );
     }
+  }
+
+  void _showReservationForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ReservationForm(
+            onSubmit: (name, phone, date, numPeople) {
+              // Lógica para manejar la reserva
+              print('Reserva: $name, $phone, $date, $numPeople');
+            },
+          ),
+        );
+      },
+    );
   }
 
   Future<void> _launchYoutube() async {
@@ -261,30 +282,12 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
                   ),
                 ],
               ),
-              Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: ElevatedButton.icon(
-                    onPressed: _launchYoutube,
-                    icon: Icon(Icons.video_library,
-                        color: const Color.fromARGB(255, 0, 0, 0)),
-                    label: Text(
-                      "Ver video en YouTube",
-                      style:
-                          TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          Color.fromARGB(255, 101, 161, 154), // Color del botón
-                    ),
-                  ),
-                ),
-              ),
+              SizedBox(height: 20),
+              Center(child: _buildVideoLink()),
               SizedBox(height: 20),
               Padding(
-                padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0), // Espacio horizontal
-                child: _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+                padding: const EdgeInsets.symmetric(horizontal: 16.6),
+                child: _buildSectionTitle("Reserva tu experiencia"),
               ),
               SizedBox(height: 20), // Separación adicional
               Padding(
@@ -324,275 +327,330 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
           ),
         ),
       ),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 20, bottom: 20),
+        child: FloatingActionButton(
+          onPressed:
+              _showReservationForm, // Función para mostrar el formulario de reserva
+          backgroundColor: Colors.green[700],
+          child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
+        ),
+      ),
+    );
+  }
+
+  Widget _buildVideoLink() {
+    return GestureDetector(
+      onTap: () {
+        launchUrl(
+            Uri.parse('https://youtube.com/shorts/ZwwYu4h6BSQ?feature=share'));
+      },
+      child: Text(
+        "Ver video del Mirador Tesorito",
+        style: TextStyle(
+          color: Colors.blue,
+          fontSize: 16,
+          decoration: TextDecoration.underline,
+        ),
+      ),
+    );
+  }
+
+  Widget _buildHeaderSection() {
+    return Stack(
+      children: [
+        Container(
+          height: 250,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/tesorito.jpg'), // Imagen adecuada
+              fit: BoxFit.cover,
+            ),
+          ),
+        ),
+        Container(
+          height: 250,
+          width: double.infinity,
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.black.withOpacity(0.5), Colors.transparent],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
+          ),
+        ),
+        Positioned(
+          bottom: 20,
+          left: 20,
+          child: Text(
+            'Mirador Tesorito',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 34,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  color: Colors.black45,
+                  offset: Offset(3, 3),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  // Sección de título destacada
+  Widget _buildTitleSection(String title) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 28,
+          fontWeight: FontWeight.bold,
+          color: Colors.white, // Cambia el color a blanco
+          shadows: [
+            Shadow(
+              color: Colors.black45,
+              offset: Offset(2, 2),
+              blurRadius: 4,
+            ),
+          ], // Sombra para hacerlo más llamativo
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  // Sección de descripción
+  Widget _buildDescriptionSection(String description) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Text(
+        description,
+        style: TextStyle(
+          fontSize: 18,
+          color: Colors.black54,
+        ),
+        textAlign: TextAlign.center,
+      ),
+    );
+  }
+
+  // Sección interactiva con tarjetas llamativas
+  Widget _buildInteractiveCards(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        children: [
+          _buildInfoCard(
+            'El mirador Tesorito está operando hace dos años. El propietario es Yeison Ramirez. Ofrece servicios de mirador y restaurante.',
+            Icons.place,
+            Colors.orange,
+          ),
+          SizedBox(height: 10), // Espacio entre el texto y la imagen
+          Image.asset(
+            'assets/mapamiradorTesorito.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
+            width: 450, // O ajusta el tamaño según lo necesites
+            fit: BoxFit
+                .cover, // Ajuste de la imagen (puedes usar BoxFit.fill, BoxFit.contain, etc.)
+          ),
+          _buildInfoCard(
+            'Horarios: \nLunes a Viernes: 3:00 pm - 11:00 pm\nSábados, Domingos y Festivos: 11:00 am - 11:00 pm',
+            Icons.access_time,
+            Colors.blue,
+          ),
+          _buildInfoCard(
+            'Pagos disponibles por Nequi y Daviplata.',
+            Icons.attach_money,
+            Colors.green,
+          ),
+          _buildInfoCard(
+            'Costo de ingreso: 5,000 COP (incluye bebida de bienvenida).',
+            Icons.local_drink,
+            Colors.purple,
+          ),
+        ],
+      ),
+    );
+  }
+
+  // Tarjeta de información interactiva
+  Widget _buildInfoCard(String text, IconData icon, Color color) {
+    return Card(
+      margin: EdgeInsets.symmetric(vertical: 10),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      elevation: 4,
+      child: ListTile(
+        leading: Icon(icon, color: color, size: 40),
+        title: Text(
+          text,
+          style: TextStyle(
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Sección del menú con separaciones
+  Widget _buildMenuSection() {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildTitleSection('Menú de Comida'), // Título del menú
+          SizedBox(height: 20),
+          _buildAnimatedMenuSection(
+              0,
+              'Entradas',
+              [
+                'Porción huevos de codorniz (7 unid) - 5.000 COP',
+                'Porción pataconas (3 unid) - 5.000 COP',
+                'Porciones papas a la francesa - 5.000 COP',
+                'Pataconas con pollo y carne desmechada (2 unid) - 10.000 COP',
+              ],
+              Icons.food_bank),
+          Divider(), // Divider entre las secciones
+          _buildAnimatedMenuSection(
+              1,
+              'Platos a la Carta',
+              [
+                'Pechuga a la plancha (300g) - 30.000 COP',
+                'Lomo de cerdo a la plancha (300g) - 28.000 COP',
+                'Churrasco a la plancha (300g) - 32.000 COP',
+                'Mojarra frita (500g) - 30.000 COP',
+              ],
+              Icons.local_dining),
+          Divider(),
+          _buildAnimatedMenuSection(
+              2,
+              'Comidas Rápidas',
+              [
+                'Choripapa - 20.000 COP',
+                'Salchipapa - 18.000 COP',
+                'Hamburguesa de pollo - 18.000 COP',
+                'Super perro - 20.000 COP',
+              ],
+              Icons.fastfood),
+          Divider(),
+          _buildAnimatedMenuSection(
+              3,
+              'Bebidas Calientes',
+              [
+                'Aguapanela con queso - 6.000 COP',
+                'Chocolate con queso - 8.000 COP',
+                'Tinto - 1.500 COP',
+              ],
+              Icons.local_cafe),
+          Divider(),
+          _buildAnimatedMenuSection(
+              4,
+              'Bebidas Frías',
+              [
+                'Limonada de coco - 9.000 COP',
+                'Cerveza personal - 9.000 COP',
+                'Frappe de café - 12.000 COP',
+              ],
+              Icons.icecream),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller,
+      TextInputType keyboardType, IconData icon,
+      {VoidCallback? onTap}) {
+    return TextFormField(
+      controller: controller,
+      keyboardType: keyboardType,
+      onTap: onTap,
+      validator: (value) {
+        if (value == null || value.isEmpty) {
+          return 'Por favor, ingresa $label';
+        }
+        return null;
+      },
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        filled: true,
+        fillColor: Colors.white,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+    );
+  }
+
+  // Menú con animación en el ícono de despliegue
+  Widget _buildAnimatedMenuSection(
+      int index, String title, List<String> items, IconData icon) {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(icon, color: Colors.teal[700]),
+          SizedBox(width: 10),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white, // Color de título en blanco
+              shadows: [
+                Shadow(
+                  color: Colors.black45,
+                  offset: Offset(2, 2),
+                  blurRadius: 4,
+                ),
+              ], // Sombra para hacerlo más llamativo
+            ),
+          ),
+        ],
+      ),
+      trailing: RotationTransition(
+        turns: Tween(begin: 0.0, end: 0.5).animate(_controllers[index]),
+        child: Icon(
+          Icons.expand_more,
+          color: Colors.teal[700],
+        ),
+      ),
+      onExpansionChanged: (isExpanded) {
+        setState(() {
+          if (isExpanded) {
+            _controllers[index].forward();
+          } else {
+            _controllers[index].reverse();
+          }
+        });
+      },
+      children: items.map((item) {
+        return ListTile(
+          title: Text(item),
+          leading: Icon(Icons.check, color: Colors.teal),
+        );
+      }).toList(),
     );
   }
 }
 
-Widget _buildHeaderSection() {
-  return Stack(
-    children: [
-      Container(
-        height: 250,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage('assets/tesorito.jpg'), // Imagen adecuada
-            fit: BoxFit.cover,
-          ),
-        ),
-      ),
-      Container(
-        height: 250,
-        width: double.infinity,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.black.withOpacity(0.5), Colors.transparent],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
-          ),
-        ),
-      ),
-      Positioned(
-        bottom: 20,
-        left: 20,
-        child: Text(
-          'Mirador Tesorito',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 34,
-            fontWeight: FontWeight.bold,
-            shadows: [
-              Shadow(
-                color: Colors.black45,
-                offset: Offset(3, 3),
-                blurRadius: 8,
-              ),
-            ],
-          ),
-        ),
-      ),
-    ],
-  );
-}
-
-// Sección de título destacada
-Widget _buildTitleSection(String title) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+Widget _buildSectionTitle(String title) {
+  return Container(
+    padding: EdgeInsets.symmetric(vertical: 8.0),
     child: Text(
       title,
       style: TextStyle(
-        fontSize: 28,
-        fontWeight: FontWeight.bold,
-        color: Colors.white, // Cambia el color a blanco
-        shadows: [
-          Shadow(
-            color: Colors.black45,
-            offset: Offset(2, 2),
-            blurRadius: 4,
-          ),
-        ], // Sombra para hacerlo más llamativo
-      ),
-      textAlign: TextAlign.center,
-    ),
-  );
-}
-
-// Sección de descripción
-Widget _buildDescriptionSection(String description) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    child: Text(
-      description,
-      style: TextStyle(
         fontSize: 18,
-        color: Colors.black54,
+        fontWeight: FontWeight.bold,
+        color: Colors.teal[900],
       ),
-      textAlign: TextAlign.center,
-    ),
-  );
-}
-
-// Sección interactiva con tarjetas llamativas
-Widget _buildInteractiveCards(BuildContext context) {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    child: Column(
-      children: [
-        _buildInfoCard(
-          'El mirador Tesorito está operando hace dos años. El propietario es Yeison Ramirez. Ofrece servicios de mirador y restaurante.',
-          Icons.place,
-          Colors.orange,
-        ),
-        SizedBox(height: 10), // Espacio entre el texto y la imagen
-        Image.asset(
-          'assets/mapamiradorTesorito.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
-          width: 450, // O ajusta el tamaño según lo necesites
-          fit: BoxFit
-              .cover, // Ajuste de la imagen (puedes usar BoxFit.fill, BoxFit.contain, etc.)
-        ),
-        _buildInfoCard(
-          'Horarios: \nLunes a Viernes: 3:00 pm - 11:00 pm\nSábados, Domingos y Festivos: 11:00 am - 11:00 pm',
-          Icons.access_time,
-          Colors.blue,
-        ),
-        _buildInfoCard(
-          'Pagos disponibles por Nequi y Daviplata.',
-          Icons.attach_money,
-          Colors.green,
-        ),
-        _buildInfoCard(
-          'Costo de ingreso: 5,000 COP (incluye bebida de bienvenida).',
-          Icons.local_drink,
-          Colors.purple,
-        ),
-      ],
-    ),
-  );
-}
-
-// Tarjeta de información interactiva
-Widget _buildInfoCard(String text, IconData icon, Color color) {
-  return Card(
-    margin: EdgeInsets.symmetric(vertical: 10),
-    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-    elevation: 4,
-    child: ListTile(
-      leading: Icon(icon, color: color, size: 40),
-      title: Text(
-        text,
-        style: TextStyle(
-          fontSize: 16,
-          fontWeight: FontWeight.bold,
-          color: Colors.black,
-        ),
-      ),
-    ),
-  );
-}
-
-// Sección del menú con separaciones
-Widget _buildMenuSection() {
-  return Padding(
-    padding: const EdgeInsets.symmetric(horizontal: 16.0),
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        _buildTitleSection('Menú de Comida'), // Título del menú
-        SizedBox(height: 20),
-        _buildAnimatedMenuSection(
-            0,
-            'Entradas',
-            [
-              'Porción huevos de codorniz (7 unid) - 5.000 COP',
-              'Porción pataconas (3 unid) - 5.000 COP',
-              'Porciones papas a la francesa - 5.000 COP',
-              'Pataconas con pollo y carne desmechada (2 unid) - 10.000 COP',
-            ],
-            Icons.food_bank),
-        Divider(), // Divider entre las secciones
-        _buildAnimatedMenuSection(
-            1,
-            'Platos a la Carta',
-            [
-              'Pechuga a la plancha (300g) - 30.000 COP',
-              'Lomo de cerdo a la plancha (300g) - 28.000 COP',
-              'Churrasco a la plancha (300g) - 32.000 COP',
-              'Mojarra frita (500g) - 30.000 COP',
-            ],
-            Icons.local_dining),
-        Divider(),
-        _buildAnimatedMenuSection(
-            2,
-            'Comidas Rápidas',
-            [
-              'Choripapa - 20.000 COP',
-              'Salchipapa - 18.000 COP',
-              'Hamburguesa de pollo - 18.000 COP',
-              'Super perro - 20.000 COP',
-            ],
-            Icons.fastfood),
-        Divider(),
-        _buildAnimatedMenuSection(
-            3,
-            'Bebidas Calientes',
-            [
-              'Aguapanela con queso - 6.000 COP',
-              'Chocolate con queso - 8.000 COP',
-              'Tinto - 1.500 COP',
-            ],
-            Icons.local_cafe),
-        Divider(),
-        _buildAnimatedMenuSection(
-            4,
-            'Bebidas Frías',
-            [
-              'Limonada de coco - 9.000 COP',
-              'Cerveza personal - 9.000 COP',
-              'Frappe de café - 12.000 COP',
-            ],
-            Icons.icecream),
-      ],
-    ),
-  );
-}
-
-// Menú con animación en el ícono de despliegue
-Widget _buildAnimatedMenuSection(
-    int index, String title, List<String> items, IconData icon) {
-  return ExpansionTile(
-    title: Row(
-      children: [
-        Icon(icon, color: Colors.teal[700]),
-        SizedBox(width: 10),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white, // Color de título en blanco
-            shadows: [
-              Shadow(
-                color: Colors.black45,
-                offset: Offset(2, 2),
-                blurRadius: 4,
-              ),
-            ], // Sombra para hacerlo más llamativo
-          ),
-        ),
-      ],
-    ),
-  );
-}
-
-Widget _buildSectionTitle(String title, IconData icon) {
-  return Container(
-    padding: EdgeInsets.symmetric(vertical: 10),
-    decoration: BoxDecoration(
-      gradient: LinearGradient(
-        colors: [
-          Color.fromARGB(255, 60, 157, 79),
-          Color.fromARGB(255, 117, 240, 36)
-        ],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-      borderRadius: BorderRadius.circular(10),
-    ),
-    child: Row(
-      children: [
-        Icon(icon, size: 24, color: Colors.white),
-        SizedBox(width: 8),
-        Text(
-          title,
-          style: TextStyle(
-            fontSize: 22,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-            letterSpacing: 1.2,
-          ),
-        ),
-      ],
     ),
   );
 }

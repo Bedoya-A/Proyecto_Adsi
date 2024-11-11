@@ -1,6 +1,6 @@
-import 'package:carousel_slider/carousel_options.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:url_launcher/url_launcher.dart'; // Ensure the path is correct
@@ -11,12 +11,6 @@ class CabanaLaMontana extends StatefulWidget {
 }
 
 class _CabanaLaMontanaState extends State<CabanaLaMontana> {
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _dateStartController = TextEditingController();
-  final _dateEndController = TextEditingController();
-  final _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
   bool _isHomeIconVisible = false; // Add the missing variable
   double _rating = 0; // Initial rating value
@@ -33,19 +27,6 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     'assets/montaña5.png',
   ];
   int _current = 0;
-
-  // Logic for date selection
-  void _selectDate(TextEditingController controller) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime.now(),
-      lastDate: DateTime(2025),
-    );
-    if (picked != null) {
-      controller.text = "${picked.toLocal()}".split(' ')[0];
-    }
-  }
 
   void onSelectDrawerItem(int index) {
     setState(() {
@@ -93,6 +74,22 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     setState(() {
       _reviews.removeAt(index);
     });
+  }
+
+  void _showReservationForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ReservationForm(
+            onSubmit: (name, phone, date, numPeople) {
+              // Lógica para manejar la reserva
+              print('Reserva: $name, $phone, $date, $numPeople');
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -278,27 +275,15 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _buildTextField(String label, TextEditingController controller,
-      TextInputType inputType, IconData icon,
-      {Function()? onTap}) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: inputType,
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon),
-        border: OutlineInputBorder(),
+      floatingActionButton: Padding(
+        padding: const EdgeInsets.only(left: 20, bottom: 20),
+        child: FloatingActionButton(
+          onPressed:
+              _showReservationForm, // Función para mostrar el formulario de reserva
+          backgroundColor: Colors.green[700],
+          child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
+        ),
       ),
-      onTap: onTap, // Llama a la función de selección de fecha si está definida
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Por favor ingrese $label';
-        }
-        return null;
-      },
     );
   }
 
