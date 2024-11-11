@@ -15,6 +15,7 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
     with TickerProviderStateMixin {
   bool _isHomeIconVisible = false;
   List<AnimationController> _controllers = [];
+
   int selectedDrawerIndex = 1;
   double _rating = 0; // Initial rating value
   TextEditingController _reviewController = TextEditingController();
@@ -65,6 +66,22 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
     }
   }
 
+  void _showReservationForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ReservationForm(
+            onSubmit: (name, phone, date, numPeople) {
+              // Lógica para manejar la reserva
+              print('Reserva: $name, $phone, $date, $numPeople');
+            },
+          ),
+        );
+      },
+    );
+  }
+
   Future<void> _launchYoutube() async {
     const url = 'https://youtube.com/shorts/ZwwYu4h6BSQ?feature=share';
     if (await canLaunch(url)) {
@@ -98,22 +115,6 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
     setState(() {
       _reviews.removeAt(index);
     });
-  }
-
-  void _showReservationForm() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: ReservationForm(
-            onSubmit: (name, phone, date, numPeople) {
-              // Lógica para manejar la reserva
-              print('Reserva: $name, $phone, $date, $numPeople');
-            },
-          ),
-        );
-      },
-    );
   }
 
   @override
