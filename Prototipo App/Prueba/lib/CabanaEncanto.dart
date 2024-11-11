@@ -3,7 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/HomePage.dart';
+<<<<<<< HEAD
+import 'package:flutter/services.dart';
+=======
 import 'package:url_launcher/url_launcher.dart';
+>>>>>>> main
 
 class CabanaEncanto extends StatefulWidget {
   const CabanaEncanto({super.key});
@@ -190,6 +194,9 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
                   _buildFeatureList(),
                 ),
 
+<<<<<<< HEAD
+                // Sección de ubicación
+=======
                 // Slider de imágenes
                 Stack(
                   alignment: Alignment.center,
@@ -268,11 +275,34 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
                 const SizedBox(height: 20),
 
                 // Secciones adicionales
+>>>>>>> main
                 _buildSectionCard(
                     "Ubicación", Icons.location_on, _buildLocationText()),
                 _buildSectionCard("Precios", Icons.money, _buildPriceList()),
                 _buildSectionCard(
                     "Senderismo", Icons.hiking, _buildHikingText()),
+<<<<<<< HEAD
+
+                // Parqueadero
+                _buildSectionCard(
+                    "Parqueadero", Icons.local_parking, _buildParkingText()),
+
+                // Ingreso
+                _buildSectionCard(
+                    "Ingreso", Icons.access_time, _buildIngresoText()),
+
+                // Salida
+                _buildSectionCard(
+                    "Salida", Icons.exit_to_app, _buildSalidaText()),
+
+                // Nueva tarjeta: Confirmación de disponibilidad y contacto
+                _buildSectionCard("Confirma tu disponibilidad y reserva",
+                    Icons.phone, _buildContactInfo()),
+
+                // Formulario de reserva
+                _buildSectionCard("Reserva tu experiencia", Icons.bookmark,
+                    _buildReservationForm()),
+=======
                 _buildSectionCard(
                     "Parqueadero", Icons.local_parking, _buildParkingText()),
                 _buildSectionCard(
@@ -330,6 +360,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
                     );
                   }).toList(),
                 ),
+>>>>>>> main
               ],
             ),
           ),
@@ -442,6 +473,8 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           "Puedes subir toda la comida y bebida que desees, ya que nosotros no vendemos.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
+<<<<<<< HEAD
+=======
         ClipRRect(
             borderRadius: BorderRadius.only(
               topLeft: Radius.circular(10),
@@ -461,6 +494,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
             borderRadius: BorderRadius.circular(10),
           ),
         )
+>>>>>>> main
       ],
     );
   }
@@ -497,10 +531,110 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           "En la entrada te reciben, llevan y entregan la cabaña.",
           style: TextStyle(fontSize: 16, color: Colors.black),
         ),
+<<<<<<< HEAD
       ],
     );
   }
 
+  // Widget para el parqueadero
+  Widget _buildParkingText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          " moto a \$8.000 y carro a \$12.000.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ],
+    );
+  }
+
+  // Widget para el ingreso
+  Widget _buildIngresoText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "El ingreso a la cabaña es a partir de las 2:00 PM. Si llegas más temprano, puedes esperar en la entrada o en la zona común.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+      ],
+    );
+  }
+
+  // Widget para la salida
+  Widget _buildSalidaText() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "La salida es a las 12:00 PM. Si necesitas un poco más de tiempo, puedes pedirlo con anticipación.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+=======
+>>>>>>> main
+      ],
+    );
+  }
+
+<<<<<<< HEAD
+  // Widget para el formulario de reserva
+  Widget _buildReservationForm() {
+    return Form(
+      key: _formKey,
+      child: Column(
+        children: [
+          TextFormField(
+            controller: _nameController,
+            decoration: const InputDecoration(labelText: 'Nombre'),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Por favor ingrese su nombre';
+              }
+              return null;
+            },
+          ),
+          TextFormField(
+            controller: _phoneController,
+            decoration: const InputDecoration(labelText: 'Teléfono'),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Por favor ingrese su teléfono';
+              }
+              return null;
+            },
+          ),
+          TextFormField(
+            controller: _dateStartController,
+            decoration: const InputDecoration(labelText: 'Fecha de inicio'),
+            readOnly: true,
+            onTap: () => _selectDate(_dateStartController),
+          ),
+          TextFormField(
+            controller: _dateEndController,
+            decoration: const InputDecoration(labelText: 'Fecha de salida'),
+            readOnly: true,
+            onTap: () => _selectDate(_dateEndController),
+          ),
+          TextFormField(
+            controller: _numPeopleController,
+            decoration: const InputDecoration(labelText: 'Número de personas'),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Por favor ingrese el número de personas';
+              }
+              return null;
+            },
+          ),
+          const SizedBox(height: 20),
+          ElevatedButton(
+            onPressed: () {
+              if (_formKey.currentState!.validate()) {
+                // Procesa la reserva
+              }
+            },
+            child: const Text('Confirmar Reserva'),
+=======
   // Widget para el parqueadero
   Widget _buildParkingText() {
     return Column(
@@ -566,9 +700,32 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
               color: Colors.white,
               letterSpacing: 1.2,
             ),
+>>>>>>> main
           ),
         ],
       ),
+    );
+  }
+
+  // Widget para la nueva tarjeta de contacto y confirmación
+  Widget _buildContactInfo() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          "Confirma disponibilidad y abona tu reserva llamando al 3125645678 o escribiendo al WhatsApp.",
+          style: TextStyle(fontSize: 16, color: Colors.black),
+        ),
+        const SizedBox(height: 10),
+        ElevatedButton(
+          onPressed: () {
+            final url = "https://wa.me/573125645678"; // Enlace de WhatsApp
+            // Usa este enlace para abrir WhatsApp sin dependencias
+            print("Enlace WhatsApp: $url"); // Solo loguea el enlace por ahora
+          },
+          child: Text("Escribir por WhatsApp"),
+        ),
+      ],
     );
   }
 }
