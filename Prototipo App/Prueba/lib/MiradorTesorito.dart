@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
@@ -16,12 +15,6 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
     with TickerProviderStateMixin {
   bool _isHomeIconVisible = false;
   List<AnimationController> _controllers = [];
-  final _formKey = GlobalKey<FormState>();
-  final _nameController = TextEditingController();
-  final _phoneController = TextEditingController();
-  final _dateStartController = TextEditingController();
-  final _dateEndController = TextEditingController();
-  final _numPeopleController = TextEditingController();
   int selectedDrawerIndex = 1;
   double _rating = 0; // Initial rating value
   TextEditingController _reviewController = TextEditingController();
@@ -72,22 +65,6 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
     }
   }
 
-  void _showReservationForm() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: ReservationForm(
-            onSubmit: (name, phone, date, numPeople) {
-              // Lógica para manejar la reserva
-              print('Reserva: $name, $phone, $date, $numPeople');
-            },
-          ),
-        );
-      },
-    );
-  }
-
   Future<void> _launchYoutube() async {
     const url = 'https://youtube.com/shorts/ZwwYu4h6BSQ?feature=share';
     if (await canLaunch(url)) {
@@ -121,6 +98,22 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
     setState(() {
       _reviews.removeAt(index);
     });
+  }
+
+  void _showReservationForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ReservationForm(
+            onSubmit: (name, phone, date, numPeople) {
+              // Lógica para manejar la reserva
+              print('Reserva: $name, $phone, $date, $numPeople');
+            },
+          ),
+        );
+      },
+    );
   }
 
   @override
@@ -561,31 +554,6 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
               ],
               Icons.icecream),
         ],
-      ),
-    );
-  }
-
-  Widget _buildTextField(String label, TextEditingController controller,
-      TextInputType keyboardType, IconData icon,
-      {VoidCallback? onTap}) {
-    return TextFormField(
-      controller: controller,
-      keyboardType: keyboardType,
-      onTap: onTap,
-      validator: (value) {
-        if (value == null || value.isEmpty) {
-          return 'Por favor, ingresa $label';
-        }
-        return null;
-      },
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon),
-        filled: true,
-        fillColor: Colors.white,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
-        ),
       ),
     );
   }
