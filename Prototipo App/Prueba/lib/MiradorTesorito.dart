@@ -280,7 +280,7 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
               SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.6),
-                child: _buildSectionTitle("Reserva tu experiencia"),
+                child: _buildSectionTitle("Califica tu experiencia"),
               ),
               SizedBox(height: 20), // Separación adicional
               Padding(
