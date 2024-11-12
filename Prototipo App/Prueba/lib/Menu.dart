@@ -5,7 +5,6 @@ import 'package:prueba2/CabanaDelArbol.dart';
 import 'package:prueba2/CabanaEncanto.dart';
 import 'package:prueba2/CabanaLaMontana.dart';
 import 'package:prueba2/CabanaParaiso.dart';
-import 'package:prueba2/Contacto.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/JardinBotanico.dart';
 import 'package:prueba2/Meraki.dart';
@@ -19,10 +18,10 @@ class Menu extends StatefulWidget {
   Menu({required this.selectedDrawerIndex, required this.onSelectDrawerItem});
 
   @override
-  _MenuState createState() => _MenuState();
+  MenuState createState() => MenuState();
 }
 
-class _MenuState extends State<Menu> with SingleTickerProviderStateMixin {
+class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
   bool _isExpandedCorredores = false;
   bool _isExpandedCalambeo = false;
   bool _isExpandedAmbala = false;
@@ -30,6 +29,28 @@ class _MenuState extends State<Menu> with SingleTickerProviderStateMixin {
   late AnimationController _rotationController;
   bool _isSelectedCorredores = false;
   bool _isHomeIconVisible = false;
+  int _selectedSectionIndex = -1;
+
+  void selectSection(int index) {
+    setState(() {
+      _selectedSectionIndex = index;
+
+      // Cambia la expansión de acuerdo al índice
+      if (index >= 5 && index <= 7) {
+        _isExpandedCorredores = true;
+        _isExpandedCalambeo = true;
+        _isExpandedAmbala = false;
+      } else if (index >= 1 && index <= 4) {
+        _isExpandedCorredores = true;
+        _isExpandedCalambeo = false;
+        _isExpandedAmbala = true;
+      } else {
+        _isExpandedCorredores = false;
+        _isExpandedCalambeo = false;
+        _isExpandedAmbala = false;
+      }
+    });
+  }
 
   @override
   void initState() {
@@ -235,8 +256,6 @@ class _MenuState extends State<Menu> with SingleTickerProviderStateMixin {
           ),
           buildAnimatedDrawerItem('Servicio de Transporte', 9,
               Icons.directions_bus, context, Transporte()),
-          buildAnimatedDrawerItem(
-              'Contacto', 10, Icons.contact_mail, context, Contacto()),
         ],
       ),
     );
