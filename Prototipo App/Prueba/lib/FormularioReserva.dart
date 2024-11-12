@@ -18,6 +18,9 @@ class _ReservationFormState extends State<ReservationForm> {
       MaskedTextController(mask: '00/00/0000'); // Mascara para DD/MM/AAAA
   final TextEditingController _numPeopleController = TextEditingController();
 
+  bool _isSubmitting = false; // Variable para saber si está enviando
+  bool _isSuccessful = false; // Variable para saber si la reserva fue exitosa
+
   void _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -33,17 +36,50 @@ class _ReservationFormState extends State<ReservationForm> {
     }
   }
 
-  void _handleSubmit() {
+  void _handleSubmit() async {
     if (_nameController.text.isNotEmpty &&
         _phoneController.text.isNotEmpty &&
         _dateController.text.isNotEmpty &&
         _numPeopleController.text.isNotEmpty) {
+      setState(() {
+        _isSubmitting = true; // Activar la carga
+      });
+
+      // Simulación de un retraso de procesamiento (puedes cambiarlo a tu lógica real)
+      await Future.delayed(Duration(seconds: 2));
+
+      // Simulamos que el envío es exitoso
       widget.onSubmit(
         _nameController.text,
         _phoneController.text,
         _dateController.text,
         int.tryParse(_numPeopleController.text) ?? 0,
       );
+
+      setState(() {
+        _isSubmitting = false; // Desactivar la carga
+        _isSuccessful = true; // Marcar como exitoso
+      });
+
+      // Mostrar mensaje de éxito
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('¡Reserva realizada con éxito!'),
+        backgroundColor: Colors.green,
+      ));
+
+      // Limpiar campos después del éxito
+      Future.delayed(Duration(seconds: 2), () {
+        setState(() {
+          _nameController.clear();
+          _phoneController.clear();
+          _dateController.clear();
+          _numPeopleController.clear();
+          _isSuccessful = false; // Resetear estado
+        });
+
+        // Cerrar el formulario automáticamente
+        Navigator.pop(context); // Cerrar el formulario
+      });
     } else {
       // Mostrar un mensaje de error si faltan campos
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
@@ -103,8 +139,16 @@ class _ReservationFormState extends State<ReservationForm> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _handleSubmit,
-              child: Text('Enviar Reserva'),
+              onPressed: _isSubmitting || _isSuccessful
+                  ? null
+                  : _handleSubmit, // Desactivar si está enviando o fue exitoso
+              child: _isSubmitting
+                  ? CircularProgressIndicator(
+                      color: Colors.white) // Indicador de carga
+                  : _isSuccessful
+                      ? Icon(Icons.check_circle,
+                          color: Colors.white) // Icono de éxito
+                      : Text('Enviar Reserva'),
             ),
           ],
         ),
