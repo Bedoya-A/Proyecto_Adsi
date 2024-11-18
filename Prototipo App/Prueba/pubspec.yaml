@@ -52,6 +52,7 @@ dependencies:
   url_launcher: ^6.3.1
   flutter_datetime_picker: ^1.5.1
   flutter_masked_text2: ^0.9.1
+  google_maps_flutter: ^2.10.0
 
 dev_dependencies:
   flutter_test:

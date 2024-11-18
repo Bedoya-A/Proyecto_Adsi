@@ -3,6 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/Menu.dart';
+import 'package:prueba2/MenuFlotante.dart';
 import 'package:prueba2/PaginaOferta.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -120,246 +121,237 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: [
-              MouseRegion(
-                cursor: SystemMouseCursors.click,
-                child: GestureDetector(
-                  onTap: () {
-                    _onLogoTap();
-                    Future.delayed(Duration(milliseconds: 350), () {
-                      Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomePage()),
-                        (Route<dynamic> route) => false,
-                      );
-                    });
-                  },
-                  child: AnimatedSwitcher(
-                    duration: Duration(milliseconds: 350),
-                    transitionBuilder:
-                        (Widget child, Animation<double> animation) {
-                      return ScaleTransition(scale: animation, child: child);
-                    },
-                    child: _isHomeIconVisible
-                        ? Icon(
-                            Icons.home,
-                            key: ValueKey('homeIcon'),
-                            size: 40,
-                            color: Colors.white,
-                          )
-                        : CircleAvatar(
-                            key: ValueKey('logoIcon'),
-                            radius: 20,
-                            backgroundImage: AssetImage('assets/logo.png'),
-                          ),
-                  ),
-                ),
-              ),
-              SizedBox(width: 10),
-              Flexible(
-                child: Text(
-                  'Mirador Tesorito',
-                  overflow: TextOverflow.ellipsis,
-                  maxLines: 1,
-                ),
-              ),
-            ],
-          ),
-          backgroundColor: Colors.green[700],
-          automaticallyImplyLeading: false,
-          actions: [
-            Builder(
-              builder: (context) => IconButton(
-                icon: Icon(Icons.menu),
-                onPressed: () {
-                  Scaffold.of(context).openEndDrawer();
+      appBar: AppBar(
+        title: Row(
+          children: [
+            MouseRegion(
+              cursor: SystemMouseCursors.click,
+              child: GestureDetector(
+                onTap: () {
+                  _onLogoTap();
+                  Future.delayed(Duration(milliseconds: 350), () {
+                    Navigator.pushAndRemoveUntil(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomePage()),
+                      (Route<dynamic> route) => false,
+                    );
+                  });
                 },
+                child: AnimatedSwitcher(
+                  duration: Duration(milliseconds: 350),
+                  transitionBuilder:
+                      (Widget child, Animation<double> animation) {
+                    return ScaleTransition(scale: animation, child: child);
+                  },
+                  child: _isHomeIconVisible
+                      ? Icon(
+                          Icons.home,
+                          key: ValueKey('homeIcon'),
+                          size: 40,
+                          color: Colors.white,
+                        )
+                      : CircleAvatar(
+                          key: ValueKey('logoIcon'),
+                          radius: 20,
+                          backgroundImage: AssetImage('assets/logo.png'),
+                        ),
+                ),
+              ),
+            ),
+            SizedBox(width: 10),
+            Flexible(
+              child: Text(
+                'Mirador Tesorito',
+                overflow: TextOverflow.ellipsis,
+                maxLines: 1,
               ),
             ),
           ],
         ),
-        endDrawer: Menu(
-          selectedDrawerIndex: 0,
-          onSelectDrawerItem: (int index) {
-            if (index == 0) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HomePage()),
-              );
-            } else if (index == 1) {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => PaginaOferta()),
-              );
-            }
-          },
-        ),
-        body: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [
-                Color.fromARGB(255, 70, 254, 236),
-                Color.fromARGB(255, 199, 245, 223),
-              ],
+        backgroundColor: Colors.green[700],
+        automaticallyImplyLeading: false,
+        actions: [
+          Builder(
+            builder: (context) => IconButton(
+              icon: Icon(Icons.menu),
+              onPressed: () {
+                Scaffold.of(context).openEndDrawer();
+              },
             ),
           ),
-          child: SingleChildScrollView(
-              child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                _buildHeaderSection(),
-                SizedBox(height: 20),
-                _buildTitleSection('Cocina y vistas increíbles'),
-                _buildDescriptionSection(
-                    'Disfruta de una experiencia única en nuestro restaurante con vistas al paisaje montañoso y una cocina exquisita.'),
-                SizedBox(height: 20),
-                _buildInteractiveCards(context),
-                SizedBox(height: 20),
-                Divider(color: Colors.teal, thickness: 2),
-                _buildMenuSection(),
-                Divider(color: Colors.teal, thickness: 2),
-                SizedBox(height: 20),
-                Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    CarouselSlider(
-                      items: imgList
-                          .map((item) => Container(
-                                margin: EdgeInsets.symmetric(horizontal: 5.0),
-                                child: ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.asset(
-                                    item,
-                                    fit: BoxFit.cover,
-                                    width: 1000,
-                                  ),
-                                ),
-                              ))
-                          .toList(),
-                      options: CarouselOptions(
-                        height: 200.0,
-                        autoPlay: true,
-                        enlargeCenterPage: true,
-                        viewportFraction: 0.33,
-                        onPageChanged: (index, reason) {
-                          setState(() {
-                            _current = index;
-                          });
-                        },
-                      ),
-                    ),
-                    Positioned(
-                      left: 10,
-                      child: IconButton(
-                        icon: Icon(Icons.arrow_back_ios, color: Colors.white),
-                        onPressed: () {
-                          setState(() {
-                            _current = (_current - 1) % imgList.length;
-                          });
-                        },
-                      ),
-                    ),
-                    Positioned(
-                      right: 10,
-                      child: IconButton(
-                        icon:
-                            Icon(Icons.arrow_forward_ios, color: Colors.white),
-                        onPressed: () {
-                          setState(() {
-                            _current = (_current + 1) % imgList.length;
-                          });
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                Center(child: _buildVideoLink()),
-                SizedBox(height: 20),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.6),
-                  child: _buildSectionTitle("Califica tu experiencia"),
-                ),
-                SizedBox(height: 20), // Separación adicional
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: _buildStarRating(),
-                ),
-                SizedBox(height: 20), // Separación adicional
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: TextField(
-                    controller: _reviewController,
-                    decoration: InputDecoration(
-                      labelText: 'Escribe tu reseña',
-                      border: OutlineInputBorder(),
-                    ),
-                    maxLines: 4,
-                  ),
-                ),
-                SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  child: ElevatedButton(
-                    onPressed: () {
-                      setState(() {
-                        _reviews.add({
-                          'rating': _rating,
-                          'review': _reviewController.text,
-                        });
-                        _reviewController.clear();
-                      });
-                    },
-                    child: Text('Enviar Reseña'),
-                  ),
-                ),
-                SizedBox(height: 20),
-                // Mostrar las reseñas con opción de eliminar
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: _reviews.map((review) {
-                      int index = _reviews.indexOf(review); // Obtener índice
-                      return Card(
-                        margin: EdgeInsets.symmetric(vertical: 8),
-                        elevation: 4,
-                        child: ListTile(
-                          title: Row(
-                            children: [
-                              Icon(Icons.star, color: Colors.amber),
-                              SizedBox(width: 5),
-                              Text('${review['rating']} estrellas'),
-                            ],
-                          ),
-                          subtitle: Text(review['review']),
-                          trailing: IconButton(
-                            icon: Icon(Icons.delete, color: Colors.red),
-                            onPressed: () {
-                              setState(() {
-                                _reviews.removeAt(index); // Eliminar reseña
-                              });
-                            },
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ])),
-        ),
-        floatingActionButton: Padding(
-          padding: const EdgeInsets.only(left: 20, bottom: 20),
-          child: FloatingActionButton(
-            onPressed:
-                _showReservationForm, // Función para mostrar el formulario de reserva
-            backgroundColor: Colors.green[700],
-            child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
+        ],
+      ),
+      endDrawer: Menu(
+        selectedDrawerIndex: 0,
+        onSelectDrawerItem: (int index) {
+          if (index == 0) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => HomePage()),
+            );
+          } else if (index == 1) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => PaginaOferta()),
+            );
+          }
+        },
+      ),
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [
+              Color.fromARGB(255, 70, 254, 236),
+              Color.fromARGB(255, 199, 245, 223),
+            ],
           ),
-        ));
+        ),
+        child: SingleChildScrollView(
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          _buildHeaderSection(),
+          SizedBox(height: 20),
+          _buildTitleSection('Cocina y vistas increíbles'),
+          _buildDescriptionSection(
+              'Disfruta de una experiencia única en nuestro restaurante con vistas al paisaje montañoso y una cocina exquisita.'),
+          SizedBox(height: 20),
+          _buildInteractiveCards(context),
+          SizedBox(height: 20),
+          Divider(color: Colors.teal, thickness: 2),
+          _buildMenuSection(),
+          Divider(color: Colors.teal, thickness: 2),
+          SizedBox(height: 20),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              CarouselSlider(
+                items: imgList
+                    .map((item) => Container(
+                          margin: EdgeInsets.symmetric(horizontal: 5.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(8.0),
+                            child: Image.asset(
+                              item,
+                              fit: BoxFit.cover,
+                              width: 1000,
+                            ),
+                          ),
+                        ))
+                    .toList(),
+                options: CarouselOptions(
+                  height: 200.0,
+                  autoPlay: true,
+                  enlargeCenterPage: true,
+                  viewportFraction: 0.33,
+                  onPageChanged: (index, reason) {
+                    setState(() {
+                      _current = index;
+                    });
+                  },
+                ),
+              ),
+              Positioned(
+                left: 10,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_back_ios, color: Colors.white),
+                  onPressed: () {
+                    setState(() {
+                      _current = (_current - 1) % imgList.length;
+                    });
+                  },
+                ),
+              ),
+              Positioned(
+                right: 10,
+                child: IconButton(
+                  icon: Icon(Icons.arrow_forward_ios, color: Colors.white),
+                  onPressed: () {
+                    setState(() {
+                      _current = (_current + 1) % imgList.length;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+          SizedBox(height: 20),
+          Center(child: _buildVideoLink()),
+          SizedBox(height: 20),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.6),
+            child: _buildSectionTitle("Califica tu experiencia"),
+          ),
+          SizedBox(height: 20), // Separación adicional
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: _buildStarRating(),
+          ),
+          SizedBox(height: 20), // Separación adicional
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: TextField(
+              controller: _reviewController,
+              decoration: InputDecoration(
+                labelText: 'Escribe tu reseña',
+                border: OutlineInputBorder(),
+              ),
+              maxLines: 4,
+            ),
+          ),
+          SizedBox(height: 10),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            child: ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _reviews.add({
+                    'rating': _rating,
+                    'review': _reviewController.text,
+                  });
+                  _reviewController.clear();
+                });
+              },
+              child: Text('Enviar Reseña'),
+            ),
+          ),
+          SizedBox(height: 20),
+          // Mostrar las reseñas con opción de eliminar
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              children: _reviews.map((review) {
+                int index = _reviews.indexOf(review); // Obtener índice
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  elevation: 4,
+                  child: ListTile(
+                    title: Row(
+                      children: [
+                        Icon(Icons.star, color: Colors.amber),
+                        SizedBox(width: 5),
+                        Text('${review['rating']} estrellas'),
+                      ],
+                    ),
+                    subtitle: Text(review['review']),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        setState(() {
+                          _reviews.removeAt(index); // Eliminar reseña
+                        });
+                      },
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        ])),
+      ),
+      floatingActionButton: FloatingActionMenu(),
+    );
   }
 
   Widget _buildVideoLink() {

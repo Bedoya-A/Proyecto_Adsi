@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
+import 'package:prueba2/MenuFlotante.dart';
 import 'package:prueba2/PaginaOferta.dart';
 import 'package:prueba2/ServiciosJardinBotanico.dart';
 import 'package:prueba2/ZoomImagen.dart';
@@ -147,15 +148,7 @@ class _JardinBotanicoState extends State<JardinBotanico>
           ServiciosJardinBotanico(),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(left: 20, bottom: 20),
-        child: FloatingActionButton(
-          onPressed:
-              _showReservationForm, // Función para mostrar el formulario de reserva
-          backgroundColor: Colors.green[700],
-          child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
-        ),
-      ),
+      floatingActionButton: FloatingActionMenu(),
     );
   }
 
