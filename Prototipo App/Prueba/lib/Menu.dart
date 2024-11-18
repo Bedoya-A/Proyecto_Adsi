@@ -140,8 +140,8 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                 ),
                 SizedBox(height: 10),
                 Text(
-                  'Explora Calambeo',
-                  style: TextStyle(color: Colors.white, fontSize: 24),
+                  'Explora Calambeo - Ambalá',
+                  style: TextStyle(color: Colors.white, fontSize: 20),
                 ),
               ],
             ),
