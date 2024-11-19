@@ -1,8 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:prueba2/WidgetOferta.dart'; // Asegúrate de que la ruta sea correcta
+import 'package:prueba2/Menu.dart';
+import 'package:prueba2/PaginaOfertaItems.dart';
 
 class PaginaOferta extends StatelessWidget {
   const PaginaOferta({Key? key}) : super(key: key);
+
+  void _openMenuSection(BuildContext context, int sectionIndex) {
+    Scaffold.of(context).openEndDrawer();
+
+    Future.delayed(Duration(milliseconds: 300), () {
+      final menuState = context.findAncestorStateOfType<MenuState>();
+      menuState
+          ?.selectSection(sectionIndex); // Selecciona la sección específica
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,8 +28,7 @@ class PaginaOferta extends StatelessWidget {
             fit: BoxFit.cover,
             errorBuilder: (context, error, stackTrace) {
               return Center(
-                child: Icon(Icons.error,
-                    color: Colors.red, size: 50), // Icono de error
+                child: Icon(Icons.error, color: Colors.red, size: 50),
               );
             },
           ),
@@ -50,18 +60,26 @@ class PaginaOferta extends StatelessWidget {
                       OfferItem(
                         offer: 'Miradores con vistas espectaculares',
                         icon: Icons.check_circle,
+                        onTap: () => _openMenuSection(
+                            context, 5), // Acción al hacer clic
                       ),
                       OfferItem(
                         offer: 'Cabañas acogedoras en plena naturaleza',
                         icon: Icons.check_circle,
+                        onTap: () => _openMenuSection(
+                            context, 1), // Acción al hacer clic
                       ),
                       OfferItem(
                         offer: 'Rutas de aventura y senderismo',
                         icon: Icons.check_circle,
+                        onTap: () => _openMenuSection(
+                            context, 7), // Acción al hacer clic
                       ),
                       OfferItem(
                         offer: 'Experiencias gastronómicas locales',
                         icon: Icons.check_circle,
+                        onTap: () => _openMenuSection(
+                            context, 10), // Acción al hacer clic
                       ),
                     ],
                   ),

@@ -125,7 +125,7 @@ class _TransporteState extends State<Transporte> {
             _buildTransportSection(
                 'Busetas',
                 'assets/buseta.jpg',
-                '• Principal medio de transporte público.\n• Tarifa: \$2,800.\n• Amplia cobertura en la ciudad.\n• Circulación frecuente de día, menor frecuencia de noche.',
+                '• Principal medio de transporte público.\n• Tarifa: \$2,700.\n• Amplia cobertura en la ciudad.\n• Circulación frecuente de día, menor frecuencia de noche.',
                 context),
             _buildTransportSection(
                 'Uber',

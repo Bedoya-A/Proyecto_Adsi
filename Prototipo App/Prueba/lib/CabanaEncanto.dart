@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/HomePage.dart';
+import 'package:prueba2/MenuFlotante.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CabanaEncanto extends StatefulWidget {
@@ -335,15 +336,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           ),
         ),
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(left: 20, bottom: 20),
-        child: FloatingActionButton(
-          onPressed:
-              _showReservationForm, // Función para mostrar el formulario de reserva
-          backgroundColor: Colors.green[700],
-          child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
-        ),
-      ),
+      floatingActionButton: FloatingActionMenu(),
     );
   }
 

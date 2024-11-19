@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
+import 'package:prueba2/MenuFlotante.dart';
 import 'package:prueba2/PaginaOferta.dart';
 import 'package:prueba2/ServiciosJardinBotanico.dart';
 import 'package:prueba2/ZoomImagen.dart';
@@ -147,15 +148,7 @@ class _JardinBotanicoState extends State<JardinBotanico>
           ServiciosJardinBotanico(),
         ],
       ),
-      floatingActionButton: Padding(
-        padding: const EdgeInsets.only(left: 20, bottom: 20),
-        child: FloatingActionButton(
-          onPressed:
-              _showReservationForm, // Función para mostrar el formulario de reserva
-          backgroundColor: Colors.green[700],
-          child: Icon(Icons.bookmark_add, size: 30), // Icono del botón
-        ),
-      ),
+      floatingActionButton: FloatingActionMenu(),
     );
   }
 
@@ -204,9 +197,9 @@ class _JardinBotanicoState extends State<JardinBotanico>
 
   Widget _buildJardinBotanicoContent() {
     return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: SingleChildScrollView(
-        child: Column(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+            child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             _buildTitle(),
@@ -281,10 +274,36 @@ class _JardinBotanicoState extends State<JardinBotanico>
               ),
             ),
             SizedBox(height: 20),
+            // Mostrar las reseñas con opción de eliminar
+            Column(
+              children: _reviews.map((review) {
+                int index = _reviews.indexOf(review); // Obtener índice
+                return Card(
+                  margin: EdgeInsets.symmetric(vertical: 8),
+                  elevation: 4,
+                  child: ListTile(
+                    title: Row(
+                      children: [
+                        Icon(Icons.star, color: Colors.amber),
+                        SizedBox(width: 5),
+                        Text('${review['rating']} estrellas'),
+                      ],
+                    ),
+                    subtitle: Text(review['review']),
+                    trailing: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.red),
+                      onPressed: () {
+                        setState(() {
+                          _reviews.removeAt(index); // Eliminar reseña
+                        });
+                      },
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
           ],
-        ),
-      ),
-    );
+        )));
   }
 
   Widget _buildTitle() {

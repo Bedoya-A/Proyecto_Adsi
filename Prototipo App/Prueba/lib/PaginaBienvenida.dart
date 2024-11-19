@@ -52,7 +52,7 @@ class PaginaBienvenida extends StatelessWidget {
                         opacity: 1.0,
                         duration: Duration(seconds: 1),
                         child: Text(
-                          '¡Bienvenido a AppExplora Calambeo!',
+                          '¡Bienvenido a AppExplora Calambeo - Ambalá!',
                           style: TextStyle(
                             fontSize: 30,
                             fontWeight: FontWeight.bold,

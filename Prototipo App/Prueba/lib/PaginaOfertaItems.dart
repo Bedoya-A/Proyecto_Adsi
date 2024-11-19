@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 class OfferItem extends StatelessWidget {
   final String offer;
   final IconData icon;
+  final VoidCallback onTap;
 
-  OfferItem({required this.offer, required this.icon});
+  OfferItem({required this.offer, required this.icon, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -17,9 +18,7 @@ class OfferItem extends StatelessWidget {
         elevation: 5,
         color: Colors.black.withOpacity(0.7),
         child: InkWell(
-          onTap: () {
-            // Acción al presionar, sin SnackBar
-          },
+          onTap: onTap,
           child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Row(
