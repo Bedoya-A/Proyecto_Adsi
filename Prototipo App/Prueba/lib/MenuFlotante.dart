@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/Mapa.dart';
 
@@ -69,13 +70,15 @@ class _FloatingActionMenuState extends State<FloatingActionMenu> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       FloatingActionButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Mapa(),
-                            ),
-                          );
+                        onPressed: () async {
+                          const String wazeUrl =
+                              'https://www.waze.com/en/live-map/directions/co/tolima/ibague/mirador-tesorito?navigate=yes&place=ChIJRyUrGHXFOI4RXhgm1xeFUTU';
+
+                          if (await canLaunch(wazeUrl)) {
+                            await launch(wazeUrl); // Abre Waze en el navegador
+                          } else {
+                            throw 'No se pudo abrir Waze';
+                          }
                         },
                         backgroundColor: const Color(0xFF88BDA4),
                         child: const Icon(Icons.location_on),

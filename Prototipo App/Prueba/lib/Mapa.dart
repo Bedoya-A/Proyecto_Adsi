@@ -1,56 +1,43 @@
 import 'package:flutter/material.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
-class Mapa extends StatefulWidget {
+class Mapa extends StatelessWidget {
   @override
-  _MapaState createState() => _MapaState();
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MapaScreen(),
+    );
+  }
 }
 
-class _MapaState extends State<Mapa> {
-  late GoogleMapController _mapController;
-
-  // Coordenadas del Mirador Tesorito (ajusta según tu necesidad)
-  final LatLng _initialPosition =
-      LatLng(5.0667, -75.5167); // Ejemplo: Manizales, Colombia
-  final Marker _miradorMarker = Marker(
-    markerId: MarkerId("mirador_tesorito"),
-    position: LatLng(5.0667, -75.5167),
-    infoWindow: InfoWindow(
-      title: "Mirador Tesorito",
-      snippet: "Un lugar increíble para disfrutar",
-    ),
-    icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-  );
+class MapaScreen extends StatelessWidget {
+  // Método para abrir Google Maps
+  void _abrirGoogleMaps() async {
+    final Uri url = Uri.parse(
+        'https://www.google.com/maps/place/Mirador+Tesorito/@6.270894,-75.580238,15z');
+    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+      throw 'No se pudo abrir Google Maps';
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Mapa del Mirador Tesorito'),
-        backgroundColor: Colors.green[700],
+        title: Text('Abrir Mapa'),
+        centerTitle: true,
       ),
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: _initialPosition,
-          zoom: 15, // Nivel de zoom inicial
+      body: Center(
+        child: ElevatedButton(
+          onPressed: _abrirGoogleMaps,
+          child: Text('Mapa'),
+          style: ElevatedButton.styleFrom(
+            padding: EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+            textStyle: TextStyle(fontSize: 18),
+          ),
         ),
-        markers: {_miradorMarker},
-        onMapCreated: (GoogleMapController controller) {
-          _mapController = controller;
-        },
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _moveToMirador,
-        child: Icon(Icons.location_on),
-        backgroundColor: Colors.green,
-      ),
-    );
-  }
-
-  // Método para centrar el mapa en el Mirador Tesorito
-  void _moveToMirador() {
-    _mapController.animateCamera(
-      CameraUpdate.newLatLngZoom(_initialPosition, 18), // Zoom más cercano
     );
   }
 }
