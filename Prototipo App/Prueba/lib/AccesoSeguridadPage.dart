@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-class Accesoseguridadpage extends StatelessWidget {
-  const Accesoseguridadpage({super.key});
+class AccesoSeguridadPage extends StatelessWidget {
+  const AccesoSeguridadPage({super.key});
 
   @override
   Widget build(BuildContext context) {

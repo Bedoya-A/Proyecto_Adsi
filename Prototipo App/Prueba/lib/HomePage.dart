@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'ContactSupportPage.dart';
-import 'Menu.dart';
-import 'MiCuentaPage.dart';
-import 'ModeloEstado.dart';
-import 'PaginaBienvenida.dart';
-import 'PaginaOferta.dart';
-import 'NotificacionesPage.dart';
-import 'TuActividadPage.dart';
-import 'AccesoSeguridadPage.dart'; // Importa la página de Acceso y Seguridad
+import 'package:prueba2/AccesoSeguridadPage.dart';
+import 'package:prueba2/ContactSupportPage.dart';
+import 'package:prueba2/CustomAppbar.dart';
+import 'package:prueba2/InicioSesion.dart';
+import 'package:prueba2/Menu.dart';
+import 'package:prueba2/MenuUsuario.dart';
+import 'package:prueba2/MiCuentaPage.dart';
+import 'package:prueba2/ModeloEstado.dart';
+import 'package:prueba2/NotificacionesPage.dart';
+import 'package:prueba2/PaginaBienvenida.dart';
+import 'package:prueba2/PaginaOferta.dart';
+import 'package:prueba2/RegistroSesion.dart';
+import 'package:prueba2/TuActividadPage.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -16,76 +20,30 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool _isHomeIconVisible = false;
-  bool isMenuOpen = false;
   bool isDarkMode = false;
   PageController _pageController = PageController();
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: isDarkMode ? Colors.black : Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        title: Row(
-          children: [
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    _isHomeIconVisible = !_isHomeIconVisible;
-                  });
-
-                  Future.delayed(Duration(milliseconds: 350), () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      (Route<dynamic> route) => false,
-                    );
-                  });
-                },
-                child: AnimatedSwitcher(
-                  duration: Duration(milliseconds: 350),
-                  transitionBuilder:
-                      (Widget child, Animation<double> animation) {
-                    return ScaleTransition(scale: animation, child: child);
-                  },
-                  child: _isHomeIconVisible
-                      ? Icon(
-                          Icons.home,
-                          key: ValueKey('homeIcon'),
-                          size: 40,
-                          color: Colors.white,
-                        )
-                      : CircleAvatar(
-                          key: ValueKey('logoIcon'),
-                          radius: 20,
-                          backgroundImage: AssetImage('assets/logo.png'),
-                        ),
-                ),
-              ),
-            ),
-            SizedBox(width: 10),
-            Flexible(
-              child: Text(
-                'AppExplora Calambeo - Ambalá',
-                overflow: TextOverflow.ellipsis,
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: Colors.red,
-        actions: [
-          Builder(
-            builder: (context) => IconButton(
-              icon: Icon(Icons.menu),
-              onPressed: () {
-                Scaffold.of(context).openEndDrawer();
+      appBar: PreferredSize(
+        preferredSize: Size.fromHeight(kToolbarHeight),
+        child: Consumer<AppState>(
+          builder: (context, appState, child) {
+            return CustomAppBar(
+              isLoggedIn: appState.isLoggedIn,
+              profileImageUrl: appState.isLoggedIn ? 'url-a-imagen' : null,
+              onUserIconPressed:
+                  appState.isLoggedIn ? _showUserMenu : _showLoginOrRegister,
+              onMenuPressed: () {
+                _scaffoldKey.currentState?.openEndDrawer();
               },
-            ),
-          ),
-        ],
+            );
+          },
+        ),
       ),
       endDrawer: Consumer<AppState>(
         builder: (context, appState, child) {
@@ -100,19 +58,94 @@ class _HomePageState extends State<HomePage> {
       body: Stack(
         children: [
           buildPageView(),
-          if (isMenuOpen) _buildUserMenu(),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          setState(() {
-            isMenuOpen = !isMenuOpen;
-          });
-        },
-        child: Icon(Icons.person, color: Colors.white),
-        backgroundColor: Colors.red,
-      ),
     );
+  }
+
+  void _showLoginOrRegister() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Container(
+          padding: EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ListTile(
+                leading: Icon(Icons.login),
+                title: Text('Iniciar sesión'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: Icon(Icons.app_registration),
+                title: Text('Registrar cuenta'),
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegisterPage()),
+                  );
+                },
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _showUserMenu() {
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return UserMenu(
+          onVerCuenta: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MiCuentaPage()),
+            );
+          },
+          onActividad: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => TuActividadPage()),
+            );
+          },
+          onSeguridad: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => AccesoSeguridadPage()),
+            );
+          },
+          onNotificaciones: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => NotificacionesPage()),
+            );
+          },
+          onSoporte: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ContactSupportPage()),
+            );
+          },
+          onCerrarSesion: () {
+            _logout();
+          },
+        );
+      },
+    );
+  }
+
+  void _logout() {
+    Provider.of<AppState>(context, listen: false).setLoginStatus(false);
+    Navigator.pop(context); // Cierra el menú modal
   }
 
   Widget buildPageView() {
@@ -126,20 +159,16 @@ class _HomePageState extends State<HomePage> {
                 appState.setCurrentPage(page);
               },
               children: [
-                _buildPageTransition(
-                  PaginaBienvenida(
-                    onComenzar: () {
-                      _pageController.nextPage(
-                        duration: Duration(milliseconds: 300),
-                        curve: Curves.easeInOut,
-                      );
-                      appState.setCurrentPage(1);
-                    },
-                  ),
-                ),
-                _buildPageTransition(
-                  PaginaOferta(key: ValueKey(1)),
-                ),
+                _buildPageTransition(PaginaBienvenida(
+                  onComenzar: () {
+                    _pageController.nextPage(
+                      duration: Duration(milliseconds: 300),
+                      curve: Curves.easeInOut,
+                    );
+                    appState.setCurrentPage(1);
+                  },
+                )),
+                _buildPageTransition(PaginaOferta(key: ValueKey(1))),
               ],
             ),
             if (appState.currentPage > 0)
@@ -182,95 +211,6 @@ class _HomePageState extends State<HomePage> {
     return AnimatedSwitcher(
       duration: Duration(milliseconds: 300),
       child: page,
-    );
-  }
-
-  Widget _buildUserMenu() {
-    return Positioned(
-      right: 10,
-      top: kToolbarHeight + 10,
-      child: Material(
-        elevation: 5,
-        borderRadius: BorderRadius.circular(10),
-        color: isDarkMode ? Colors.grey[850] : Colors.white,
-        child: Container(
-          width: 250,
-          padding: EdgeInsets.all(10),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildMenuOption('Mi Cuenta', Icons.account_circle, onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MiCuentaPage()),
-                );
-              }),
-              _buildMenuOption('Tu Actividad', Icons.history, onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => TuActividadPage()),
-                );
-              }),
-              _buildMenuOption('Acceso y seguridad', Icons.lock, onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => Accesoseguridadpage()),
-                );
-              }),
-              _buildMenuOption('Notificaciones', Icons.notifications,
-                  onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => NotificacionesPage()),
-                );
-              }),
-              _buildMenuOption('Idioma', Icons.language),
-              _buildMenuOption(
-                'Contactar con soporte técnico',
-                Icons.support_agent,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => ContactSupportPage()),
-                  );
-                },
-              ),
-              SwitchListTile(
-                title: Text(
-                  'Modo Oscuro',
-                  style: TextStyle(
-                      color: isDarkMode ? Colors.white : Colors.black),
-                ),
-                value: isDarkMode,
-                onChanged: (value) {
-                  setState(() {
-                    isDarkMode = value;
-                  });
-                },
-                secondary: Icon(Icons.dark_mode,
-                    color: isDarkMode ? Colors.white : Colors.black),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildMenuOption(String title, IconData icon, {VoidCallback? onTap}) {
-    return ListTile(
-      leading: Icon(icon, color: isDarkMode ? Colors.white : Colors.black),
-      title: Text(
-        title,
-        style: TextStyle(color: isDarkMode ? Colors.white : Colors.black),
-      ),
-      onTap: onTap ??
-          () {
-            ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('Has seleccionado: $title')));
-          },
     );
   }
 }
