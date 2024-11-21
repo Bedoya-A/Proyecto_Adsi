@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
-import 'dart:io';
-import 'package:image_picker/image_picker.dart';
+import 'package:provider/provider.dart';
+import 'package:prueba2/AccesibilidadSeccion.dart';
+import 'package:prueba2/EditableField.dart';
+import 'package:prueba2/FotoPerfil.dart';
+import 'package:prueba2/ModeloEstado.dart';
+import 'package:prueba2/TemaSeleccion.dart';
 
 class MiCuentaPage extends StatefulWidget {
   @override
@@ -8,11 +12,6 @@ class MiCuentaPage extends StatefulWidget {
 }
 
 class _MiCuentaPageState extends State<MiCuentaPage> {
-  String nombre = "Daniela Ospina";
-  String correo = "danielaospina.1129@gmail.com";
-  File? _fotoPerfil;
-  final ImagePicker _picker = ImagePicker();
-
   // Variables para el tema
   ThemeMode _themeMode = ThemeMode.system;
   int _temaSeleccionado = 0; // 0: Sistema, 1: Claro, 2: Oscuro
@@ -24,153 +23,109 @@ class _MiCuentaPageState extends State<MiCuentaPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: _themeMode,
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Mi Cuenta'),
-          backgroundColor: Colors.red,
-        ),
-        body: Container(
-          decoration: _temaSeleccionado == 1
-              ? BoxDecoration(
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [
-                      Colors.blue.shade100,
-                      Colors.white,
-                    ],
-                  ),
-                )
-              : null,
-          child: SingleChildScrollView(
-            padding: EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Center(
-                  child: GestureDetector(
-                    onTap: () => _cambiarFotoPerfil(),
-                    child: CircleAvatar(
-                      radius: 50,
-                      backgroundImage: _fotoPerfil != null
-                          ? FileImage(_fotoPerfil!)
-                          : AssetImage('assets/logo.png') as ImageProvider,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Center(
-                  child: TextButton(
-                    onPressed: () => _cambiarFotoPerfil(),
-                    child: Text(
-                      'Cambiar la foto',
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),
-                ),
-                Divider(),
-                _buildEditableField(
-                  'Nombre',
-                  nombre,
-                  Icons.person,
-                  (nuevoValor) {
-                    setState(() {
-                      nombre = nuevoValor;
-                    });
-                  },
-                ),
-                Divider(),
-                _buildEditableField(
-                  'Correo electrónico',
-                  correo,
-                  Icons.email,
-                  (nuevoValor) {
-                    setState(() {
-                      correo = nuevoValor;
-                    });
-                  },
-                ),
-                Divider(),
-                _buildTemaSection(),
-                Divider(),
-                _buildAccesibilidadSection(),
-              ],
-            ),
-          ),
+    final appState = Provider.of<AppState>(context);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Mi Cuenta'),
+        backgroundColor: Colors.red,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context); // Regresa a la pantalla anterior
+          },
         ),
       ),
-    );
-  }
-
-  Widget _buildEditableField(
-      String titulo, String valor, IconData icono, Function(String) onSave) {
-    return ListTile(
-      leading: Icon(icono, color: Colors.red),
-      title: Text(titulo),
-      subtitle: Text(valor),
-      trailing: IconButton(
-        icon: Icon(Icons.edit),
-        onPressed: () {
-          _mostrarDialogoEditar(context, titulo, valor, onSave);
-        },
-      ),
-    );
-  }
-
-  Widget _buildTemaSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Tema',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            _buildTemaOption('Sincronizar con el sistema', 0),
-            _buildTemaOption('Claro', 1),
-            _buildTemaOption('Oscuro', 2),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildTemaOption(String titulo, int index) {
-    return GestureDetector(
-      onTap: () {
-        setState(() {
-          _temaSeleccionado = index;
-          _themeMode = _getThemeMode(index);
-        });
-      },
-      child: Container(
-        padding: EdgeInsets.all(10),
-        decoration: BoxDecoration(
-          border: Border.all(
-            color: _temaSeleccionado == index ? Colors.blue : Colors.grey,
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(20),
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Icon(
-              index == 0
-                  ? Icons.phone_android
-                  : (index == 1 ? Icons.light_mode : Icons.dark_mode),
-              color: _temaSeleccionado == index ? Colors.blue : Colors.grey,
+            // Foto de perfil centrada y con tamaño 50
+            Center(
+              child: FotoPerfil(
+                onTap: _cambiarFotoPerfil,
+                // Pasando el tamaño 50 para la foto de perfil
+                fotoSize: 50.0,
+              ),
             ),
-            SizedBox(height: 5),
-            Text(
-              titulo,
-              style: TextStyle(
-                color: _temaSeleccionado == index ? Colors.blue : Colors.grey,
+
+            SizedBox(height: 10),
+            Center(
+              child: TextButton(
+                onPressed: () => _cambiarFotoPerfil(context),
+                child: Text(
+                  'Cambiar la foto',
+                  style: TextStyle(color: Colors.blue),
+                ),
+              ),
+            ),
+            Divider(),
+
+            // Campos editables
+            EditableField(
+              titulo: 'Nombre',
+              valor: appState.nombreUsuario,
+              icono: Icons.person,
+              onSave: (nuevoValor) {
+                appState.setNombreUsuario(nuevoValor);
+              },
+            ),
+            Divider(),
+            EditableField(
+              titulo: 'Correo electrónico',
+              valor: appState.correoUsuario,
+              icono: Icons.email,
+              onSave: (nuevoValor) {
+                appState.setCorreoUsuario(nuevoValor);
+              },
+            ),
+            Divider(),
+
+            // Sección de Tema
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: TemaSection(
+                temaSeleccionado: _temaSeleccionado,
+                onTemaChange: (index) {
+                  setState(() {
+                    _temaSeleccionado = index;
+                    // Cambia el tema en AppState cuando el usuario selecciona uno
+                    if (index == 0) {
+                      appState.setThemeMode(ThemeMode.system);
+                    } else if (index == 1) {
+                      appState.setThemeMode(ThemeMode.light);
+                    } else {
+                      appState.setThemeMode(ThemeMode.dark);
+                    }
+                  });
+                },
+              ),
+            ),
+            Divider(),
+
+            // Sección de Accesibilidad
+            Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.0),
+              child: AccesibilidadSection(
+                atajosModificador: _atajosModificador,
+                contrasteAlto: _contrasteAlto,
+                subtitulos: _subtitulos,
+                onAtajosModificadorChanged: (valor) {
+                  setState(() {
+                    _atajosModificador = valor;
+                  });
+                },
+                onContrasteAltoChanged: (valor) {
+                  setState(() {
+                    _contrasteAlto = valor;
+                  });
+                },
+                onSubtitulosChanged: (valor) {
+                  setState(() {
+                    _subtitulos = valor;
+                  });
+                },
               ),
             ),
           ],
@@ -179,115 +134,7 @@ class _MiCuentaPageState extends State<MiCuentaPage> {
     );
   }
 
-  ThemeMode _getThemeMode(int index) {
-    switch (index) {
-      case 1:
-        return ThemeMode.light;
-      case 2:
-        return ThemeMode.dark;
-      default:
-        return ThemeMode.system;
-    }
-  }
-
-  Widget _buildAccesibilidadSection() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'Accesibilidad',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-        ),
-        SizedBox(height: 10),
-        _buildAccesibilidadOption(
-          'Atajos necesitan modificador',
-          Icons.keyboard,
-          _atajosModificador,
-          (value) {
-            setState(() {
-              _atajosModificador = value;
-            });
-          },
-        ),
-        _buildAccesibilidadOption(
-          'Contraste alto de colores',
-          Icons.contrast,
-          _contrasteAlto,
-          (value) {
-            setState(() {
-              _contrasteAlto = value;
-            });
-          },
-        ),
-        _buildAccesibilidadOption(
-          'Subtítulos',
-          Icons.subtitles,
-          _subtitulos,
-          (value) {
-            setState(() {
-              _subtitulos = value;
-            });
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAccesibilidadOption(
-      String titulo, IconData icono, bool estado, Function(bool) onChanged) {
-    return SwitchListTile(
-      title: Row(
-        children: [
-          Icon(icono, color: Colors.red),
-          SizedBox(width: 10),
-          Text(titulo),
-        ],
-      ),
-      value: estado,
-      onChanged: onChanged,
-    );
-  }
-
-  void _mostrarDialogoEditar(BuildContext context, String titulo,
-      String valorInicial, Function(String) onSave) {
-    TextEditingController controller =
-        TextEditingController(text: valorInicial);
-
-    showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: Text('Editar $titulo'),
-          content: TextField(
-            controller: controller,
-            decoration: InputDecoration(hintText: 'Ingrese $titulo'),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () {
-                onSave(controller.text);
-                Navigator.of(context).pop();
-              },
-              child: Text('Guardar'),
-            ),
-          ],
-        );
-      },
-    );
-  }
-
-  Future<void> _cambiarFotoPerfil() async {
-    final XFile? imagenSeleccionada =
-        await _picker.pickImage(source: ImageSource.gallery);
-
-    if (imagenSeleccionada != null) {
-      setState(() {
-        _fotoPerfil = File(imagenSeleccionada.path);
-      });
-    }
+  void _cambiarFotoPerfil(BuildContext context) async {
+    // Funcionalidad para cambiar la foto
   }
 }

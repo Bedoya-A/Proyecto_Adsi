@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class UserMenu extends StatelessWidget {
+class UserMenuContent extends StatelessWidget {
   final VoidCallback onVerCuenta;
   final VoidCallback onActividad;
   final VoidCallback onSeguridad;
@@ -8,7 +8,7 @@ class UserMenu extends StatelessWidget {
   final VoidCallback onSoporte;
   final VoidCallback onCerrarSesion;
 
-  UserMenu({
+  UserMenuContent({
     required this.onVerCuenta,
     required this.onActividad,
     required this.onSeguridad,
@@ -24,41 +24,25 @@ class UserMenu extends StatelessWidget {
       child: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ListTile(
-              leading: Icon(Icons.account_circle),
-              title: Text('Ver mi cuenta'),
-              onTap: onVerCuenta,
-            ),
-            ListTile(
-              leading: Icon(Icons.history),
-              title: Text('Tu actividad'),
-              onTap: onActividad,
-            ),
-            ListTile(
-              leading: Icon(Icons.lock),
-              title: Text('Acceso y seguridad'),
-              onTap: onSeguridad,
-            ),
-            ListTile(
-              leading: Icon(Icons.notifications),
-              title: Text('Notificaciones'),
-              onTap: onNotificaciones,
-            ),
-            ListTile(
-              leading: Icon(Icons.support_agent),
-              title: Text('Contactar con soporte técnico'),
-              onTap: onSoporte,
-            ),
-            ListTile(
-              leading: Icon(Icons.logout),
-              title: Text('Cerrar sesión'),
-              onTap: onCerrarSesion,
-            ),
+            _buildMenuItem(Icons.account_circle, 'Ver cuenta', onVerCuenta),
+            _buildMenuItem(Icons.access_alarm, 'Actividad', onActividad),
+            _buildMenuItem(Icons.security, 'Seguridad', onSeguridad),
+            _buildMenuItem(
+                Icons.notifications, 'Notificaciones', onNotificaciones),
+            _buildMenuItem(Icons.headset_mic, 'Soporte', onSoporte),
+            _buildMenuItem(Icons.exit_to_app, 'Cerrar sesión', onCerrarSesion),
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildMenuItem(IconData icon, String title, VoidCallback onTap) {
+    return ListTile(
+      leading: Icon(icon),
+      title: Text(title),
+      onTap: onTap,
     );
   }
 }

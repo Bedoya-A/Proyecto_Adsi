@@ -12,19 +12,23 @@ class Principal extends StatelessWidget {
   Widget build(BuildContext context) {
     return ChangeNotifierProvider(
       create: (context) => AppState(),
-      child: MaterialApp(
-        title: 'AppExplora Calambeo - Ambalá',
-        theme: ThemeData(
-          primarySwatch: Colors.red,
-        ),
-        home: HomePage(), // Aquí inicializa con HomePage
-        debugShowCheckedModeBanner: false,
-        // Configuración de rutas
-        routes: {
-          '/home': (context) => HomePage(),
-          '/login': (context) => LoginPage(),
-          '/register': (context) =>
-              RegisterPage(), // Asegúrate de que RegisterPage esté importado
+      child: Consumer<AppState>(
+        // Aquí usas Consumer para obtener el estado del tema
+        builder: (context, appState, child) {
+          return MaterialApp(
+            title: 'AppExplora Calambeo - Ambalá',
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(),
+            themeMode: appState.themeMode, // Usar el themeMode desde AppState
+            home: HomePage(), // Aquí inicializa con HomePage
+            debugShowCheckedModeBanner: false,
+            // Configuración de rutas
+            routes: {
+              '/home': (context) => HomePage(),
+              '/login': (context) => LoginPage(),
+              '/register': (context) => RegisterPage(),
+            },
+          );
         },
       ),
     );

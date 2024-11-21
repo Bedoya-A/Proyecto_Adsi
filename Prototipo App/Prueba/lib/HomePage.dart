@@ -104,7 +104,7 @@ class _HomePageState extends State<HomePage> {
     showModalBottomSheet(
       context: context,
       builder: (context) {
-        return UserMenu(
+        return UserMenuContent(
           onVerCuenta: () {
             Navigator.push(
               context,
@@ -135,9 +135,7 @@ class _HomePageState extends State<HomePage> {
               MaterialPageRoute(builder: (context) => ContactSupportPage()),
             );
           },
-          onCerrarSesion: () {
-            _logout();
-          },
+          onCerrarSesion: _logout,
         );
       },
     );

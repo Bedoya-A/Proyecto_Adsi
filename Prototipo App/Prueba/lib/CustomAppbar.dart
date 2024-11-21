@@ -1,16 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:prueba2/FotoPerfil.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   final bool isLoggedIn;
-  final String? profileImageUrl;
   final VoidCallback onUserIconPressed;
   final VoidCallback onMenuPressed;
 
   CustomAppBar({
     required this.isLoggedIn,
-    this.profileImageUrl,
     required this.onUserIconPressed,
     required this.onMenuPressed,
+    String? profileImageUrl,
   });
 
   @override
@@ -19,20 +19,21 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
       automaticallyImplyLeading: false,
       title: Text("App Explora Calambeo - Ambalá"),
       actions: [
+        // Si el usuario está logueado, se muestra la foto de perfil
         isLoggedIn
             ? GestureDetector(
-                onTap: onUserIconPressed,
-                child: CircleAvatar(
-                  backgroundImage: profileImageUrl != null
-                      ? NetworkImage(profileImageUrl!)
-                      : AssetImage("assets/default_profile.png")
-                          as ImageProvider,
+                onTap:
+                    onUserIconPressed, // Llamamos a la función cuando se toque el avatar
+                child: FotoPerfil(
+                  onTap: (context) =>
+                      onUserIconPressed(), // Manejo correcto del onTap
                 ),
               )
             : IconButton(
                 icon: Icon(Icons.login),
                 onPressed: onUserIconPressed,
               ),
+        // Botón de menú
         IconButton(
           icon: Icon(Icons.menu),
           onPressed: onMenuPressed,
