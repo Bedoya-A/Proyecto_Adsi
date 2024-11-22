@@ -35,22 +35,6 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
     });
   }
 
-  void _onLogoTap() {
-    setState(() {
-      _isHomeIconVisible =
-          !_isHomeIconVisible; // Cambia la visibilidad del ícono
-    });
-
-    // Espera a que la animación termine antes de navegar
-    Future.delayed(Duration(milliseconds: 350), () {
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (context) => HomePage()),
-        (Route<dynamic> route) => false,
-      );
-    });
-  }
-
   Future<void> _launchYoutube() async {
     const url = 'https://youtu.be/ev2h6MBlMhM';
     if (await canLaunch(url)) {
@@ -108,65 +92,22 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  _onLogoTap(); // Cambia la visibilidad del ícono al hacer clic
-
-                  // Espera a que la animación termine antes de navegar
-                  Future.delayed(Duration(milliseconds: 350), () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      (Route<dynamic> route) => false,
-                    );
-                  });
-                },
-                child: AnimatedSwitcher(
-                  duration: Duration(milliseconds: 350),
-                  transitionBuilder:
-                      (Widget child, Animation<double> animation) {
-                    return ScaleTransition(scale: animation, child: child);
-                  },
-                  child: _isHomeIconVisible
-                      ? Icon(
-                          Icons.home,
-                          key: ValueKey('homeIcon'),
-                          size: 40, // Tamaño del ícono de inicio
-                          color: Colors.white,
-                        )
-                      : CircleAvatar(
-                          key: ValueKey('logoIcon'),
-                          radius: 20, // Radio del logo
-                          backgroundImage: AssetImage('assets/logo.png'),
-                        ),
-                ),
-              ),
-            ),
-            SizedBox(width: 10), // Espaciado entre el logo y el título
-            Flexible(
-              // Usar Flexible para evitar el desbordamiento
-              child: Text(
-                'Cabaña del arbol',
-                overflow:
-                    TextOverflow.ellipsis, // Agregar comportamiento de recorte
-                maxLines: 1, // Limitar a una línea
-              ),
-            ),
-          ],
+        title: Text('Cabaña del árbol', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.brown[400],
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back), // Icono para retroceder
+          onPressed: () {
+            Navigator.pop(context); // Regresa a la pantalla anterior
+          },
         ),
-        backgroundColor: Colors.green[700],
-        automaticallyImplyLeading: false, // Elimina la flecha de regresar
         actions: [
           Builder(
             builder: (context) => IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
                 Scaffold.of(context)
-                    .openEndDrawer(); // Abre el menú lateral a la derecha
+                    .openEndDrawer(); // Open the right-side menu
               },
             ),
           ),

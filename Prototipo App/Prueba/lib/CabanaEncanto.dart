@@ -98,60 +98,22 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  _onLogoTap(); // Cambia la visibilidad del ícono al hacer clic
-                  Future.delayed(Duration(milliseconds: 350), () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      (Route<dynamic> route) => false,
-                    );
-                  });
-                },
-                child: AnimatedSwitcher(
-                  duration: Duration(milliseconds: 350),
-                  transitionBuilder:
-                      (Widget child, Animation<double> animation) {
-                    return ScaleTransition(scale: animation, child: child);
-                  },
-                  child: _isHomeIconVisible
-                      ? Icon(
-                          Icons.home,
-                          key: ValueKey('homeIcon'),
-                          size: 40,
-                          color: Colors.white,
-                        )
-                      : CircleAvatar(
-                          key: ValueKey('logoIcon'),
-                          radius: 20,
-                          backgroundImage: AssetImage('assets/logo.png'),
-                        ),
-                ),
-              ),
-            ),
-            const SizedBox(width: 10),
-            Flexible(
-              child: Text(
-                'Cabaña El Encanto',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-            ),
-          ],
-        ),
+        title: Text('Cabaña el Encanto', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.brown[400],
-        automaticallyImplyLeading: false,
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back), // Icono para retroceder
+          onPressed: () {
+            Navigator.pop(context); // Regresa a la pantalla anterior
+          },
+        ),
         actions: [
           Builder(
             builder: (context) => IconButton(
-              icon: const Icon(Icons.menu),
+              icon: Icon(Icons.menu),
               onPressed: () {
-                Scaffold.of(context).openEndDrawer();
+                Scaffold.of(context)
+                    .openEndDrawer(); // Open the right-side menu
               },
             ),
           ),

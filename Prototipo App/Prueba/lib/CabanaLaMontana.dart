@@ -35,12 +35,6 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     });
   }
 
-  void _onLogoTap() {
-    setState(() {
-      _isHomeIconVisible = !_isHomeIconVisible; // Toggle visibility
-    });
-  }
-
   Future<void> _launchYoutube() async {
     const url = 'https://youtu.be/ev2h6MBlMhM';
     if (await canLaunch(url)) {
@@ -97,62 +91,22 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Row(
-          children: [
-            MouseRegion(
-              cursor: SystemMouseCursors.click,
-              child: GestureDetector(
-                onTap: () {
-                  _onLogoTap(); // Toggle logo visibility
-
-                  // Navigate after the animation
-                  Future.delayed(Duration(milliseconds: 350), () {
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (context) => HomePage()),
-                      (Route<dynamic> route) => false,
-                    );
-                  });
-                },
-                child: AnimatedSwitcher(
-                  duration: Duration(milliseconds: 350),
-                  transitionBuilder:
-                      (Widget child, Animation<double> animation) {
-                    return ScaleTransition(scale: animation, child: child);
-                  },
-                  child: _isHomeIconVisible
-                      ? Icon(
-                          Icons.home,
-                          key: ValueKey('homeIcon'),
-                          size: 40,
-                          color: Colors.white,
-                        )
-                      : CircleAvatar(
-                          key: ValueKey('logoIcon'),
-                          radius: 20,
-                          backgroundImage: AssetImage('assets/logo.png'),
-                        ),
-                ),
-              ),
-            ),
-            SizedBox(width: 10),
-            Flexible(
-              child: Text(
-                'Cabaña La Montaña',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-              ),
-            ),
-          ],
+        title: Text('Cabaña la Montaña', style: TextStyle(color: Colors.white)),
+        backgroundColor: Colors.teal[800],
+        centerTitle: true,
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back), // Icono para retroceder
+          onPressed: () {
+            Navigator.pop(context); // Regresa a la pantalla anterior
+          },
         ),
-        backgroundColor: Colors.green[700],
-        automaticallyImplyLeading: false,
         actions: [
           Builder(
             builder: (context) => IconButton(
               icon: Icon(Icons.menu),
               onPressed: () {
-                Scaffold.of(context).openEndDrawer();
+                Scaffold.of(context)
+                    .openEndDrawer(); // Open the right-side menu
               },
             ),
           ),

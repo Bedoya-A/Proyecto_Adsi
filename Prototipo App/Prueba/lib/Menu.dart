@@ -4,11 +4,13 @@ import 'package:prueba2/Autoctonos.dart';
 import 'package:prueba2/CabanaDelArbol.dart';
 import 'package:prueba2/CabanaEncanto.dart';
 import 'package:prueba2/CabanaLaMontana.dart';
+
 import 'package:prueba2/CabanaParaiso.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/JardinBotanico.dart';
 import 'package:prueba2/Meraki.dart';
 import 'package:prueba2/MiradorTesorito.dart';
+import 'package:prueba2/ParaisoEscondido.dart';
 import 'package:prueba2/Transporte.dart';
 
 class Menu extends StatefulWidget {
@@ -227,18 +229,8 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                       children: _isExpandedAmbala
                           ? [
                               buildAnimatedExpansionTile('Cabañas', [
-                                buildAnimatedDrawerItem(
-                                    'Cabaña Paraíso Escondido',
-                                    1,
-                                    Icons.home,
-                                    context,
-                                    CabanaParaiso()),
-                                buildAnimatedDrawerItem('Cabaña del Árbol', 2,
-                                    Icons.home, context, CabanaDelArbol()),
-                                buildAnimatedDrawerItem('Cabaña La Montaña', 3,
-                                    Icons.home, context, CabanaLaMontana()),
-                                buildAnimatedDrawerItem('Cabaña El Encanto', 4,
-                                    Icons.home, context, CabanaEncanto()),
+                                buildAnimatedDrawerItem('Paraíso Escondido', 1,
+                                    Icons.home, context, ParaisoEscondido()),
                               ]),
                               buildAnimatedExpansionTile('Parques', [
                                 buildAnimatedDrawerItem(
