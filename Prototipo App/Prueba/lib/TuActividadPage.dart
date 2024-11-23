@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:prueba2/RecentSearchPage.dart';
 
 class TuActividadPage extends StatefulWidget {
   @override
@@ -182,12 +183,17 @@ class _TuActividadPageState extends State<TuActividadPage>
           setState(() {
             showMeInteresa = !showMeInteresa;
           });
-        }
-        if (title == 'No me interesa') {
+        } else if (title == 'No me interesa') {
           setState(() {
             showNoMeInteresa = !showNoMeInteresa;
           });
+        } else if (title == 'Búsquedas recientes') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => RecentSearchPage()),
+          );
         }
+        // Otras opciones pueden agregarse aquí con lógica similar
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
