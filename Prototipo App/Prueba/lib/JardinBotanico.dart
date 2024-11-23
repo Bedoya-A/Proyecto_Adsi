@@ -185,12 +185,25 @@ class _JardinBotanicoState extends State<JardinBotanico>
         ),
         SizedBox(width: 10),
         Flexible(
+            child: Center(
           child: Text(
             'Jardín Botánico',
-            overflow: TextOverflow.ellipsis,
-            maxLines: 1,
+            style: TextStyle(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? Colors.white // Para el modo oscuro
+                  : Colors.black, // Para el modo claro
+              fontSize: 20,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                Shadow(
+                  color: Colors.black45,
+                  offset: Offset(3, 3),
+                  blurRadius: 8,
+                ),
+              ],
+            ),
           ),
-        ),
+        )),
       ],
     );
   }

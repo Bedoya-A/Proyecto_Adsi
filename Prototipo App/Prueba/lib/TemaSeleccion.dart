@@ -38,12 +38,11 @@ class TemaSection extends StatelessWidget {
   Widget _buildTemaOption(String titulo, int index) {
     return GestureDetector(
       onTap: () {
-        onTemaChange(index);
+        onTemaChange(index); // Aquí se pasa el índice del tema seleccionado
       },
       child: Container(
         padding: EdgeInsets.all(10),
-        margin: EdgeInsets.symmetric(
-            horizontal: 5), // Añadir un margen para separación
+        margin: EdgeInsets.symmetric(horizontal: 5),
         decoration: BoxDecoration(
           border: Border.all(
             color: temaSeleccionado == index ? Colors.blue : Colors.grey,

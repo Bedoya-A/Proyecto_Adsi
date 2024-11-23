@@ -131,13 +131,26 @@ class _AutoctonosState extends State<Autoctonos> {
               ),
             ),
             const SizedBox(width: 10), // Espaciado entre el logo y el título
-            const Flexible(
+            Flexible(
+                child: Center(
               child: Text(
-                'Autóctonos',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+                'Mirador Autóctonos',
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white // Para el modo oscuro
+                      : Colors.black, // Para el modo claro
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black45,
+                      offset: Offset(3, 3),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
               ),
-            ),
+            )),
           ],
         ),
         backgroundColor: Colors.green[700],
@@ -246,7 +259,7 @@ class _AutoctonosState extends State<Autoctonos> {
           children: [
             _buildShortDescription(),
             SizedBox(height: 20),
-            _buildSections(),
+            _buildSections(context),
             SizedBox(height: 20),
             _buildMenu(),
             SizedBox(height: 20),
@@ -275,24 +288,18 @@ class _AutoctonosState extends State<Autoctonos> {
     );
   }
 
-  Widget _buildSections() {
+  Widget _buildSections(BuildContext context) {
+    // Obtener el color del texto del tema actual (solo para el contenido, no el título)
+    final theme = Theme.of(context);
+    final textColor = theme.textTheme.bodyLarge?.color ??
+        Colors.black; // Color del contenido según el tema
+
     return Column(
       children: [
         _buildSection(
-          'Ubicación',
-          'Vereda Alcon Tesorito, Ibagué',
-          Image.asset(
-            'assets/mapaautoctonos.jpg',
-            width: 450,
-            height: 350,
-            fit: BoxFit.cover,
-          ),
-        ),
-        SizedBox(height: 10), // Espacio entre el texto y la imagen
-
-        _buildSection(
           'Desde cuando inició este mirador',
           'Este increíble y maravilloso mirador comenzó a operar en mayo de 2024.',
+          textColor, // Solo cambiar el color del texto del contenido
         ),
         _buildSection(
           'Servicios',
@@ -300,46 +307,42 @@ class _AutoctonosState extends State<Autoctonos> {
               '• Reservas con dos días de anticipación\n'
               '• Celebraciones especiales\n'
               '• Servicio a domicilio fines de semana',
+          textColor, // Solo cambiar el color del texto del contenido
         ),
       ],
     );
   }
 
-  Widget _buildSection(String title, String content, [Widget? extraContent]) {
+// Función para crear cada sección
+  Widget _buildSection(String title, String content, Color textColor) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      elevation: 4,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.all(16.0),
+      elevation: 4, // Sombra para un efecto de profundidad
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12), // Bordes redondeados
+      ),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
               style: TextStyle(
-                fontSize: 24,
+                fontSize: 25,
                 fontWeight: FontWeight.bold,
-                color: Colors.teal[900],
-                shadows: [
-                  Shadow(
-                    offset: Offset(2, 2),
-                    blurRadius: 4,
-                    color: Colors.black45,
-                  ),
-                ],
+                color: Colors
+                    .teal[800], // Mantener el color original para el título
               ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 8),
             Text(
               content,
-              style: TextStyle(fontSize: 16, color: Colors.black),
+              style: TextStyle(
+                fontSize: 16,
+                color:
+                    textColor, // Cambiar solo el color del contenido según el tema
+              ),
             ),
-            if (extraContent != null) ...[
-              SizedBox(height: 10),
-              extraContent,
-            ],
           ],
         ),
       ),

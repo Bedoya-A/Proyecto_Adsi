@@ -20,20 +20,20 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  bool isDarkMode = false;
   PageController _pageController = PageController();
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      key: _scaffoldKey,
-      backgroundColor: isDarkMode ? Colors.black : Colors.white,
-      appBar: PreferredSize(
-        preferredSize: Size.fromHeight(kToolbarHeight),
-        child: Consumer<AppState>(
-          builder: (context, appState, child) {
-            return CustomAppBar(
+    return Consumer<AppState>(
+      builder: (context, appState, child) {
+        bool isDarkMode = appState.themeMode == ThemeMode.dark;
+        return Scaffold(
+          key: _scaffoldKey,
+          backgroundColor: isDarkMode ? Colors.black : Colors.white,
+          appBar: PreferredSize(
+            preferredSize: Size.fromHeight(kToolbarHeight),
+            child: CustomAppBar(
               isLoggedIn: appState.isLoggedIn,
               profileImageUrl: appState.isLoggedIn ? 'url-a-imagen' : null,
               onUserIconPressed:
@@ -41,25 +41,21 @@ class _HomePageState extends State<HomePage> {
               onMenuPressed: () {
                 _scaffoldKey.currentState?.openEndDrawer();
               },
-            );
-          },
-        ),
-      ),
-      endDrawer: Consumer<AppState>(
-        builder: (context, appState, child) {
-          return Menu(
+            ),
+          ),
+          endDrawer: Menu(
             selectedDrawerIndex: appState.selectedDrawerIndex,
             onSelectDrawerItem: (index) {
               appState.setSelectedDrawerIndex(index);
             },
-          );
-        },
-      ),
-      body: Stack(
-        children: [
-          buildPageView(),
-        ],
-      ),
+          ),
+          body: Stack(
+            children: [
+              buildPageView(),
+            ],
+          ),
+        );
+      },
     );
   }
 

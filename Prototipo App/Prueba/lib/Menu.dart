@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:prueba2/Autoctonos.dart';
-import 'package:prueba2/CabanaDelArbol.dart';
-import 'package:prueba2/CabanaEncanto.dart';
-import 'package:prueba2/CabanaLaMontana.dart';
-
-import 'package:prueba2/CabanaParaiso.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/JardinBotanico.dart';
 import 'package:prueba2/Meraki.dart';
@@ -37,7 +32,6 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
     setState(() {
       _selectedSectionIndex = index;
 
-      // Cambia la expansión de acuerdo al índice
       if (index >= 5 && index <= 7) {
         _isExpandedCorredores = true;
         _isExpandedCalambeo = true;
@@ -97,12 +91,15 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            decoration: BoxDecoration(color: Colors.red),
+            decoration: BoxDecoration(color: colorScheme.primary),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -130,7 +127,7 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                               Icons.home,
                               key: ValueKey('homeIcon'),
                               size: 80,
-                              color: Colors.white,
+                              color: colorScheme.onPrimary,
                             )
                           : CircleAvatar(
                               key: ValueKey('logoIcon'),
@@ -143,7 +140,9 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                 SizedBox(height: 10),
                 Text(
                   'Explora Calambeo - Ambalá',
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+                  style: textTheme.titleLarge?.copyWith(
+                    color: colorScheme.onPrimary,
+                  ),
                 ),
               ],
             ),
@@ -156,7 +155,9 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                   angle: _rotationController.value * 2 * 3.14159,
                   child: Transform.scale(
                     scale: _isSelectedCorredores ? 1.2 : 1.0,
-                    child: Icon(Icons.explore).animate().fadeIn(
+                    child: Icon(Icons.explore, color: colorScheme.onSurface)
+                        .animate()
+                        .fadeIn(
                           duration: 500.ms,
                           curve: Curves.easeInOut,
                         ),
@@ -164,7 +165,10 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                 );
               },
             ),
-            title: Text('Corredores Turísticos'),
+            title: Text('Corredores Turísticos',
+                style: textTheme.titleMedium?.copyWith(
+                  color: colorScheme.onSurface,
+                )),
             onExpansionChanged: (expanded) {
               _toggleCorredores();
               _selectCorredores();
@@ -182,7 +186,10 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                             duration: 500.ms,
                             curve: Curves.easeInOutQuad,
                           ),
-                      title: Text('Calambeo'),
+                      title: Text('Calambeo',
+                          style: textTheme.titleSmall?.copyWith(
+                            color: colorScheme.onSurface,
+                          )),
                       onExpansionChanged: (expanded) {
                         setState(() {
                           _isExpandedCalambeo = expanded;
@@ -220,7 +227,10 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                             duration: 500.ms,
                             curve: Curves.easeInOutQuad,
                           ),
-                      title: Text('Ambalá'),
+                      title: Text('Ambalá',
+                          style: textTheme.titleSmall?.copyWith(
+                            color: colorScheme.onSurface,
+                          )),
                       onExpansionChanged: (expanded) {
                         setState(() {
                           _isExpandedAmbala = expanded;
@@ -256,6 +266,9 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
   Widget buildAnimatedDrawerItem(
       String title, int index, IconData icon, BuildContext context,
       [Widget? page]) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final textTheme = Theme.of(context).textTheme;
+
     return Material(
       elevation: widget.selectedDrawerIndex == index ? 8 : 0,
       borderRadius: BorderRadius.circular(10),
@@ -263,31 +276,24 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
         leading: Icon(
           icon,
           color: widget.selectedDrawerIndex == index
-              ? Colors.yellow
-              : Colors.black,
-        )
-            .animate()
-            .scale(
-              duration: 400.ms,
-              curve: Curves.easeInOutQuad,
-            )
-            .then()
-            .fadeIn(
-              duration: 500.ms,
-              curve: Curves.easeInOutQuad,
-            ),
+              ? colorScheme.secondary
+              : colorScheme.onSurface,
+        ),
         title: Text(
           title,
-          style: TextStyle(
+          style: textTheme.bodyLarge?.copyWith(
             color: widget.selectedDrawerIndex == index
-                ? Colors.yellow
-                : Colors.black,
+                ? colorScheme.secondary
+                : colorScheme.onSurface,
           ),
         ),
-        selected: widget.selectedDrawerIndex == index,
-        tileColor:
-            widget.selectedDrawerIndex == index ? Colors.redAccent : null,
-        selectedTileColor: Colors.redAccent,
+        selected: widget.selectedDrawerIndex ==
+            index, // Esto maneja si la opción está seleccionada
+        tileColor: widget.selectedDrawerIndex == index
+            ? colorScheme.primaryContainer // Color al seleccionar
+            : null, // Si no está seleccionada, no cambia el color
+        selectedTileColor: colorScheme
+            .primaryContainer, // Color para cuando la opción está seleccionada
         onTap: () {
           widget.onSelectDrawerItem(index);
           if (page != null) {
@@ -300,8 +306,14 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
   }
 
   Widget buildAnimatedExpansionTile(String title, List<Widget> children) {
+    final textTheme = Theme.of(context).textTheme;
+    final colorScheme = Theme.of(context).colorScheme;
+
     return ExpansionTile(
-      title: Text(title),
+      title: Text(title,
+          style: textTheme.titleSmall?.copyWith(
+            color: colorScheme.onSurface,
+          )),
       children: children
           .animate(interval: 150.ms)
           .slideY(begin: 1, end: 0, duration: 400.ms)

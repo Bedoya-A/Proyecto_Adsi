@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/Menu.dart';
-import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/MenuFlotante.dart';
 import 'package:url_launcher/url_launcher.dart'; // Importa tu HomePage para la navegación
 

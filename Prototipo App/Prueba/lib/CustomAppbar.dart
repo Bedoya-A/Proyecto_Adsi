@@ -17,7 +17,10 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return AppBar(
       automaticallyImplyLeading: false,
-      title: Text("App Explora Calambeo - Ambalá"),
+      title: Text(
+        "Calambeo - Ambalá",
+        style: TextStyle(fontSize: 20),
+      ),
       actions: [
         // Si el usuario está logueado, se muestra la foto de perfil
         isLoggedIn

@@ -160,12 +160,25 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
             ),
             SizedBox(width: 10),
             Flexible(
+                child: Center(
               child: Text(
                 'Mirador Tesorito',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
+                style: TextStyle(
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Colors.white // Para el modo oscuro
+                      : Colors.black, // Para el modo claro
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  shadows: [
+                    Shadow(
+                      color: Colors.black45,
+                      offset: Offset(3, 3),
+                      blurRadius: 8,
+                    ),
+                  ],
+                ),
               ),
-            ),
+            )),
           ],
         ),
         backgroundColor: Colors.green[700],
@@ -458,57 +471,94 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
 
   // Sección interactiva con tarjetas llamativas
   Widget _buildInteractiveCards(BuildContext context) {
+    // Obtener los colores del tema actual
+    final theme = Theme.of(context);
+    final backgroundColor =
+        theme.cardColor; // Color de fondo de la tarjeta según el tema
+    final textColor = theme.textTheme.bodyLarge?.color ??
+        Colors.black; // Color de texto según el tema
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildInfoCard(
             'El mirador Tesorito está operando hace dos años. El propietario es Yeison Ramirez. Ofrece servicios de mirador y restaurante.',
             Icons.place,
-            Colors.orange,
+            backgroundColor,
+            textColor,
           ),
-          SizedBox(height: 10), // Espacio entre el texto y la imagen
-          Image.asset(
-            'assets/mapamiradorTesorito.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
-            width: 450, // O ajusta el tamaño según lo necesites
-            fit: BoxFit
-                .cover, // Ajuste de la imagen (puedes usar BoxFit.fill, BoxFit.contain, etc.)
+          SizedBox(height: 10),
+
+          // Imagen del mirador
+          ClipRRect(
+            borderRadius:
+                BorderRadius.circular(12), // Bordes redondeados en la imagen
+            child: Image.asset(
+              'assets/mapamiradorTesorito.jpg',
+              width: double.infinity, // Ocupa el ancho disponible
+              fit: BoxFit.cover, // Ajuste de la imagen
+            ),
           ),
+
+          SizedBox(height: 10),
+
           _buildInfoCard(
             'Horarios: \nLunes a Viernes: 3:00 pm - 11:00 pm\nSábados, Domingos y Festivos: 11:00 am - 11:00 pm',
             Icons.access_time,
-            Colors.blue,
+            backgroundColor,
+            textColor,
           ),
+
           _buildInfoCard(
             'Pagos disponibles por Nequi y Daviplata.',
             Icons.attach_money,
-            Colors.green,
+            backgroundColor,
+            textColor,
           ),
+
           _buildInfoCard(
             'Costo de ingreso: 5,000 COP (incluye bebida de bienvenida).',
             Icons.local_drink,
-            Colors.purple,
+            backgroundColor,
+            textColor,
           ),
         ],
       ),
     );
   }
 
-  // Tarjeta de información interactiva
-  Widget _buildInfoCard(String text, IconData icon, Color color) {
+// Función para crear las tarjetas informativas
+  Widget _buildInfoCard(
+      String text, IconData icon, Color backgroundColor, Color textColor) {
     return Card(
-      margin: EdgeInsets.symmetric(vertical: 10),
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-      elevation: 4,
-      child: ListTile(
-        leading: Icon(icon, color: color, size: 40),
-        title: Text(
-          text,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: Colors.black,
-          ),
+      elevation: 4, // Sombra para un efecto de profundidad
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12), // Bordes redondeados
+      ),
+      color:
+          backgroundColor, // Color de fondo de la tarjeta que responde al tema
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: Row(
+          children: [
+            Icon(icon,
+                color: textColor, size: 30), // Icono con color según el tema
+            SizedBox(width: 10),
+            Expanded(
+              child: Text(
+                text,
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                  color: textColor, // Color del texto según el tema
+                ),
+                maxLines: 3,
+                overflow: TextOverflow.ellipsis,
+              ),
+            ),
+          ],
         ),
       ),
     );
