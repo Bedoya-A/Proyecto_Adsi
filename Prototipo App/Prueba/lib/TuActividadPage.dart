@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:prueba2/AcountHistoryPage.dart';
+import 'package:prueba2/LinkHistoryPage.dart';
 import 'package:prueba2/RecentSearchPage.dart';
 
 class TuActividadPage extends StatefulWidget {
@@ -192,6 +194,12 @@ class _TuActividadPageState extends State<TuActividadPage>
             context,
             MaterialPageRoute(builder: (context) => RecentSearchPage()),
           );
+        } else if (title == 'Historial de enlaces') {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => LinkHistoryPage()));
+        } else if (title == 'Historial de la cuenta') {
+          Navigator.push(context,
+              MaterialPageRoute(builder: (context) => AccountHistoryPage()));
         }
         // Otras opciones pueden agregarse aquí con lógica similar
       },
