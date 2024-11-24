@@ -1,28 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Búsquedas Recientes',
-      theme: ThemeData.dark().copyWith(
-        colorScheme: ColorScheme.dark(
-          primary: Colors.cyanAccent, // Color principal (Cyan)
-          secondary: Colors.blueAccent, // Color secundario
-        ),
-        scaffoldBackgroundColor: Colors.black87, // Fondo oscuro
-        textTheme: TextTheme(
-          titleLarge: TextStyle(color: Colors.white), // Título grande
-          bodyLarge: TextStyle(color: Colors.white70), // Texto grande
-        ),
-      ),
-      home: RecentSearchPage(),
-    );
-  }
-}
-
 class RecentSearchPage extends StatefulWidget {
   @override
   _RecentSearchPageState createState() => _RecentSearchPageState();
@@ -31,7 +8,7 @@ class RecentSearchPage extends StatefulWidget {
 class _RecentSearchPageState extends State<RecentSearchPage> {
   List<Map<String, dynamic>> recentSearches = [
     {
-      'name': 'Parque Temático Meraki',
+      'name': 'Parque Meraki',
       'date': '2024-11-22',
       'image': 'assets/meraki1.png',
       'isFavorite': false,
@@ -68,8 +45,8 @@ class _RecentSearchPageState extends State<RecentSearchPage> {
   ];
 
   List<Map<String, dynamic>> filteredSearches = [];
-  bool isDarkMode = true;
   String searchQuery = '';
+  DateTime selectedDate = DateTime.now();
 
   @override
   void initState() {
@@ -87,141 +64,154 @@ class _RecentSearchPageState extends State<RecentSearchPage> {
     });
   }
 
-  void toggleFavorite(int index) {
-    setState(() {
-      recentSearches[index]['isFavorite'] =
-          !recentSearches[index]['isFavorite'];
-      filteredSearches[index]['isFavorite'] =
-          !filteredSearches[index]['isFavorite'];
-    });
-  }
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: selectedDate,
+      firstDate: DateTime(2000),
+      lastDate: DateTime(2101),
+    );
 
-  void clearHistory() {
-    setState(() {
-      filteredSearches = [];
-      recentSearches = [];
-    });
+    if (picked != null && picked != selectedDate) {
+      setState(() {
+        selectedDate = picked;
+      });
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Búsquedas Recientes'),
-        backgroundColor: Colors.transparent,
-        elevation: 0,
+        title: Text('Busqueda Reciente'),
         actions: [
           IconButton(
-            icon: Icon(Icons.delete_forever, color: Colors.redAccent),
-            onPressed: clearHistory,
+            icon: Icon(Icons.calendar_today),
+            onPressed: () => _selectDate(context),
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Título futurista con efecto de sombra
-              Text(
-                'Destinos que has buscado',
-                style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.cyanAccent,
-                  letterSpacing: 2.0,
-                  shadows: [
-                    Shadow(
-                      color: Colors.blue.withOpacity(0.7),
-                      offset: Offset(2, 2),
-                      blurRadius: 8,
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [Colors.black87, Colors.blueGrey],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Título con centrado y degradado
+                Container(
+                  width: double.infinity,
+                  padding: EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [Colors.cyanAccent, Colors.blue],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
                     ),
-                    Shadow(
-                      color: Colors.purple.withOpacity(0.4),
-                      offset: Offset(-2, -2),
-                      blurRadius: 5,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 10),
-              // Descripción debajo del título
-              Text(
-                'Explora los destinos más recientes que has buscado. Accede a tus lugares favoritos y encuentra nuevos destinos.',
-                style: TextStyle(
-                  fontSize: 16,
-                  color: Colors.white70,
-                  fontStyle: FontStyle.italic,
-                ),
-              ),
-              SizedBox(height: 20),
-              // Búsqueda en tiempo real
-              TextField(
-                onChanged: filterSearchResults,
-                decoration: InputDecoration(
-                  prefixIcon: Icon(Icons.search, color: Colors.cyanAccent),
-                  hintText: 'Buscar destino...',
-                  hintStyle: TextStyle(color: Colors.white70),
-                  filled: true,
-                  fillColor: Colors.black.withOpacity(0.2),
-                  border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
-                    borderSide: BorderSide.none,
+                  ),
+                  child: Text(
+                    'Búsquedas Recientes',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 20),
-              // Lista de resultados
-              filteredSearches.isEmpty
-                  ? Center(
-                      child: Text(
-                        'No se encontraron resultados.',
-                        style: TextStyle(color: Colors.white70),
-                      ),
-                    )
-                  : RecentSearchList(
-                      recentSearches: filteredSearches,
-                      toggleFavorite: toggleFavorite,
-                    ),
-              SizedBox(height: 30),
-              // Sección de búsquedas populares
-              Text(
-                'Búsquedas Populares',
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.cyanAccent,
+                SizedBox(height: 10),
+                // Descripción de la página
+                Text(
+                  'Explora tus búsquedas recientes y los destinos más populares. ¡Dales "me gusta" y disfruta de tu experiencia!',
+                  style: TextStyle(
+                    fontSize: 16,
+                    color: Colors.white70,
+                  ),
                 ),
-              ),
-              SizedBox(height: 10),
-              PopularSearchList(recentSearches: recentSearches),
-            ],
+                SizedBox(height: 20),
+                // Fecha seleccionada
+                Text(
+                  'Fecha seleccionada: ${selectedDate.toLocal()}'.split(' ')[0],
+                  style: TextStyle(color: Colors.white70, fontSize: 16),
+                ),
+                SizedBox(height: 20),
+                // Búsqueda en tiempo real
+                TextField(
+                  onChanged: filterSearchResults,
+                  decoration: InputDecoration(
+                    prefixIcon: Icon(Icons.search, color: Colors.cyanAccent),
+                    hintText: 'Buscar destino...',
+                    hintStyle: TextStyle(color: Colors.white70),
+                    filled: true,
+                    fillColor: const Color.fromARGB(255, 255, 255, 255)
+                        .withOpacity(0.2),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                      borderSide: BorderSide.none,
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                // Lista de resultados
+                filteredSearches.isEmpty
+                    ? Center(
+                        child: Text(
+                          'No se encontraron resultados.',
+                          style: TextStyle(color: Colors.white70),
+                        ),
+                      )
+                    : RecentSearchList(
+                        recentSearches: filteredSearches,
+                        onFavoriteChanged: _onFavoriteChanged,
+                      ),
+                SizedBox(height: 30),
+                // Sección de búsquedas populares
+                Text(
+                  'Búsquedas Populares',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.cyanAccent,
+                  ),
+                ),
+                SizedBox(height: 10),
+                PopularSearchList(recentSearches: recentSearches),
+              ],
+            ),
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        backgroundColor: Colors.cyanAccent,
-        onPressed: () {
-          print('Botón flotante presionado');
-        },
-        child: Icon(Icons.add, color: Colors.black),
-      ),
     );
+  }
+
+  void _onFavoriteChanged(int index) {
+    setState(() {
+      recentSearches[index]['isFavorite'] =
+          !recentSearches[index]['isFavorite'];
+    });
   }
 }
 
 class RecentSearchList extends StatelessWidget {
   final List<Map<String, dynamic>> recentSearches;
-  final Function(int) toggleFavorite;
+  final Function(int) onFavoriteChanged;
 
   RecentSearchList(
-      {required this.recentSearches, required this.toggleFavorite});
+      {required this.recentSearches, required this.onFavoriteChanged});
 
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
       shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
       itemCount: recentSearches.length,
       itemBuilder: (context, index) {
         return RecentSearchCard(
@@ -229,7 +219,7 @@ class RecentSearchList extends StatelessWidget {
           date: recentSearches[index]['date'],
           image: recentSearches[index]['image'],
           isFavorite: recentSearches[index]['isFavorite'],
-          onFavoriteToggle: () => toggleFavorite(index),
+          onFavoriteChanged: () => onFavoriteChanged(index),
         );
       },
     );
@@ -241,14 +231,14 @@ class RecentSearchCard extends StatelessWidget {
   final String date;
   final String image;
   final bool isFavorite;
-  final VoidCallback onFavoriteToggle;
+  final VoidCallback onFavoriteChanged;
 
   RecentSearchCard({
     required this.destination,
     required this.date,
     required this.image,
     required this.isFavorite,
-    required this.onFavoriteToggle,
+    required this.onFavoriteChanged,
   });
 
   @override
@@ -300,15 +290,15 @@ class RecentSearchCard extends StatelessWidget {
                     Text(
                       destination,
                       style: TextStyle(
-                        fontSize: 20,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
                     ),
+                    SizedBox(height: 8),
                     Text(
-                      'Última búsqueda: $date',
+                      'Fecha: $date',
                       style: TextStyle(
-                        fontSize: 14,
                         color: Colors.white70,
                       ),
                     ),
@@ -318,10 +308,9 @@ class RecentSearchCard extends StatelessWidget {
               IconButton(
                 icon: Icon(
                   isFavorite ? Icons.favorite : Icons.favorite_border,
-                  color: isFavorite ? Colors.redAccent : Colors.white,
-                  size: 30,
+                  color: isFavorite ? Colors.red : Colors.white,
                 ),
-                onPressed: onFavoriteToggle,
+                onPressed: onFavoriteChanged,
               ),
             ],
           ),
@@ -338,76 +327,74 @@ class PopularSearchList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      itemCount: recentSearches.length,
-      itemBuilder: (context, index) {
-        if (recentSearches[index]['popularity'] > 7) {
+    return Container(
+      height: 200,
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: recentSearches.length,
+        itemBuilder: (context, index) {
           return PopularSearchCard(
             destination: recentSearches[index]['name'],
-            popularity: recentSearches[index]['popularity'],
             image: recentSearches[index]['image'],
           );
-        }
-        return SizedBox.shrink(); // No mostrar si la popularidad es baja
-      },
+        },
+      ),
     );
   }
 }
 
 class PopularSearchCard extends StatelessWidget {
   final String destination;
-  final int popularity;
   final String image;
 
-  PopularSearchCard({
-    required this.destination,
-    required this.popularity,
-    required this.image,
-  });
+  PopularSearchCard({required this.destination, required this.image});
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 12.0),
+      padding: const EdgeInsets.symmetric(vertical: 12.0, horizontal: 8.0),
       child: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.purpleAccent, Colors.deepPurple],
+            colors: [
+              Colors.blueAccent.withOpacity(0.8),
+              Colors.blueGrey.withOpacity(0.5)
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.blue.withOpacity(0.5),
+              blurRadius: 15,
+              spreadRadius: 3,
+            ),
+          ],
         ),
-        padding: EdgeInsets.all(16),
-        child: Row(
+        width: 160,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ClipRRect(
-              borderRadius: BorderRadius.circular(12),
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(20), topRight: Radius.circular(20)),
               child: Image.asset(
                 image,
-                width: 50,
-                height: 50,
+                height: 120,
+                width: double.infinity,
                 fit: BoxFit.cover,
               ),
             ),
-            SizedBox(width: 16),
-            Expanded(
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Text(
                 destination,
                 style: TextStyle(
-                  fontSize: 18,
+                  fontSize: 16,
                   fontWeight: FontWeight.bold,
                   color: Colors.white,
                 ),
-              ),
-            ),
-            Text(
-              '$popularity%',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.white70,
               ),
             ),
           ],

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:prueba2/AcountHistoryPage.dart';
 import 'package:prueba2/LinkHistoryPage.dart';
 import 'package:prueba2/RecentSearchPage.dart';
+import 'package:prueba2/TimePage.dart';
 
 class TuActividadPage extends StatefulWidget {
   @override
@@ -200,6 +201,12 @@ class _TuActividadPageState extends State<TuActividadPage>
         } else if (title == 'Historial de la cuenta') {
           Navigator.push(context,
               MaterialPageRoute(builder: (context) => AccountHistoryPage()));
+        } else if (title == 'Tiempo en la app') {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => TimePage()), // Aquí agregas la navegación
+          );
         }
         // Otras opciones pueden agregarse aquí con lógica similar
       },
@@ -373,7 +380,7 @@ class _TuActividadPageState extends State<TuActividadPage>
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.asset(
-              'assets/images/imagen_$index.jpg', // Asegúrate de tener imágenes en la carpeta assets
+              'assets/montaña1/imagen_$index.jpg', // Asegúrate de tener imágenes en la carpeta assets
               height: 120,
               width: double.infinity,
               fit: BoxFit.cover,
