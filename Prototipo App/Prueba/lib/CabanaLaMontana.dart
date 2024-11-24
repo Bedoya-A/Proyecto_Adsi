@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/Menu.dart';
-import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/MenuFlotante.dart';
 import 'package:url_launcher/url_launcher.dart'; // Ensure the path is correct
 
@@ -13,7 +12,6 @@ class CabanaLaMontana extends StatefulWidget {
 
 class _CabanaLaMontanaState extends State<CabanaLaMontana> {
   int selectedDrawerIndex = 1;
-  bool _isHomeIconVisible = false; // Add the missing variable
   double _rating = 0; // Initial rating value
   TextEditingController _reviewController = TextEditingController();
 
@@ -69,22 +67,6 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     setState(() {
       _reviews.removeAt(index);
     });
-  }
-
-  void _showReservationForm() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: ReservationForm(
-            onSubmit: (name, phone, date, numPeople) {
-              // Lógica para manejar la reserva
-              print('Reserva: $name, $phone, $date, $numPeople');
-            },
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -159,13 +141,6 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
                   textAlign: TextAlign.center,
                 ),
                 SizedBox(height: 10), // Espacio entre el texto y la imagen
-                Image.asset(
-                  'assets/mapaMontana.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
-                  width: 450, // O ajusta el tamaño según lo necesites
-                  height:
-                      350, // Ajuste de la imagen (puedes usar BoxFit.fill, BoxFit.contain, etc.)
-                ),
-                SizedBox(height: 20),
 
                 // Sección de servicios
                 buildServiciosSection(),
@@ -424,7 +399,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
         ),
         subtitle: Text(
           content,
-          style: TextStyle(fontSize: 16, color: Colors.black87),
+          style: TextStyle(fontSize: 16),
         ),
       ),
     );

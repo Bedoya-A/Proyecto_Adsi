@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/MenuFlotante.dart';
@@ -111,22 +110,6 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
     });
   }
 
-  void _showReservationForm() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: ReservationForm(
-            onSubmit: (name, phone, date, numPeople) {
-              // Lógica para manejar la reserva
-              print('Reserva: $name, $phone, $date, $numPeople');
-            },
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -213,18 +196,7 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
-              SizedBox(height: 20),
-              _buildAnimatedHeader('Ubicación', Icons.location_on),
-              _buildText('Vereda Villa Vista, Avenida Ambalá'),
-              _buildText('Inaugurado hace 14 años.'),
-              SizedBox(height: 10), // Espacio entre el texto y la imagen
-              Center(
-                child: Image.asset(
-                  'assets/mapaMeraki.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
-                  width: 450,
-                  height: 350,
-                ),
-              ),
+
               SizedBox(height: 20),
               _buildAnimatedHeader('Ofrecemos', Icons.attractions),
               _buildListTile(
@@ -565,7 +537,10 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
       children: items
           .map((item) => Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(item),
+                child: Text(
+                  item,
+                  style: TextStyle(color: Colors.grey[800]),
+                ),
               ))
           .toList(),
     );

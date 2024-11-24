@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/MenuFlotante.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -14,7 +13,7 @@ class CabanaEncanto extends StatefulWidget {
 
 class _CabanaEncantoState extends State<CabanaEncanto> {
   int selectedDrawerIndex = 1;
-  bool _isHomeIconVisible = false; // Inicializa la variable
+
   double _rating = 0; // Initial rating value
   TextEditingController _reviewController = TextEditingController();
 
@@ -29,12 +28,6 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     'assets/encanto5.png',
   ];
   int _current = 0;
-
-  void _onLogoTap() {
-    setState(() {
-      _isHomeIconVisible = !_isHomeIconVisible; // Alterna la visibilidad
-    });
-  }
 
   void onSelectDrawerItem(int index) {
     setState(() {
@@ -75,22 +68,6 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     setState(() {
       _reviews.removeAt(index);
     });
-  }
-
-  void _showReservationForm() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: ReservationForm(
-            onSubmit: (name, phone, date, numPeople) {
-              // Lógica para manejar la reserva
-              print('Reserva: $name, $phone, $date, $numPeople');
-            },
-          ),
-        );
-      },
-    );
   }
 
   @override
@@ -218,7 +195,6 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
                       ),
                       label: Text(
                         "Ver video en YouTube",
-                        style: TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
                       ),
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color.fromARGB(
@@ -230,8 +206,6 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
                 const SizedBox(height: 20),
 
                 // Secciones adicionales
-                _buildSectionCard(
-                    "Ubicación", Icons.location_on, _buildLocationText()),
                 _buildSectionCard("Precios", Icons.money, _buildPriceList()),
                 _buildSectionCard(
                     "Senderismo", Icons.hiking, _buildHikingText()),
@@ -373,49 +347,19 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
             children: [
               Icon(feature['icon'] as IconData, color: Colors.brown[600]),
               const SizedBox(width: 8),
-              Text(feature['text'] as String,
-                  style: const TextStyle(fontSize: 16, color: Colors.black)),
+              Expanded(
+                // Envuelve el Text con Expanded
+                child: Text(
+                  feature['text'] as String,
+                  style: const TextStyle(fontSize: 16),
+                  overflow: TextOverflow
+                      .ellipsis, // Agregar truncamiento si el texto es demasiado largo
+                ),
+              ),
             ],
           ),
         );
       }).toList(),
-    );
-  }
-
-  // Widget para la ubicación
-  Widget _buildLocationText() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          "Estamos a 10 minutos de la Universidad de Ibagué en el barrio Ambalá, puedes llegar en Uber, moto o carro hasta la entrada del lugar.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
-        const SizedBox(height: 10),
-        Text(
-          "Puedes subir toda la comida y bebida que desees, ya que nosotros no vendemos.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
-        ),
-        ClipRRect(
-            borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(10),
-              topRight: Radius.circular(10),
-            ),
-            child: Center(
-              child: Image.network(
-                'assets/mapacabanaEncanto.jpg',
-                width: 450, // Ancho deseado
-                height: 350, // Alto deseado
-                fit: BoxFit.contain, // Para que se ajuste sin distorsión
-              ),
-            )),
-        Card(
-          elevation: 4,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(10),
-          ),
-        )
-      ],
     );
   }
 
@@ -432,8 +376,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
       children: prices.map((price) {
         return Padding(
           padding: const EdgeInsets.symmetric(vertical: 5),
-          child: Text(price,
-              style: const TextStyle(fontSize: 16, color: Colors.black)),
+          child: Text(price, style: const TextStyle(fontSize: 16)),
         );
       }).toList(),
     );
@@ -449,7 +392,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
         const SizedBox(height: 10),
         Text(
           "En la entrada te reciben, llevan y entregan la cabaña.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
+          style: TextStyle(fontSize: 16),
         ),
       ],
     );
@@ -462,7 +405,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
       children: [
         Text(
           " moto a \$8.000 y carro a \$12.000.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
+          style: TextStyle(fontSize: 16),
         ),
       ],
     );
@@ -475,7 +418,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
       children: [
         Text(
           "El ingreso a la cabaña es a partir de las 2:00 PM. Si llegas más temprano, puedes esperar en la entrada o en la zona común.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
+          style: TextStyle(fontSize: 16),
         ),
       ],
     );
@@ -488,7 +431,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
       children: [
         Text(
           "La salida es a las 12:00 PM. Si necesitas un poco más de tiempo, puedes pedirlo con anticipación.",
-          style: TextStyle(fontSize: 16, color: Colors.black),
+          style: TextStyle(fontSize: 16),
         ),
       ],
     );

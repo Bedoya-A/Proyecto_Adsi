@@ -9,27 +9,27 @@ class Cabanas extends StatelessWidget {
   final List<Map<String, dynamic>> cabanas = [
     {
       "title": "Cabaña Paraíso",
-      "image": "assets/paraiso.png",
+      "image": "assets/paraiso2.png",
       "description":
           "Un lugar acogedor con vistas increíbles y mucha tranquilidad.",
       "screen": CabanaParaisoEscondido(),
     },
     {
       "title": "Cabaña del Árbol",
-      "image": "assets/arbol.png",
+      "image": "assets/arbol2.png",
       "description":
           "Vive la experiencia única de alojarte entre las copas de los árboles.",
       "screen": CabanaDelArbol(),
     },
     {
       "title": "Cabaña la Montaña",
-      "image": "assets/montaña.png",
+      "image": "assets/montaña3.png",
       "description": "Relájate en una cabaña rodeada de montañas y naturaleza.",
       "screen": CabanaLaMontana(),
     },
     {
       "title": "Cabaña el Encanto",
-      "image": "assets/encanto.png",
+      "image": "assets/encanto3.png",
       "description": "Un espacio mágico ideal para desconectarte del mundo.",
       "screen": const CabanaEncanto(),
     },

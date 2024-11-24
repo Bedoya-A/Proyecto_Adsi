@@ -251,29 +251,6 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                         ),
                       ),
                       SizedBox(height: 20),
-
-                      // Ubicación con interacción
-                      Text(
-                        '📍 UBICACIÓN',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green[900],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                      ClipRRect(
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(10),
-                            topRight: Radius.circular(10),
-                          ),
-                          child: Image.network(
-                            'assets/mapacabanaArbol.jpg',
-                            width: 400, // Ancho deseado
-                            height: 300, // Alto deseado
-                            fit: BoxFit
-                                .contain, // Para que se ajuste sin distorsión
-                          )),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Card(
@@ -288,21 +265,25 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                                 Text(
                                   'Estamos a 10 minutos de la Universidad de Ibagué en el barrio Ambalá. '
                                   'Puedes llegar en Uber, moto o carro hasta la entrada del lugar. Puedes llevar toda la comida y bebida que desees, nosotros no vendemos.',
-                                  style: TextStyle(
-                                      fontSize: 16, color: Colors.black87),
+                                  style: TextStyle(fontSize: 16),
                                   textAlign: TextAlign.justify,
                                 ),
                                 SizedBox(height: 10),
                                 Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisAlignment: MainAxisAlignment
+                                      .start, // Cambiar a start
                                   children: [
                                     Icon(Icons.directions_walk,
                                         color: Colors.green[700]),
                                     SizedBox(width: 8),
-                                    Text(
-                                      '20 minutos de senderismo (800m)',
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.black87),
+                                    Expanded(
+                                      // Añadir Expanded para evitar overflow
+                                      child: Text(
+                                        '20 minutos de senderismo (800m)',
+                                        style: TextStyle(fontSize: 16),
+                                        overflow: TextOverflow
+                                            .ellipsis, // Añadir truncamiento si el texto es largo
+                                      ),
                                     ),
                                   ],
                                 ),
@@ -311,6 +292,7 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                           ),
                         ),
                       ),
+
                       SizedBox(height: 20),
 
                       // Precios en una tarjeta
@@ -385,8 +367,7 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                                     SizedBox(height: 8),
                                     Text(
                                       '20 minutos de senderismo (800m)',
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.black87),
+                                      style: TextStyle(fontSize: 16),
                                     ),
                                   ],
                                 ),
@@ -426,8 +407,7 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                                     SizedBox(height: 8),
                                     Text(
                                       'Parqueadero gratuito.',
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.black87),
+                                      style: TextStyle(fontSize: 16),
                                     ),
                                   ],
                                 ),
@@ -548,13 +528,18 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
         children: [
           Icon(icon, size: 24, color: Colors.white),
           SizedBox(width: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              letterSpacing: 1.2,
+          Expanded(
+            // Envuelve el texto con Expanded
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+                letterSpacing: 1.2,
+              ),
+              overflow: TextOverflow.ellipsis, // Añadir puntos suspensivos
+              maxLines: 1, // Limitar a una línea
             ),
           ),
         ],
