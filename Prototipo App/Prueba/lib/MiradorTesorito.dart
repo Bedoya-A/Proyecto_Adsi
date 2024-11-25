@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/Menu.dart';
-import 'package:prueba2/MenuFlotante.dart';
+import 'package:prueba2/FloatingActionMenu.dart';
 import 'package:prueba2/PaginaOferta.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -64,6 +64,16 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
         context,
         MaterialPageRoute(builder: (context) => PaginaOferta()),
       );
+    }
+  }
+
+  Future<void> _openMap() async {
+    const url =
+        'https://maps.app.goo.gl/VTkPjK7f4HzMjgss9'; // Reemplaza con la URL de tu ubicación
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'No se pudo abrir el mapa: $url';
     }
   }
 
@@ -363,7 +373,14 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
           ),
         ])),
       ),
-      floatingActionButton: FloatingActionMenu(),
+      floatingActionButton: FloatingActionMenu(
+        siteName: "Mirador Tesorito", // Nombre del sitio
+        mapUrl:
+            "https://maps.app.goo.gl/VTkPjK7f4HzMjgss9", // URL del mapa (Waze o Google Maps)
+        onPressed: () {
+          _openMap(); // Acción al presionar el botón para abrir el mapa
+        },
+      ),
     );
   }
 
@@ -490,34 +507,18 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
             textColor,
           ),
           SizedBox(height: 10),
-
-          // Imagen del mirador
-          ClipRRect(
-            borderRadius:
-                BorderRadius.circular(12), // Bordes redondeados en la imagen
-            child: Image.asset(
-              'assets/mapamiradorTesorito.jpg',
-              width: double.infinity, // Ocupa el ancho disponible
-              fit: BoxFit.cover, // Ajuste de la imagen
-            ),
-          ),
-
-          SizedBox(height: 10),
-
           _buildInfoCard(
             'Horarios: \nLunes a Viernes: 3:00 pm - 11:00 pm\nSábados, Domingos y Festivos: 11:00 am - 11:00 pm',
             Icons.access_time,
             backgroundColor,
             textColor,
           ),
-
           _buildInfoCard(
             'Pagos disponibles por Nequi y Daviplata.',
             Icons.attach_money,
             backgroundColor,
             textColor,
           ),
-
           _buildInfoCard(
             'Costo de ingreso: 5,000 COP (incluye bebida de bienvenida).',
             Icons.local_drink,

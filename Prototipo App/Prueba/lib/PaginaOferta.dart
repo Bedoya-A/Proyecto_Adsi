@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:prueba2/Menu.dart';
 import 'package:prueba2/PaginaOfertaItems.dart';
 
 class PaginaOferta extends StatelessWidget {
@@ -8,11 +7,7 @@ class PaginaOferta extends StatelessWidget {
   void _openMenuSection(BuildContext context, int sectionIndex) {
     Scaffold.of(context).openEndDrawer();
 
-    Future.delayed(Duration(milliseconds: 300), () {
-      final menuState = context.findAncestorStateOfType<MenuState>();
-      menuState
-          ?.selectSection(sectionIndex); // Selecciona la sección específica
-    });
+    Future.delayed(Duration(milliseconds: 300), () {});
   }
 
   @override

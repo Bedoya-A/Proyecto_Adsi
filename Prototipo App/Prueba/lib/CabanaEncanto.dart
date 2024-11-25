@@ -1,7 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:prueba2/Menu.dart';
-import 'package:prueba2/MenuFlotante.dart';
+import 'package:prueba2/FloatingActionMenu.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class CabanaEncanto extends StatefulWidget {
@@ -33,6 +33,16 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     setState(() {
       selectedDrawerIndex = index;
     });
+  }
+
+  Future<void> _openMap() async {
+    const url =
+        'https://maps.app.goo.gl/47jiTafrHd3NBNKN9'; // Reemplaza con la URL de tu ubicación
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'No se pudo abrir el mapa: $url';
+    }
   }
 
   Future<void> _launchYoutube() async {
@@ -271,7 +281,14 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionMenu(),
+      floatingActionButton: FloatingActionMenu(
+        siteName: "Cabaña el Encanto", // Nombre del sitio
+        mapUrl:
+            "https://maps.app.goo.gl/47jiTafrHd3NBNKN9", // URL del mapa (Waze o Google Maps)
+        onPressed: () {
+          _openMap(); // Acción al presionar el botón para abrir el mapa
+        },
+      ),
     );
   }
 

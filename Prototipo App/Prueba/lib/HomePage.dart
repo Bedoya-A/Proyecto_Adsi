@@ -6,7 +6,7 @@ import 'package:prueba2/CustomAppbar.dart';
 import 'package:prueba2/InicioSesion.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/MenuUsuario.dart';
-import 'MiCuentaPage';
+import 'package:prueba2/MiCuentaPage.dart';
 import 'package:prueba2/ModeloEstado.dart';
 import 'package:prueba2/NotificacionesPage.dart';
 import 'package:prueba2/PaginaBienvenida.dart';

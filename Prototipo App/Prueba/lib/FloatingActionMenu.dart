@@ -1,19 +1,32 @@
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:prueba2/FormularioReserva.dart';
-import 'package:prueba2/Mapa.dart';
 
 class FloatingActionMenu extends StatefulWidget {
+  final String siteName; // Nombre del sitio turístico
+  final String mapUrl; // URL del mapa para el sitio
+
+  const FloatingActionMenu({
+    Key? key,
+    required this.siteName,
+    required this.mapUrl,
+    required Null Function() onPressed,
+  }) : super(key: key);
+
   @override
   _FloatingActionMenuState createState() => _FloatingActionMenuState();
 }
 
 class _FloatingActionMenuState extends State<FloatingActionMenu> {
-  bool _isMenuOpen = false;
+  bool _isMenuOpen = false; // Estado del menú (abierto/cerrado)
 
-  void _handleReservation(
-      String name, String phone, String date, int numPeople) {
-    print("Reserva: $name, $phone, $date, $numPeople");
+  // Método para abrir una URL
+  void _openMap() async {
+    if (await canLaunch(widget.mapUrl)) {
+      await launch(widget.mapUrl); // Abre el mapa con la URL correspondiente
+    } else {
+      throw 'No se pudo abrir el mapa';
+    }
   }
 
   @override
@@ -21,27 +34,32 @@ class _FloatingActionMenuState extends State<FloatingActionMenu> {
     return Stack(
       children: [
         Positioned(
-          bottom: 0, // Pegado a la esquina inferior
-          right: 0, // Pegado a la esquina derecha
+          bottom: 0,
+          right: 0,
           child: AbsorbPointer(
             absorbing: !_isMenuOpen,
             child: Column(
               mainAxisAlignment: MainAxisAlignment.end,
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
+                // Botón para hacer una reserva
                 AnimatedOpacity(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   opacity: _isMenuOpen ? 1.0 : 0.0,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       FloatingActionButton(
                         onPressed: () {
+                          // Acción de reserva
                           Navigator.push(
                             context,
                             MaterialPageRoute(
                               builder: (context) => ReservationForm(
-                                onSubmit: _handleReservation,
+                                onSubmit: (name, phone, date, numPeople) {
+                                  print(
+                                      "Reserva: $name, $phone, $date, $numPeople");
+                                },
                               ),
                             ),
                           );
@@ -52,9 +70,9 @@ class _FloatingActionMenuState extends State<FloatingActionMenu> {
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         color: Colors.white,
-                        child: Text(
+                        child: const Text(
                           'Realiza una reserva',
                           style: TextStyle(color: Colors.black),
                         ),
@@ -63,63 +81,61 @@ class _FloatingActionMenuState extends State<FloatingActionMenu> {
                   ),
                 ),
                 const SizedBox(height: 8),
+
+                // Botón para ver el mapa
                 AnimatedOpacity(
-                  duration: Duration(milliseconds: 300),
+                  duration: const Duration(milliseconds: 300),
                   opacity: _isMenuOpen ? 1.0 : 0.0,
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       FloatingActionButton(
-                        onPressed: () async {
-                          const String wazeUrl =
-                              'https://www.waze.com/en/live-map/directions/co/tolima/ibague/mirador-tesorito?navigate=yes&place=ChIJRyUrGHXFOI4RXhgm1xeFUTU';
-
-                          if (await canLaunch(wazeUrl)) {
-                            await launch(wazeUrl); // Abre Waze en el navegador
-                          } else {
-                            throw 'No se pudo abrir Waze';
-                          }
-                        },
+                        onPressed:
+                            _openMap, // Llama a la función para abrir el mapa
                         backgroundColor: const Color(0xFF88BDA4),
-                        child: const Icon(Icons.location_on),
+                        child: const Icon(Icons.map),
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: EdgeInsets.all(8),
+                        padding: const EdgeInsets.all(8),
                         color: Colors.white,
                         child: Text(
-                          'Mapa',
-                          style: TextStyle(color: Colors.black),
+                          'Mapa: ${widget.siteName}', // Muestra el nombre del sitio
+                          style: const TextStyle(color: Colors.black),
                         ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 8),
+
+                // Botón para abrir/cerrar el menú
                 FloatingActionButton(
                   onPressed: () {
                     setState(() {
                       _isMenuOpen = !_isMenuOpen;
                     });
                   },
-                  backgroundColor: const Color(0xFF88BDA4),
+                  backgroundColor: Color.fromARGB(255, 98, 142, 122),
                   child: const Icon(Icons.close),
                 ),
               ],
             ),
           ),
         ),
+        // Botón principal para abrir/cerrar el menú
         Positioned(
-          bottom: 0, // Pegado a la esquina inferior
-          right: 0, // Pegado a la esquina derecha
+          bottom: 0,
+          right: 0,
           child: FloatingActionButton(
             onPressed: () {
               setState(() {
                 _isMenuOpen = !_isMenuOpen;
               });
             },
-            backgroundColor: const Color(0xFF88BDA4),
-            child: _isMenuOpen ? Icon(Icons.close) : Icon(Icons.menu),
+            backgroundColor: Color.fromARGB(255, 104, 139, 122),
+            child:
+                _isMenuOpen ? const Icon(Icons.close) : const Icon(Icons.menu),
           ),
         ),
       ],

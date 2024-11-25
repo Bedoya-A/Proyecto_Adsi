@@ -1,15 +1,18 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
+import 'package:prueba2/FormularioReserva.dart';
+import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/FloatingActionMenu.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'Menu.dart';
 
-class CabanaParaisoEscondido extends StatefulWidget {
+class CabanaParaiso extends StatefulWidget {
   @override
-  State<CabanaParaisoEscondido> createState() => _CabanaParaisoEscondidoState();
+  State<CabanaParaiso> createState() => _CabanaParaisoState();
 }
 
-class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
+class _CabanaParaisoState extends State<CabanaParaiso> {
+  bool _isHomeIconVisible = false; // Control for logo visibility
   int selectedDrawerIndex = 1; // Selected index for menu
   double _rating = 0; // Initial rating value
   TextEditingController _reviewController = TextEditingController();
@@ -26,10 +29,29 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
   ];
   int _current = 0;
 
+  // Date selection logic
+  void _selectDate(TextEditingController controller) async {
+    final picked = await showDatePicker(
+      context: context,
+      initialDate: DateTime.now(),
+      firstDate: DateTime.now(),
+      lastDate: DateTime(2025),
+    );
+    if (picked != null) {
+      controller.text = "${picked.toLocal()}".split(' ')[0];
+    }
+  }
+
   // Function to select drawer item
   void onSelectDrawerItem(int index) {
     setState(() {
       selectedDrawerIndex = index;
+    });
+  }
+
+  void _onLogoTap() {
+    setState(() {
+      _isHomeIconVisible = !_isHomeIconVisible; // Toggle icon visibility
     });
   }
 
@@ -80,6 +102,22 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
     });
   }
 
+  void _showReservationForm() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: ReservationForm(
+            onSubmit: (name, phone, date, numPeople) {
+              // Lógica para manejar la reserva
+              print('Reserva: $name, $phone, $date, $numPeople');
+            },
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,11 +125,42 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
         title: Text('Cabaña Paraíso', style: TextStyle(color: Colors.white)),
         backgroundColor: Colors.teal[800],
         centerTitle: true,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back), // Icono para retroceder
-          onPressed: () {
-            Navigator.pop(context); // Regresa a la pantalla anterior
-          },
+        leading: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: MouseRegion(
+            cursor: SystemMouseCursors.click,
+            child: GestureDetector(
+              onTap: () {
+                _onLogoTap(); // Change icon visibility on click
+
+                Future.delayed(Duration(milliseconds: 350), () {
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => HomePage()),
+                    (Route<dynamic> route) => false,
+                  );
+                });
+              },
+              child: AnimatedSwitcher(
+                duration: Duration(milliseconds: 350),
+                transitionBuilder: (Widget child, Animation<double> animation) {
+                  return ScaleTransition(scale: animation, child: child);
+                },
+                child: _isHomeIconVisible
+                    ? Icon(
+                        Icons.home,
+                        key: ValueKey('homeIcon'),
+                        size: 40, // Size of home icon
+                        color: Colors.white,
+                      )
+                    : CircleAvatar(
+                        key: ValueKey('logoIcon'),
+                        radius: 20, // Radius of the logo
+                        backgroundImage: AssetImage('assets/logo.png'),
+                      ),
+              ),
+            ),
+          ),
         ),
         actions: [
           Builder(
@@ -245,7 +314,25 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
                   color: Colors.white, // Línea separadora más notoria
                 ),
                 SizedBox(height: 40), // Más espacio entre apartados
+                // Tarjeta de ubicación
 
+                _buildSectionTitle("UBICACIÓN", Icons.location_on),
+                crearTarjeta(
+                  Icons.location_on,
+                  'Estamos a 10 minutos de la Universidad de Ibagué en el barrio Ambalá...',
+                  Center(
+                    child: Image.asset(
+                      'assets/mapaparaiso.jpg', // Reemplaza con el nombre de la imagen que quieres mostrar
+                      width: 450,
+                      height:
+                          350, // Ajuste de la imagen (puedes usar BoxFit.fill, BoxFit.contain, etc.)
+                    ),
+                  ),
+                ),
+
+                Divider(thickness: 2, color: Colors.white),
+                SizedBox(height: 40),
+                // Tarjeta de precios
                 _buildSectionTitle("PRECIOS", Icons.attach_money),
                 crearTarjeta(Icons.attach_money,
                     'Lunes a jueves: \$120.000\nViernes y domingo: \$180.000\nSábado, festivo o día antes de festivo: \$200.000'),
@@ -339,6 +426,30 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
     );
   }
 
+  // Método para crear un campo de texto genérico
+  Widget _buildTextField(String label, TextEditingController controller,
+      TextInputType inputType, IconData icon,
+      {Function()? onTap}) {
+    return GestureDetector(
+      onTap: onTap,
+      child: TextFormField(
+        controller: controller,
+        keyboardType: inputType,
+        decoration: InputDecoration(
+          labelText: label,
+          prefixIcon: Icon(icon),
+          border: OutlineInputBorder(),
+        ),
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Por favor ingrese un valor';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
   // Método para crear tarjetas de servicios y detalles
   Widget servicioTarjeta(IconData icon, String texto, double size) {
     return Card(
@@ -368,17 +479,10 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
               children: [
                 Icon(icon, color: Colors.teal[900]),
                 SizedBox(width: 8),
-                Expanded(
-                    // Añadir Expanded aquí
-                    child: Text(
+                Text(
                   content,
-                  style: TextStyle(
-                    fontSize: 16,
-                  ),
-                  maxLines: 2, // Limita el texto a 2 líneas
-                  overflow: TextOverflow
-                      .ellipsis, // Muestra "..." cuando el texto es demasiado largo
-                )),
+                  style: TextStyle(fontSize: 16, color: Colors.black),
+                ),
               ],
             ),
             if (extraContent != null) ...[
@@ -410,18 +514,13 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
         children: [
           Icon(icon, size: 24, color: Colors.white),
           SizedBox(width: 8),
-          Expanded(
-            // Envuelve el texto con Expanded
-            child: Text(
-              title,
-              style: TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-                letterSpacing: 1.2,
-              ),
-              overflow: TextOverflow.ellipsis, // Añadir puntos suspensivos
-              maxLines: 1, // Limitar a una línea
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.2,
             ),
           ),
         ],

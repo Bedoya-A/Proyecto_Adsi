@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
-import 'package:prueba2/MenuFlotante.dart';
+import 'package:prueba2/FloatingActionMenu.dart';
 import 'package:prueba2/PaginaOferta.dart';
 import 'Menu.dart'; // Importa el menú que creaste
 import 'package:url_launcher/url_launcher.dart';
@@ -45,6 +45,16 @@ class _AutoctonosState extends State<Autoctonos> {
         (Route<dynamic> route) => false,
       );
     });
+  }
+
+  Future<void> _openMap() async {
+    const url =
+        'https://maps.app.goo.gl/wuwhvNjx2jmf9G2DA'; // Reemplaza con la URL de tu ubicación
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'No se pudo abrir el mapa: $url';
+    }
   }
 
   Future<void> _launchYoutube() async {
@@ -190,7 +200,14 @@ class _AutoctonosState extends State<Autoctonos> {
           _buildContent(context),
         ],
       ),
-      floatingActionButton: FloatingActionMenu(),
+      floatingActionButton: FloatingActionMenu(
+        siteName: "Mirador Restaurante Autoctonos", // Nombre del sitio
+        mapUrl:
+            "https://maps.app.goo.gl/6vpQGX7e7gvW9eRS9", // URL del mapa (Waze o Google Maps)
+        onPressed: () {
+          _openMap(); // Acción al presionar el botón para abrir el mapa
+        },
+      ),
     );
   }
 
@@ -325,6 +342,24 @@ class _AutoctonosState extends State<Autoctonos> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // Título que se expande hacia la derecha
+            Container(
+              width: double
+                  .infinity, // Hace que el título ocupe todo el ancho disponible
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 25,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.teal[800], // Color original para el título
+                ),
+                overflow: TextOverflow
+                    .ellipsis, // Asegura que el texto no se salga de los límites
+              ),
+            ),
+            SizedBox(height: 8), // Espacio entre título y contenido
+            // Contenido que se encuentra debajo del título
+
             Text(
               title,
               style: TextStyle(
@@ -335,12 +370,13 @@ class _AutoctonosState extends State<Autoctonos> {
               ),
             ),
             SizedBox(height: 8),
+
             Text(
               content,
               style: TextStyle(
                 fontSize: 16,
                 color:
-                    textColor, // Cambiar solo el color del contenido según el tema
+                    textColor, // Cambiar el color del contenido según el tema
               ),
             ),
           ],

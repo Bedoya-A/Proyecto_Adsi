@@ -11,6 +11,7 @@ class AppState with ChangeNotifier {
       false; // Variable para gestionar si el usuario está logueado
   File? _fotoPerfil; // Nueva propiedad para la foto de perfil
   ThemeMode _themeMode = ThemeMode.system;
+  Locale _locale = Locale('es', ''); // Idioma predeterminado
 
   int get currentPage => _currentPage;
   int get selectedDrawerIndex => _selectedDrawerIndex;
@@ -20,6 +21,7 @@ class AppState with ChangeNotifier {
   File? get fotoPerfil => _fotoPerfil; // Getter para la foto de perfil
   // Getter para el themeMode
   ThemeMode get themeMode => _themeMode;
+  Locale get locale => _locale;
 
   void setCurrentPage(int page) {
     _currentPage = page;
@@ -55,6 +57,24 @@ class AppState with ChangeNotifier {
   void setThemeMode(ThemeMode mode) {
     _themeMode = mode;
     notifyListeners(); // Notificar a todos los listeners (widgets) sobre el cambio
+  }
+
+  void setLocale(Locale locale) {
+    _locale = locale;
+    notifyListeners();
+  }
+
+  void updateThemeMode(Brightness brightness) {
+    if (_themeMode == ThemeMode.system) {
+      if (brightness == Brightness.dark) {
+        _themeMode =
+            ThemeMode.dark; // Si el sistema está en modo oscuro, usar dark
+      } else {
+        _themeMode =
+            ThemeMode.light; // Si el sistema está en modo claro, usar light
+      }
+      notifyListeners();
+    }
   }
 
   void logOut() {

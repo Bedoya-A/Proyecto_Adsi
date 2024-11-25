@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:provider/provider.dart';
 import 'package:prueba2/Autoctonos.dart';
+import 'package:prueba2/CambioTemaButton.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/JardinBotanico.dart';
+import 'package:prueba2/LanguajeSwitchButton.dart';
 import 'package:prueba2/Meraki.dart';
 import 'package:prueba2/MiradorTesorito.dart';
+import 'package:prueba2/ModeloEstado.dart';
 import 'package:prueba2/ParaisoEscondido.dart';
 import 'package:prueba2/Transporte.dart';
 
@@ -24,29 +28,7 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
   bool _isExpandedAmbala = false;
 
   late AnimationController _rotationController;
-  bool _isSelectedCorredores = false;
   bool _isHomeIconVisible = false;
-  int _selectedSectionIndex = -1;
-
-  void selectSection(int index) {
-    setState(() {
-      _selectedSectionIndex = index;
-
-      if (index >= 5 && index <= 7) {
-        _isExpandedCorredores = true;
-        _isExpandedCalambeo = true;
-        _isExpandedAmbala = false;
-      } else if (index >= 1 && index <= 4) {
-        _isExpandedCorredores = true;
-        _isExpandedCalambeo = false;
-        _isExpandedAmbala = true;
-      } else {
-        _isExpandedCorredores = false;
-        _isExpandedCalambeo = false;
-        _isExpandedAmbala = false;
-      }
-    });
-  }
 
   @override
   void initState() {
@@ -63,26 +45,6 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
     super.dispose();
   }
 
-  void _toggleCorredores() {
-    setState(() {
-      _isExpandedCorredores = !_isExpandedCorredores;
-      _isExpandedCorredores
-          ? _rotationController.forward()
-          : _rotationController.reverse();
-    });
-  }
-
-  void _selectCorredores() {
-    setState(() {
-      _isSelectedCorredores = true;
-    });
-    Future.delayed(Duration(milliseconds: 300), () {
-      setState(() {
-        _isSelectedCorredores = false;
-      });
-    });
-  }
-
   void _onLogoTap() {
     setState(() {
       _isHomeIconVisible = !_isHomeIconVisible;
@@ -91,15 +53,14 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
           DrawerHeader(
-            decoration: BoxDecoration(color: colorScheme.primary),
+            decoration: BoxDecoration(
+              color: Color(0xFFD6F6DD),
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -127,7 +88,7 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                               Icons.home,
                               key: ValueKey('homeIcon'),
                               size: 80,
-                              color: colorScheme.onPrimary,
+                              color: Color(0xFF182825),
                             )
                           : CircleAvatar(
                               key: ValueKey('logoIcon'),
@@ -140,56 +101,59 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                 SizedBox(height: 10),
                 Text(
                   'Explora Calambeo - Ambalá',
-                  style: textTheme.titleLarge?.copyWith(
-                    color: colorScheme.onPrimary,
-                  ),
+                  style: TextStyle(
+                      color: Color(0xff526760),
+                      fontSize: 20,
+                      fontStyle: FontStyle.italic),
                 ),
               ],
             ),
           ),
           ExpansionTile(
-            leading: AnimatedBuilder(
-              animation: _rotationController,
-              builder: (context, child) {
-                return Transform.rotate(
-                  angle: _rotationController.value * 2 * 3.14159,
-                  child: Transform.scale(
-                    scale: _isSelectedCorredores ? 1.2 : 1.0,
-                    child: Icon(Icons.explore, color: colorScheme.onSurface)
-                        .animate()
-                        .fadeIn(
-                          duration: 500.ms,
-                          curve: Curves.easeInOut,
-                        ),
-                  ),
-                );
-              },
-            ),
-            title: Text('Corredores Turísticos',
-                style: textTheme.titleMedium?.copyWith(
-                  color: colorScheme.onSurface,
-                )),
+            leading: buildAnimatedCorredoresIcon(
+                _isExpandedCorredores), // Aplicamos ambas animaciones
+            title: Text('Corredores Turísticos'),
             onExpansionChanged: (expanded) {
-              _toggleCorredores();
-              _selectCorredores();
+              setState(() {
+                _isExpandedCorredores = expanded;
+              });
+              // Controlamos la animación de rotación cuando se expande o colapsa
+              _isExpandedCorredores
+                  ? _rotationController.forward()
+                  : _rotationController.reverse();
             },
             children: _isExpandedCorredores
                 ? [
                     ExpansionTile(
-                      leading: Icon(Icons.nature_people)
-                          .animate()
-                          .scale(
-                            duration: 300.ms,
-                            curve: Curves.easeInOutQuad,
-                          )
-                          .fadeIn(
-                            duration: 500.ms,
-                            curve: Curves.easeInOutQuad,
-                          ),
-                      title: Text('Calambeo',
-                          style: textTheme.titleSmall?.copyWith(
-                            color: colorScheme.onSurface,
-                          )),
+                      leading: buildAnimatedIcon(
+                          Color(0xFFD6F6DD), _isExpandedAmbala),
+                      title: Text('Ambalá'),
+                      onExpansionChanged: (expanded) {
+                        setState(() {
+                          _isExpandedAmbala = expanded;
+                        });
+                      },
+                      children: _isExpandedAmbala
+                          ? [
+                              buildAnimatedExpansionTile('Cabañas', [
+                                buildAnimatedDrawerItem('Paraíso Escondido', 1,
+                                    Icons.home, context, ParaisoEscondido()),
+                              ]),
+                              buildAnimatedExpansionTile('Parques', [
+                                buildAnimatedDrawerItem(
+                                    'Parque Temático Meraki',
+                                    8,
+                                    Icons.eco,
+                                    context,
+                                    Meraki()),
+                              ]),
+                            ]
+                          : [],
+                    ),
+                    ExpansionTile(
+                      leading: buildAnimatedIcon(
+                          Color(0xFFD6F6DD), _isExpandedCalambeo),
+                      title: Text('Calambeo'),
                       onExpansionChanged: (expanded) {
                         setState(() {
                           _isExpandedCalambeo = expanded;
@@ -216,48 +180,31 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
                             ]
                           : [],
                     ),
-                    ExpansionTile(
-                      leading: Icon(Icons.nature_people)
-                          .animate()
-                          .scale(
-                            duration: 300.ms,
-                            curve: Curves.easeInOutQuad,
-                          )
-                          .fadeIn(
-                            duration: 500.ms,
-                            curve: Curves.easeInOutQuad,
-                          ),
-                      title: Text('Ambalá',
-                          style: textTheme.titleSmall?.copyWith(
-                            color: colorScheme.onSurface,
-                          )),
-                      onExpansionChanged: (expanded) {
-                        setState(() {
-                          _isExpandedAmbala = expanded;
-                        });
-                      },
-                      children: _isExpandedAmbala
-                          ? [
-                              buildAnimatedExpansionTile('Cabañas', [
-                                buildAnimatedDrawerItem('Paraíso Escondido', 1,
-                                    Icons.home, context, ParaisoEscondido()),
-                              ]),
-                              buildAnimatedExpansionTile('Parques', [
-                                buildAnimatedDrawerItem(
-                                    'Parque Temático Meraki',
-                                    8,
-                                    Icons.eco,
-                                    context,
-                                    Meraki()),
-                              ]),
-                            ]
-                          : [],
-                    ),
                   ]
                 : [],
           ),
           buildAnimatedDrawerItem('Servicio de Transporte', 9,
               Icons.directions_bus, context, Transporte()),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Center(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Consumer<AppState>(
+                  builder: (context, appState, child) {
+                    return LightDarkSwitch(
+                      value: appState.themeMode == ThemeMode.dark,
+                      onChanged: (bool newValue) {
+                        appState.setThemeMode(
+                            newValue ? ThemeMode.dark : ThemeMode.light);
+                      },
+                    );
+                  },
+                ),
+              ),
+            ),
+          ),
+          LanguageSwitchButton()
         ],
       ),
     );
@@ -266,34 +213,30 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
   Widget buildAnimatedDrawerItem(
       String title, int index, IconData icon, BuildContext context,
       [Widget? page]) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
+    bool isSelected = widget.selectedDrawerIndex == index;
 
     return Material(
-      elevation: widget.selectedDrawerIndex == index ? 8 : 0,
+      elevation: isSelected ? 8 : 0,
       borderRadius: BorderRadius.circular(10),
       child: ListTile(
         leading: Icon(
           icon,
-          color: widget.selectedDrawerIndex == index
-              ? colorScheme.secondary
-              : colorScheme.onSurface,
+          color: isSelected
+              ? Color(0xff828a95) // Mismo color que el DrawerHeader
+              : Colors.grey, // Color por defecto
         ),
         title: Text(
           title,
-          style: textTheme.bodyLarge?.copyWith(
-            color: widget.selectedDrawerIndex == index
-                ? colorScheme.secondary
-                : colorScheme.onSurface,
+          style: TextStyle(
+            color: isSelected
+                ? Colors.black // Color del texto cuando está seleccionado
+                : null, // Color por defecto del texto
           ),
         ),
-        selected: widget.selectedDrawerIndex ==
-            index, // Esto maneja si la opción está seleccionada
-        tileColor: widget.selectedDrawerIndex == index
-            ? colorScheme.primaryContainer // Color al seleccionar
-            : null, // Si no está seleccionada, no cambia el color
-        selectedTileColor: colorScheme
-            .primaryContainer, // Color para cuando la opción está seleccionada
+        selected: isSelected,
+        tileColor:
+            isSelected ? Color(0xFFD6F6DD) : null, // Fondo al seleccionar
+        selectedTileColor: Color(0xFFD6F6DD),
         onTap: () {
           widget.onSelectDrawerItem(index);
           if (page != null) {
@@ -306,18 +249,59 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
   }
 
   Widget buildAnimatedExpansionTile(String title, List<Widget> children) {
-    final textTheme = Theme.of(context).textTheme;
-    final colorScheme = Theme.of(context).colorScheme;
-
     return ExpansionTile(
-      title: Text(title,
-          style: textTheme.titleSmall?.copyWith(
-            color: colorScheme.onSurface,
-          )),
+      title: Text(
+        title,
+      ),
       children: children
           .animate(interval: 150.ms)
           .slideY(begin: 1, end: 0, duration: 400.ms)
           .fadeIn(duration: 500.ms, curve: Curves.easeInOutQuad),
+    );
+  }
+
+  Widget buildAnimatedIcon(Color color, bool isExpanded) {
+    return TweenAnimationBuilder<Color?>(
+      tween: ColorTween(
+        begin: Colors.grey.withOpacity(0.7),
+        end: isExpanded ? Color(0xFFD6F6DD) : Colors.grey.withOpacity(0.7),
+      ),
+      duration: Duration(milliseconds: 300),
+      builder: (context, value, child) {
+        return Icon(
+          Icons.nature_people,
+          color: value, // Color animado
+        );
+      },
+    );
+  }
+
+  Widget buildAnimatedCorredoresIcon(bool isExpanded) {
+    return TweenAnimationBuilder<Color?>(
+      tween: ColorTween(
+        begin: Colors.grey.withOpacity(0.7), // Color cuando está colapsado
+        end: isExpanded
+            ? Color(0xFFD6F6DD)
+            : Colors.grey, // Color cuando está expandido
+      ),
+      duration: Duration(milliseconds: 300), // Duración para el cambio suave
+      builder: (context, value, child) {
+        return AnimatedBuilder(
+          animation: _rotationController,
+          builder: (context, child) {
+            return Transform.rotate(
+              angle: _rotationController.value * 2 * 3.14159,
+              child: Icon(
+                Icons.explore, // Icono anterior
+                color: value, // Color animado
+              ).animate().fadeIn(duration: 300.ms).scale(
+                    duration: 300.ms,
+                    curve: Curves.easeInOut,
+                  ),
+            );
+          },
+        );
+      },
     );
   }
 }
