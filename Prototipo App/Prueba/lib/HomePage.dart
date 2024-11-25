@@ -8,7 +8,6 @@ import 'package:prueba2/Menu.dart';
 import 'package:prueba2/MenuUsuario.dart';
 import 'package:prueba2/MiCuentaPage.dart';
 import 'package:prueba2/ModeloEstado.dart';
-import 'package:prueba2/NotificacionesPage.dart';
 import 'package:prueba2/PaginaBienvenida.dart';
 import 'package:prueba2/PaginaOferta.dart';
 import 'package:prueba2/RegistroSesion.dart';
@@ -117,12 +116,6 @@ class _HomePageState extends State<HomePage> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => AccesoSeguridadPage()),
-            );
-          },
-          onNotificaciones: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => NotificacionesPage()),
             );
           },
           onSoporte: () {
