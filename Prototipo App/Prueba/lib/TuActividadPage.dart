@@ -380,7 +380,7 @@ class _TuActividadPageState extends State<TuActividadPage>
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
             child: Image.asset(
-              'assets/montaña1/imagen_$index.jpg', // Asegúrate de tener imágenes en la carpeta assets
+              'assets/montaña1.png', // Asegúrate de tener imágenes en la carpeta assets
               height: 120,
               width: double.infinity,
               fit: BoxFit.cover,

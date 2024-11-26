@@ -118,9 +118,16 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
       builder: (BuildContext context) {
         return Dialog(
           child: ReservationForm(
-            onSubmit: (name, phone, date, numPeople) {
-              // Lógica para manejar la reserva
-              print('Reserva: $name, $phone, $date, $numPeople');
+            onSubmit: (name, phone, startDate, endDate, numPeople) {
+              // Aquí puedes hacer lo que quieras con los datos de la reserva, como guardarlos
+              print(
+                  "Reserva: $name, $phone, Fecha de inicio: $startDate, Fecha de finalización: $endDate, Número de personas: $numPeople");
+
+              // Mostrar el SnackBar de confirmación
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('¡Reserva realizada con éxito!'),
+                backgroundColor: Colors.green,
+              ));
             },
           ),
         );

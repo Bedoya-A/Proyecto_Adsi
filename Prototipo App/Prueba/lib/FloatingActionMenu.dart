@@ -56,9 +56,10 @@ class _FloatingActionMenuState extends State<FloatingActionMenu> {
                             context,
                             MaterialPageRoute(
                               builder: (context) => ReservationForm(
-                                onSubmit: (name, phone, date, numPeople) {
+                                onSubmit: (name, phone, startDate, endDate,
+                                    numPeople) {
                                   print(
-                                      "Reserva: $name, $phone, $date, $numPeople");
+                                      "Reserva: $name, $phone, Fecha de inicio: $startDate, Fecha de finalización: $endDate, Número de personas: $numPeople");
                                 },
                               ),
                             ),

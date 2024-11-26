@@ -7,16 +7,16 @@ class LanguageSwitchButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Consumer<AppState>(
       builder: (context, appState, child) {
-        return ListTile(
-          title: Text(
-            'Change Language',
-            style: TextStyle(
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          onTap: () {
+        return ElevatedButton(
+          onPressed: () {
             _showLanguageDialog(context, appState);
           },
+          child: Text(
+            'Seleccionar Idioma',
+            style: TextStyle(
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 144, 255, 168)),
+          ),
         );
       },
     );
@@ -43,6 +43,13 @@ class LanguageSwitchButton extends StatelessWidget {
                 title: Text('English'),
                 onTap: () {
                   appState.setLocale(Locale('en', ''));
+                  Navigator.of(context).pop();
+                },
+              ),
+              ListTile(
+                title: Text('Francés'),
+                onTap: () {
+                  appState.setLocale(Locale('fr', ''));
                   Navigator.of(context).pop();
                 },
               ),

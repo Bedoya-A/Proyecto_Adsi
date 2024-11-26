@@ -3,7 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import 'package:prueba2/Autoctonos.dart';
 import 'package:prueba2/CambioTemaButton.dart';
-import 'package:prueba2/HomePage.dart';
+import 'package:prueba2/CustomDrawerHeader.dart';
 import 'package:prueba2/JardinBotanico.dart';
 import 'package:prueba2/LanguajeSwitchButton.dart';
 import 'package:prueba2/Meraki.dart';
@@ -56,59 +56,8 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
     return Drawer(
       child: ListView(
         padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-              color: Color(0xFFD6F6DD),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                MouseRegion(
-                  cursor: SystemMouseCursors.click,
-                  child: GestureDetector(
-                    onTap: () {
-                      _onLogoTap();
-                      Future.delayed(Duration(milliseconds: 450), () {
-                        Navigator.pushAndRemoveUntil(
-                          context,
-                          MaterialPageRoute(builder: (context) => HomePage()),
-                          (Route<dynamic> route) => false,
-                        );
-                      });
-                    },
-                    child: AnimatedSwitcher(
-                      duration: Duration(milliseconds: 350),
-                      transitionBuilder:
-                          (Widget child, Animation<double> animation) {
-                        return ScaleTransition(scale: animation, child: child);
-                      },
-                      child: _isHomeIconVisible
-                          ? Icon(
-                              Icons.home,
-                              key: ValueKey('homeIcon'),
-                              size: 80,
-                              color: Color(0xFF182825),
-                            )
-                          : CircleAvatar(
-                              key: ValueKey('logoIcon'),
-                              radius: 40,
-                              backgroundImage: AssetImage('assets/logo.png'),
-                            ),
-                    ),
-                  ),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  'Explora Calambeo - Ambalá',
-                  style: TextStyle(
-                      color: Color(0xff526760),
-                      fontSize: 20,
-                      fontStyle: FontStyle.italic),
-                ),
-              ],
-            ),
-          ),
+        children: [
+          CustomDrawerHeader(),
           ExpansionTile(
             leading: buildAnimatedCorredoresIcon(
                 _isExpandedCorredores), // Aplicamos ambas animaciones
@@ -204,7 +153,10 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
               ),
             ),
           ),
-          LanguageSwitchButton()
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: LanguageSwitchButton(),
+          )
         ],
       ),
     );
