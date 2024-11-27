@@ -130,7 +130,7 @@ class _LoginPageState extends State<LoginPage> {
               SizedBox(height: 20),
               // Aquí van los logotipos de Google y otras opciones
               SocialLogos(),
-              SizedBox(height: 20),
+
               if (_errorMessage != null) ErrorMessage(message: _errorMessage!),
               TextButton(
                 onPressed: () {

@@ -156,9 +156,9 @@ class _RegisterPageState extends State<RegisterPage> {
               SizedBox(height: 20),
               // Agregamos el widget de logotipos
               SocialLogos(),
-              SizedBox(height: 20),
+
               if (_errorMessage != null) ErrorMessage(message: _errorMessage!),
-              SizedBox(height: 20),
+
               TextButton(
                 onPressed: () {
                   Navigator.pushReplacement(
