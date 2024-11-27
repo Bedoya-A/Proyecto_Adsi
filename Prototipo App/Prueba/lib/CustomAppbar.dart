@@ -33,7 +33,7 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
                 ),
               )
             : IconButton(
-                icon: Icon(Icons.login),
+                icon: Icon(Icons.person),
                 onPressed: onUserIconPressed,
               ),
         // Botón de menú

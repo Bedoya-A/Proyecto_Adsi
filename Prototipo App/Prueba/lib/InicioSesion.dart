@@ -1,13 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:prueba2/CustomTextField.dart';
 import 'package:prueba2/HomePage.dart';
+import 'package:prueba2/LoginBackground.dart';
+import 'package:prueba2/LoginButton.dart';
+import 'package:prueba2/LoginErrorMessage.dart';
 import 'package:prueba2/ModeloEstado.dart';
 import 'package:prueba2/RegistroSesion.dart';
-import 'package:provider/provider.dart'; // Para interactuar con AppState
+import 'package:provider/provider.dart';
+import 'package:prueba2/SocialLogos.dart';
 
 class LoginPage extends StatefulWidget {
-  final bool fromRegister; // Verifica si el usuario viene del registro
+  final bool fromRegister;
 
-  LoginPage({this.fromRegister = false}); // Constructor con el parámetro
+  LoginPage({this.fromRegister = false});
 
   @override
   _LoginPageState createState() => _LoginPageState();
@@ -31,7 +36,6 @@ class _LoginPageState extends State<LoginPage> {
     }
 
     if (email == 'adsi@gmail.com' && password == '12345') {
-      // Actualizamos el estado global
       Provider.of<AppState>(context, listen: false).setLoginStatus(true);
 
       ScaffoldMessenger.of(context).showSnackBar(
@@ -42,7 +46,6 @@ class _LoginPageState extends State<LoginPage> {
         ),
       );
 
-      // Navegamos a HomePage reemplazando el LoginPage
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
@@ -59,7 +62,6 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Iniciar sesión'),
-        backgroundColor: Colors.red,
         leading: widget.fromRegister
             ? IconButton(
                 icon: Icon(Icons.arrow_back),
@@ -78,51 +80,76 @@ class _LoginPageState extends State<LoginPage> {
                 },
               ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Correo electrónico',
-                border: OutlineInputBorder(),
+      body: BackgroundWrapper(
+        imageAsset: 'assets/img1.jpg',
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.person,
+                size: 100,
+                color: Colors.white,
               ),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Contraseña',
-                border: OutlineInputBorder(),
+              SizedBox(height: 30),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: CustomTextField(
+                  controller: _emailController,
+                  labelText: 'Correo electrónico',
+                ),
               ),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _login,
-              child: Text('Iniciar sesión'),
-              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
-            ),
-            SizedBox(height: 20),
-            if (_errorMessage != null)
-              Text(
-                _errorMessage!,
-                style: TextStyle(color: Colors.red),
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: CustomTextField(
+                  controller: _passwordController,
+                  labelText: 'Contraseña',
+                  isPassword: true,
+                ),
               ),
-            TextButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => RegisterPage(fromLogin: true)),
-                );
-              },
-              child: Text('¿No tienes una cuenta? Regístrate aquí'),
-            ),
-          ],
+              SizedBox(height: 20),
+              CustomButton(
+                onPressed: _login,
+                text: 'Iniciar sesión',
+                backgroundColor: Colors.blueAccent,
+                textColor: Colors.white,
+                elevation: 5,
+                borderRadius: BorderRadius.circular(30),
+                padding: EdgeInsets.symmetric(vertical: 14, horizontal: 40),
+              ),
+              SizedBox(height: 20),
+              // Aquí van los logotipos de Google y otras opciones
+              SocialLogos(),
+
+              if (_errorMessage != null) ErrorMessage(message: _errorMessage!),
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => RegisterPage(fromLogin: true)),
+                  );
+                },
+                child: Text(
+                  '¿No tienes una cuenta? Regístrate aquí',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

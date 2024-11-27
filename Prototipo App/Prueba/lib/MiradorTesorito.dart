@@ -3,7 +3,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/Menu.dart';
-import 'package:prueba2/MenuFlotante.dart';
+import 'package:prueba2/FloatingActionMenu.dart';
 import 'package:prueba2/PaginaOferta.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -67,6 +67,16 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
     }
   }
 
+  Future<void> _openMap() async {
+    const url =
+        'https://maps.app.goo.gl/VTkPjK7f4HzMjgss9'; // Reemplaza con la URL de tu ubicación
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'No se pudo abrir el mapa: $url';
+    }
+  }
+
   Future<void> _launchYoutube() async {
     const url = 'https://youtube.com/shorts/ZwwYu4h6BSQ?feature=share';
     if (await canLaunch(url)) {
@@ -108,9 +118,16 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
       builder: (BuildContext context) {
         return Dialog(
           child: ReservationForm(
-            onSubmit: (name, phone, date, numPeople) {
-              // Lógica para manejar la reserva
-              print('Reserva: $name, $phone, $date, $numPeople');
+            onSubmit: (name, phone, startDate, endDate, numPeople) {
+              // Aquí puedes hacer lo que quieras con los datos de la reserva, como guardarlos
+              print(
+                  "Reserva: $name, $phone, Fecha de inicio: $startDate, Fecha de finalización: $endDate, Número de personas: $numPeople");
+
+              // Mostrar el SnackBar de confirmación
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('¡Reserva realizada con éxito!'),
+                backgroundColor: Colors.green,
+              ));
             },
           ),
         );
@@ -363,7 +380,14 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
           ),
         ])),
       ),
-      floatingActionButton: FloatingActionMenu(),
+      floatingActionButton: FloatingActionMenu(
+        siteName: "Mirador Tesorito", // Nombre del sitio
+        mapUrl:
+            "https://maps.app.goo.gl/VTkPjK7f4HzMjgss9", // URL del mapa (Waze o Google Maps)
+        onPressed: () {
+          _openMap(); // Acción al presionar el botón para abrir el mapa
+        },
+      ),
     );
   }
 
@@ -490,34 +514,18 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
             textColor,
           ),
           SizedBox(height: 10),
-
-          // Imagen del mirador
-          ClipRRect(
-            borderRadius:
-                BorderRadius.circular(12), // Bordes redondeados en la imagen
-            child: Image.asset(
-              'assets/mapamiradorTesorito.jpg',
-              width: double.infinity, // Ocupa el ancho disponible
-              fit: BoxFit.cover, // Ajuste de la imagen
-            ),
-          ),
-
-          SizedBox(height: 10),
-
           _buildInfoCard(
             'Horarios: \nLunes a Viernes: 3:00 pm - 11:00 pm\nSábados, Domingos y Festivos: 11:00 am - 11:00 pm',
             Icons.access_time,
             backgroundColor,
             textColor,
           ),
-
           _buildInfoCard(
             'Pagos disponibles por Nequi y Daviplata.',
             Icons.attach_money,
             backgroundColor,
             textColor,
           ),
-
           _buildInfoCard(
             'Costo de ingreso: 5,000 COP (incluye bebida de bienvenida).',
             Icons.local_drink,
@@ -638,19 +646,23 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
         children: [
           Icon(icon, color: Colors.teal[700]),
           SizedBox(width: 10),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white, // Color de título en blanco
-              shadows: [
-                Shadow(
-                  color: Colors.black45,
-                  offset: Offset(2, 2),
-                  blurRadius: 4,
-                ),
-              ], // Sombra para hacerlo más llamativo
+          Expanded(
+            // Aseguramos que el texto ocupe solo el espacio disponible
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white, // Color de título en blanco
+                shadows: [
+                  Shadow(
+                    color: Colors.black45,
+                    offset: Offset(2, 2),
+                    blurRadius: 4,
+                  ),
+                ], // Sombra para hacerlo más llamativo
+              ),
+              overflow: TextOverflow.ellipsis, // Evitar desbordamiento de texto
             ),
           ),
         ],
@@ -671,26 +683,33 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
           }
         });
       },
-      children: items.map((item) {
-        return ListTile(
-          title: Text(item),
-          leading: Icon(Icons.check, color: Colors.teal),
-        );
-      }).toList(),
+      children: items.isNotEmpty
+          ? items.map((item) {
+              return ListTile(
+                title: Text(item),
+                leading: Icon(Icons.check, color: Colors.teal),
+                textColor: Colors.black12,
+              );
+            }).toList()
+          : [
+              ListTile(
+                title: Text('No items available'),
+              ),
+            ],
     );
   }
-}
 
-Widget _buildSectionTitle(String title) {
-  return Container(
-    padding: EdgeInsets.symmetric(vertical: 8.0),
-    child: Text(
-      title,
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: Colors.teal[900],
+  Widget _buildSectionTitle(String title) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.teal[900],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

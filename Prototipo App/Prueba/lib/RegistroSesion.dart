@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:prueba2/CustomTextField.dart';
 import 'package:prueba2/InicioSesion.dart'; // Asegúrate de importar la página de Login
+import 'package:prueba2/LoginBackground.dart';
+import 'package:prueba2/LoginButton.dart';
+import 'package:prueba2/LoginErrorMessage.dart';
+import 'SocialLogos.dart'; // Importa el widget de SocialLogos
 
 class RegisterPage extends StatefulWidget {
   final bool fromLogin; // Determina si viene desde Login o no
@@ -37,13 +42,20 @@ class _RegisterPageState extends State<RegisterPage> {
     }
 
     if (_isValidEmail(email)) {
-      // Si el registro es exitoso, redirigir al LoginPage
+      // Simula que el registro fue exitoso
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Cuenta creada exitosamente'),
+          backgroundColor: Colors.green,
+          duration: Duration(seconds: 2),
+        ),
+      );
+
+      // Si el registro es exitoso, redirige al LoginPage
       if (widget.fromLogin) {
-        // Si viene desde el LoginPage, simplemente vuelve a la página de inicio de sesión
         Navigator.pop(
             context); // Cierra la página de registro y vuelve al login
       } else {
-        // Si no, redirige al LoginPage con un push
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => LoginPage()),
@@ -67,86 +79,105 @@ class _RegisterPageState extends State<RegisterPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Crear cuenta'),
-        backgroundColor: Colors.red,
         leading: widget.fromLogin
             ? IconButton(
-                icon: Icon(
-                    Icons.arrow_back), // Flecha de retroceso si viene del login
+                icon: Icon(Icons.arrow_back),
                 onPressed: () {
                   Navigator.pop(context); // Volver al login
                 },
               )
             : IconButton(
-                icon: Icon(Icons
-                    .close), // Mostrar ícono de cerrar si no viene del login
+                icon: Icon(Icons.close),
                 onPressed: () {
                   Navigator.pop(context); // Cerrar la página
                 },
               ),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: InputDecoration(
-                labelText: 'Correo electrónico',
-                hintText: 'Ingresa tu correo electrónico',
-                border: OutlineInputBorder(),
+      body: BackgroundWrapper(
+        imageAsset: 'assets/registroImagen.jpg',
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                Icons.person_add,
+                size: 100,
+                color: Colors.white,
               ),
-              keyboardType: TextInputType.emailAddress,
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _passwordController,
-              decoration: InputDecoration(
-                labelText: 'Contraseña',
-                hintText: 'Ingresa tu contraseña',
-                border: OutlineInputBorder(),
+              SizedBox(height: 30),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: CustomTextField(
+                  controller: _emailController,
+                  labelText: 'Correo electrónico',
+                ),
               ),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            TextField(
-              controller: _confirmPasswordController,
-              decoration: InputDecoration(
-                labelText: 'Confirmar contraseña',
-                hintText: 'Vuelve a ingresar tu contraseña',
-                border: OutlineInputBorder(),
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: CustomTextField(
+                  controller: _passwordController,
+                  labelText: 'Contraseña',
+                  isPassword: true,
+                ),
               ),
-              obscureText: true,
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _register,
-              child: Text('Crear cuenta'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                padding: EdgeInsets.symmetric(vertical: 15),
-                textStyle: TextStyle(fontSize: 16),
+              SizedBox(height: 20),
+              Container(
+                padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: CustomTextField(
+                  controller: _confirmPasswordController,
+                  labelText: 'Confirmar contraseña',
+                  isPassword: true,
+                ),
               ),
-            ),
-            SizedBox(height: 20),
-            if (_errorMessage != null)
-              Text(
-                _errorMessage!,
-                style: TextStyle(color: Colors.red, fontSize: 16),
+              SizedBox(height: 20),
+              CustomButton(
+                onPressed: _register,
+                text: 'Crear cuenta',
+                backgroundColor: Colors.blueAccent,
+                textColor: Colors.white,
+                elevation: 5,
+                borderRadius: BorderRadius.circular(30),
+                padding: EdgeInsets.symmetric(vertical: 14, horizontal: 40),
               ),
-            SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => LoginPage(),
+              SizedBox(height: 20),
+              // Agregamos el widget de logotipos
+              SocialLogos(),
+
+              if (_errorMessage != null) ErrorMessage(message: _errorMessage!),
+
+              TextButton(
+                onPressed: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => LoginPage(),
+                    ),
+                  );
+                },
+                child: Text(
+                  '¿Ya tienes una cuenta? Inicia sesión aquí',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
                   ),
-                );
-              },
-              child: Text('¿Ya tienes una cuenta? Inicia sesión aquí'),
-            ),
-          ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

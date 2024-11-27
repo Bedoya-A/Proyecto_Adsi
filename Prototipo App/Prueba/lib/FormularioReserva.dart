@@ -3,7 +3,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
 class ReservationForm extends StatefulWidget {
-  final Function(String, String, String, int) onSubmit;
+  final Function(String, String, String, String, int)
+      onSubmit; // Modificado para incluir la fecha de finalización
 
   ReservationForm({required this.onSubmit});
 
@@ -16,12 +17,14 @@ class _ReservationFormState extends State<ReservationForm> {
   final TextEditingController _phoneController = TextEditingController();
   final MaskedTextController _dateController =
       MaskedTextController(mask: '00/00/0000'); // Mascara para DD/MM/AAAA
+  final MaskedTextController _endDateController = MaskedTextController(
+      mask: '00/00/0000'); // Mascara para la fecha de finalización
   final TextEditingController _numPeopleController = TextEditingController();
 
   bool _isSubmitting = false; // Variable para saber si está enviando
   bool _isSuccessful = false; // Variable para saber si la reserva fue exitosa
 
-  void _selectDate(BuildContext context) async {
+  void _selectDate(BuildContext context, bool isStartDate) async {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: DateTime.now(),
@@ -30,8 +33,13 @@ class _ReservationFormState extends State<ReservationForm> {
     );
     if (picked != null && picked != DateTime.now()) {
       setState(() {
-        _dateController.text =
-            "${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}";
+        if (isStartDate) {
+          _dateController.text =
+              "${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}";
+        } else {
+          _endDateController.text =
+              "${picked.day.toString().padLeft(2, '0')}/${picked.month.toString().padLeft(2, '0')}/${picked.year}";
+        }
       });
     }
   }
@@ -40,7 +48,36 @@ class _ReservationFormState extends State<ReservationForm> {
     if (_nameController.text.isNotEmpty &&
         _phoneController.text.isNotEmpty &&
         _dateController.text.isNotEmpty &&
+        _endDateController.text.isNotEmpty &&
         _numPeopleController.text.isNotEmpty) {
+      // Convertir las fechas a DateTime para validación
+      DateTime start =
+          DateTime.parse(_dateController.text.split('/').reversed.join('-'));
+      DateTime end =
+          DateTime.parse(_endDateController.text.split('/').reversed.join('-'));
+
+      DateTime currentDate = DateTime.now();
+
+      // Validación de la fecha de inicio
+      if (start.isBefore(currentDate)) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text('La fecha de inicio no puede ser menor a la fecha actual.'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+
+      // Validación de la fecha de finalización
+      if (end.isBefore(start)) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text(
+              'La fecha de finalización debe ser igual o posterior a la fecha de inicio.'),
+          backgroundColor: Colors.red,
+        ));
+        return;
+      }
+
       setState(() {
         _isSubmitting = true; // Activar la carga
       });
@@ -53,6 +90,7 @@ class _ReservationFormState extends State<ReservationForm> {
         _nameController.text,
         _phoneController.text,
         _dateController.text,
+        _endDateController.text, // Se envía la fecha de finalización
         int.tryParse(_numPeopleController.text) ?? 0,
       );
 
@@ -73,6 +111,7 @@ class _ReservationFormState extends State<ReservationForm> {
           _nameController.clear();
           _phoneController.clear();
           _dateController.clear();
+          _endDateController.clear(); // Limpiar la fecha de finalización
           _numPeopleController.clear();
           _isSuccessful = false; // Resetear estado
         });
@@ -92,7 +131,6 @@ class _ReservationFormState extends State<ReservationForm> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // Aquí agregamos el Scaffold
       appBar: AppBar(
         title: Text("Formulario de Reserva"),
       ),
@@ -100,7 +138,6 @@ class _ReservationFormState extends State<ReservationForm> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
-            // Título del formulario
             Text(
               'Reserva',
               style: TextStyle(
@@ -109,33 +146,49 @@ class _ReservationFormState extends State<ReservationForm> {
                 color: Colors.green[700],
               ),
             ),
-            SizedBox(height: 20), // Espacio entre el título y el formulario
-
-            // Campos del formulario
+            SizedBox(height: 20),
+            // Nombre completo
             TextFormField(
               controller: _nameController,
               decoration: InputDecoration(labelText: 'Nombre completo'),
             ),
+            // Teléfono
             TextFormField(
               controller: _phoneController,
               keyboardType: TextInputType.phone,
               decoration: InputDecoration(labelText: 'Teléfono'),
             ),
+            // Fecha de la reserva
             TextFormField(
               controller: _dateController,
               decoration: InputDecoration(
                 labelText: 'Fecha de la reserva (DD/MM/AAAA)',
                 suffixIcon: IconButton(
                   icon: Icon(Icons.calendar_today),
-                  onPressed: () => _selectDate(context),
+                  onPressed: () => _selectDate(context, true),
                 ),
               ),
               keyboardType: TextInputType.datetime,
               inputFormatters: [
-                // Si quieres permitir solo números y la barra
                 FilteringTextInputFormatter.allow(RegExp(r'\d|/'))
               ],
             ),
+            // Fecha de finalización
+            TextFormField(
+              controller: _endDateController,
+              decoration: InputDecoration(
+                labelText: 'Fecha de finalización (DD/MM/AAAA)',
+                suffixIcon: IconButton(
+                  icon: Icon(Icons.calendar_today),
+                  onPressed: () => _selectDate(context, false),
+                ),
+              ),
+              keyboardType: TextInputType.datetime,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'\d|/'))
+              ],
+            ),
+            // Número de personas
             TextFormField(
               controller: _numPeopleController,
               keyboardType: TextInputType.number,
@@ -147,11 +200,9 @@ class _ReservationFormState extends State<ReservationForm> {
                   ? null
                   : _handleSubmit, // Desactivar si está enviando o fue exitoso
               child: _isSubmitting
-                  ? CircularProgressIndicator(
-                      color: Colors.white) // Indicador de carga
+                  ? CircularProgressIndicator(color: Colors.white)
                   : _isSuccessful
-                      ? Icon(Icons.check_circle,
-                          color: Colors.white) // Icono de éxito
+                      ? Icon(Icons.check_circle, color: Colors.white)
                       : Text('Enviar Reserva'),
             ),
           ],

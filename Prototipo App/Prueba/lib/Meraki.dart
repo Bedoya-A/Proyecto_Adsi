@@ -2,7 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:prueba2/HomePage.dart';
 import 'package:prueba2/Menu.dart';
-import 'package:prueba2/MenuFlotante.dart';
+import 'package:prueba2/FloatingActionMenu.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Meraki extends StatefulWidget {
@@ -74,6 +74,16 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
     });
   }
 
+  Future<void> _openMap() async {
+    const url =
+        'https://maps.app.goo.gl/kXKamkkND1u1Epgq6'; // Reemplaza con la URL de tu ubicación
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'No se pudo abrir el mapa: $url';
+    }
+  }
+
   Future<void> _launchYoutube() async {
     const url = 'https://youtu.be/0jr2g7aHcdU';
     if (await canLaunch(url)) {
@@ -143,13 +153,15 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
             ),
             SizedBox(width: 10),
             Flexible(
-              child: Text(
-                'Parque Temático Meraki',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: TextStyle(
-                  fontFamily: 'Raleway',
-                  fontWeight: FontWeight.bold,
+              child: Center(
+                child: Text(
+                  'Parque Meraki',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontFamily: 'Raleway',
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -434,7 +446,14 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionMenu(),
+      floatingActionButton: FloatingActionMenu(
+        siteName: "Parque tematico Meraki", // Nombre del sitio
+        mapUrl:
+            "https://maps.app.goo.gl/kXKamkkND1u1Epgq6", // URL del mapa (Waze o Google Maps)
+        onPressed: () {
+          _openMap(); // Acción al presionar el botón para abrir el mapa
+        },
+      ),
     );
   }
 
@@ -480,12 +499,17 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
           children: [
             Icon(icon, color: Colors.white, size: 28),
             SizedBox(width: 8),
-            Text(
-              title,
-              style: TextStyle(
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white),
+                  color: Colors.white,
+                ),
+                overflow: TextOverflow
+                    .ellipsis, // Agrega puntos suspensivos si el texto es demasiado largo
+              ),
             ),
           ],
         ),

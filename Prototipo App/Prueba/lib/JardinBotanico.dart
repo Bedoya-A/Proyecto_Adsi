@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
-import 'package:prueba2/MenuFlotante.dart';
+import 'package:prueba2/FloatingActionMenu.dart';
 import 'package:prueba2/PaginaOferta.dart';
 import 'package:prueba2/ServiciosJardinBotanico.dart';
 import 'package:prueba2/ZoomImagen.dart';
@@ -58,6 +58,16 @@ class _JardinBotanicoState extends State<JardinBotanico>
     }
   }
 
+  Future<void> _openMap() async {
+    const url =
+        'https://maps.app.goo.gl/NG9R3FtTVJwmnVGs7'; // Reemplaza con la URL de tu ubicación
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'No se pudo abrir el mapa: $url';
+    }
+  }
+
   Future<void> _launchYoutube() async {
     const url = 'https://youtu.be/7CdXUBEqdIU';
     if (await canLaunch(url)) {
@@ -99,9 +109,16 @@ class _JardinBotanicoState extends State<JardinBotanico>
       builder: (BuildContext context) {
         return Dialog(
           child: ReservationForm(
-            onSubmit: (name, phone, date, numPeople) {
-              // Lógica para manejar la reserva
-              print('Reserva: $name, $phone, $date, $numPeople');
+            onSubmit: (name, phone, startDate, endDate, numPeople) {
+              // Aquí puedes hacer lo que quieras con los datos de la reserva, como guardarlos
+              print(
+                  "Reserva: $name, $phone, Fecha de inicio: $startDate, Fecha de finalización: $endDate, Número de personas: $numPeople");
+
+              // Mostrar el SnackBar de confirmación
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text('¡Reserva realizada con éxito!'),
+                backgroundColor: Colors.green,
+              ));
             },
           ),
         );
@@ -148,7 +165,14 @@ class _JardinBotanicoState extends State<JardinBotanico>
           ServiciosJardinBotanico(),
         ],
       ),
-      floatingActionButton: FloatingActionMenu(),
+      floatingActionButton: FloatingActionMenu(
+        siteName: "Jardín Botanico San Jorge", // Nombre del sitio
+        mapUrl:
+            "https://maps.app.goo.gl/NG9R3FtTVJwmnVGs7", // URL del mapa (Waze o Google Maps)
+        onPressed: () {
+          _openMap(); // Acción al presionar el botón para abrir el mapa
+        },
+      ),
     );
   }
 
@@ -341,14 +365,6 @@ class _JardinBotanicoState extends State<JardinBotanico>
           style: TextStyle(fontSize: 16),
         ),
         SizedBox(height: 10), // Espacio entre el texto y la imagen
-        Center(
-          child: Image.asset(
-            'assets/mapajardin.jpg', // Reemplaza con el nombre de tu imagen
-            width: 450,
-            height:
-                350, // Ajuste de la imagen (puedes cambiar a BoxFit.fill, BoxFit.contain, etc.)
-          ),
-        ),
       ],
     );
   }

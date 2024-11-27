@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:prueba2/Cabanas.dart';
-import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/HomePage.dart';
-import 'package:prueba2/MenuFlotante.dart';
+import 'package:prueba2/FloatingActionMenu.dart';
 import 'package:prueba2/PaginaOferta.dart';
-import 'package:prueba2/ServiciosJardinBotanico.dart';
-import 'package:prueba2/ZoomImagen.dart';
 import 'package:prueba2/menu.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -18,9 +15,6 @@ class _ParaisoEscondidoState extends State<ParaisoEscondido>
     with TickerProviderStateMixin {
   bool _isHomeIconVisible = false;
   late TabController _tabController;
-  double _rating = 0; // Initial rating value
-  TextEditingController _reviewController = TextEditingController();
-  List<Map<String, dynamic>> _reviews = [];
 
   int selectedDrawerIndex = 1;
 
@@ -40,6 +34,16 @@ class _ParaisoEscondidoState extends State<ParaisoEscondido>
     setState(() {
       _isHomeIconVisible = !_isHomeIconVisible;
     });
+  }
+
+  Future<void> _openMap() async {
+    const url =
+        'https://maps.app.goo.gl/zwJHJA3pbCqH6BUo6'; // Reemplaza con la URL de tu ubicación
+    if (await canLaunch(url)) {
+      await launch(url);
+    } else {
+      throw 'No se pudo abrir el mapa: $url';
+    }
   }
 
   void onSelectDrawerItem(int index) {
@@ -99,7 +103,14 @@ class _ParaisoEscondidoState extends State<ParaisoEscondido>
           Cabanas(),
         ],
       ),
-      floatingActionButton: FloatingActionMenu(),
+      floatingActionButton: FloatingActionMenu(
+        siteName: "Paraiso Escondido", // Nombre del sitio
+        mapUrl:
+            "https://maps.app.goo.gl/47jiTafrHd3NBNKN9", // URL del mapa (Waze o Google Maps)
+        onPressed: () {
+          _openMap(); // Acción al presionar el botón para abrir el mapa
+        },
+      ),
     );
   }
 
@@ -207,7 +218,8 @@ Widget _buildParaisoEscondidoDescription() {
               Text(
                 'Imagina un lugar donde la naturaleza y el confort se fusionan en perfecta armonía. '
                 'Paraíso Escondido no es solo un destino, es una experiencia inolvidable que invita a desconectarte del bullicio y reconectar con lo esencial.',
-                style: TextStyle(fontSize: 16, height: 1.5),
+                style:
+                    TextStyle(fontSize: 16, height: 1.5, color: Colors.black),
                 textAlign: TextAlign.justify,
               ),
               SizedBox(height: 20),
@@ -225,18 +237,26 @@ Widget _buildParaisoEscondidoDescription() {
                 title: 'Vistas Panorámicas',
                 description:
                     'Disfruta de paisajes que te quitarán el aliento y llenarán tu corazón de paz.',
+                titleColor:
+                    const Color.fromARGB(255, 39, 127, 198), // Color del título
+                descriptionColor: Colors.black, // Color de la descripción
               ),
               _buildFeatureTile(
                 icon: Icons.hiking,
+
                 title: 'Senderos Naturales',
                 description:
                     'Explora senderos rodeados de flora y fauna autóctona, ideales para caminatas y aventuras.',
+                titleColor: Colors.green, // Color del título
+                descriptionColor: Colors.black, // Color de la descripción
               ),
               _buildFeatureTile(
                 icon: Icons.king_bed,
                 title: 'Cabañas Exclusivas',
                 description:
                     'Relájate en cabañas rústicas con todas las comodidades modernas para una estancia inolvidable.',
+                titleColor: Colors.purple, // Color del título
+                descriptionColor: Colors.black, // Color de la descripción
               ),
               SizedBox(height: 20),
               Container(
@@ -269,24 +289,20 @@ Widget _buildFeatureTile({
   required IconData icon,
   required String title,
   required String description,
+  required Color titleColor, // Parámetro para el color del título
+  required Color descriptionColor, // Parámetro para el color de la descripción
 }) {
   return ListTile(
-    leading: CircleAvatar(
-      backgroundColor: Colors.green[100],
-      child: Icon(icon, color: Colors.green[800]),
-    ),
+    leading: Icon(icon),
+    iconColor: Colors.black,
     title: Text(
       title,
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-      ),
+      style: TextStyle(color: titleColor), // Aplicar color al título
     ),
     subtitle: Text(
       description,
-      style: TextStyle(fontSize: 16),
-      textAlign: TextAlign.justify,
+      style:
+          TextStyle(color: descriptionColor), // Aplicar color a la descripción
     ),
-    contentPadding: EdgeInsets.symmetric(vertical: 10.0, horizontal: 0),
   );
 }
