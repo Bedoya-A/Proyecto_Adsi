@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 
 class LinkHistoryPage extends StatefulWidget {
   @override
@@ -71,7 +72,9 @@ class _LinkHistoryPageState extends State<LinkHistoryPage> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
+        centerTitle: true,
         title: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(Icons.link, color: Colors.cyanAccent, size: 30),
             SizedBox(width: 10),
@@ -88,77 +91,112 @@ class _LinkHistoryPageState extends State<LinkHistoryPage> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Column(
-            children: [
-              // Título principal con animación
-              _buildMainTitle(),
-
-              SizedBox(height: 20),
-
-              // Descripción destacada
-              _buildMainDescription(),
-
-              SizedBox(height: 20),
-
-              // Estadísticas
-              _buildStatistics(),
-
-              SizedBox(height: 20),
-
-              // Selector de Categorías
-              _buildCategorySelector(),
-
-              SizedBox(height: 20),
-
-              // Lista de Enlaces
-              filteredLinks.isNotEmpty
-                  ? LinkHistoryList(
-                      linkHistory: filteredLinks,
-                      onToggleFavorite: (index) {
-                        setState(() {
-                          filteredLinks[index]['favorite'] =
-                              !filteredLinks[index]['favorite'];
-                        });
-                      },
-                      onDelete: _deleteLink,
-                    )
-                  : Center(
-                      child: Text(
-                        'No se encontraron enlaces en esta categoría.',
-                        style: TextStyle(color: Colors.white70, fontSize: 18),
-                      ),
+        child: Column(
+          children: [
+            _buildMainTitle(), // Título principal
+            SizedBox(height: 20),
+            _buildImageCarousel(), // Carrusel de imágenes debajo del título
+            SizedBox(height: 20),
+            _buildMainDescription(), // Descripción principal
+            SizedBox(height: 20),
+            _buildStatistics(), // Estadísticas
+            SizedBox(height: 20),
+            _buildCategorySelector(), // Selector de categorías
+            SizedBox(height: 20),
+            filteredLinks.isNotEmpty
+                ? LinkHistoryList(
+                    linkHistory: filteredLinks,
+                    onToggleFavorite: (index) {
+                      setState(() {
+                        filteredLinks[index]['favorite'] =
+                            !filteredLinks[index]['favorite'];
+                      });
+                    },
+                    onDelete: _deleteLink,
+                  )
+                : Center(
+                    child: Text(
+                      'No se encontraron enlaces en esta categoría.',
+                      style: TextStyle(color: Colors.white70, fontSize: 18),
                     ),
-            ],
-          ),
+                  ),
+          ],
         ),
       ),
     );
   }
 
-  // Título principal llamativo
-  Widget _buildMainTitle() {
-    return AnimatedDefaultTextStyle(
-      duration: Duration(milliseconds: 600),
-      style: TextStyle(
-        fontSize: 36,
-        fontWeight: FontWeight.bold,
-        color: Colors.cyanAccent,
-        letterSpacing: 2,
-        shadows: [
-          Shadow(
-            color: Colors.blueAccent,
-            offset: Offset(0, 2),
-            blurRadius: 5,
-          )
-        ],
+  // Carrusel de imágenes
+  Widget _buildImageCarousel() {
+    final List<String> images = [
+      'assets/meraki5.png',
+      'assets/tesorito5.jpg',
+      'assets/autoctonos2.jpg',
+      'assets/eventos.jpg',
+      'assets/cabañaencanto.jpg',
+    ];
+
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: 200,
+        autoPlay: true,
+        enlargeCenterPage: true,
+        aspectRatio: 16 / 9,
+        viewportFraction: 0.8,
       ),
-      child: Text('Bienvenido a tu Historial de Enlaces'),
+      items: images.map((image) {
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(15),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.4),
+                    blurRadius: 10,
+                    offset: Offset(0, 4),
+                  ),
+                ],
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.asset(
+                  image,
+                  fit: BoxFit.cover,
+                  width: MediaQuery.of(context).size.width,
+                ),
+              ),
+            );
+          },
+        );
+      }).toList(),
     );
   }
 
-  // Descripción llamativa debajo del título
+  // Título principal
+  Widget _buildMainTitle() {
+    return Center(
+      child: AnimatedDefaultTextStyle(
+        duration: Duration(milliseconds: 600),
+        style: TextStyle(
+          fontSize: 36,
+          fontWeight: FontWeight.bold,
+          color: Colors.cyanAccent,
+          letterSpacing: 2,
+          shadows: [
+            Shadow(
+              color: Colors.blueAccent,
+              offset: Offset(0, 2),
+              blurRadius: 5,
+            )
+          ],
+        ),
+        child: Text('Bienvenido a tu Historial de Enlaces'),
+      ),
+    );
+  }
+
+  // Descripción principal
   Widget _buildMainDescription() {
     return Text(
       'Explora, administra y guarda tus enlaces favoritos de una manera sencilla y divertida. ¡Nunca más perderás un enlace importante!',
@@ -173,7 +211,7 @@ class _LinkHistoryPageState extends State<LinkHistoryPage> {
     );
   }
 
-  // Estadísticas (Total Enlaces y Favoritos)
+  // Estadísticas
   Widget _buildStatistics() {
     int totalLinks = linkHistory.length;
     int totalFavorites =
@@ -221,7 +259,7 @@ class _LinkHistoryPageState extends State<LinkHistoryPage> {
     );
   }
 
-  // Selector de Categorías
+  // Selector de categorías
   Widget _buildCategorySelector() {
     List<String> categories = ['Todos', 'Turismo', 'Cultura', 'Naturaleza'];
 
@@ -249,9 +287,8 @@ class _LinkHistoryPageState extends State<LinkHistoryPage> {
                 style: TextStyle(
                   color: selectedCategory == category
                       ? Colors.black
-                      : Colors.white70,
+                      : Colors.white,
                   fontSize: 16,
-                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -264,8 +301,8 @@ class _LinkHistoryPageState extends State<LinkHistoryPage> {
 
 class LinkHistoryList extends StatelessWidget {
   final List<Map<String, dynamic>> linkHistory;
-  final Function(int index) onToggleFavorite;
-  final Function(int index) onDelete;
+  final Function(int) onToggleFavorite;
+  final Function(int) onDelete;
 
   LinkHistoryList({
     required this.linkHistory,
@@ -280,114 +317,41 @@ class LinkHistoryList extends StatelessWidget {
       physics: NeverScrollableScrollPhysics(),
       itemCount: linkHistory.length,
       itemBuilder: (context, index) {
-        return LinkHistoryCard(
-          title: linkHistory[index]['title']!,
-          url: linkHistory[index]['url']!,
-          icon: linkHistory[index]['icon']!,
-          description: linkHistory[index]['description']!,
-          isFavorite: linkHistory[index]['favorite'],
-          onToggleFavorite: () => onToggleFavorite(index),
-          onDelete: () => onDelete(index),
-        );
-      },
-    );
-  }
-}
-
-class LinkHistoryCard extends StatelessWidget {
-  final String title;
-  final String url;
-  final String icon;
-  final String description;
-  final bool isFavorite;
-  final VoidCallback onToggleFavorite;
-  final VoidCallback onDelete;
-
-  LinkHistoryCard({
-    required this.title,
-    required this.url,
-    required this.icon,
-    required this.description,
-    required this.isFavorite,
-    required this.onToggleFavorite,
-    required this.onDelete,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: AnimatedContainer(
-        duration: Duration(milliseconds: 600),
-        curve: Curves.easeInOut,
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
+        final link = linkHistory[index];
+        return Card(
           color: Colors.grey[900],
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.6),
-              blurRadius: 8,
-              offset: Offset(0, 4),
+          margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+          child: ListTile(
+            leading: CircleAvatar(
+              backgroundImage: AssetImage(link['icon']),
             ),
-          ],
-        ),
-        child: Row(
-          children: [
-            // Imagen
-            ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Image.asset(
-                icon,
-                width: 80, // Imagen más grande
-                height: 80, // Imagen más grande
-                fit: BoxFit.cover,
-              ),
+            title: Text(
+              link['title'],
+              style: TextStyle(color: Colors.white),
             ),
-            SizedBox(width: 12),
-
-            // Título y descripción
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                        color: Colors.white, fontWeight: FontWeight.bold),
-                  ),
-                  Text(
-                    description,
-                    style: TextStyle(color: Colors.white70, fontSize: 14),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ],
-              ),
+            subtitle: Text(
+              link['description'],
+              style: TextStyle(color: Colors.white70),
             ),
-
-            // Corazón y eliminar
-            Column(
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 IconButton(
                   icon: Icon(
-                    isFavorite ? Icons.favorite : Icons.favorite_border,
-                    color: isFavorite ? Colors.red : Colors.white70,
-                  ),
-                  onPressed: onToggleFavorite,
-                ),
-                IconButton(
-                  icon: Icon(
-                    Icons.delete,
+                    link['favorite'] ? Icons.favorite : Icons.favorite_border,
                     color: Colors.redAccent,
                   ),
-                  onPressed: onDelete,
+                  onPressed: () => onToggleFavorite(index),
+                ),
+                IconButton(
+                  icon: Icon(Icons.delete, color: Colors.red),
+                  onPressed: () => onDelete(index),
                 ),
               ],
-            )
-          ],
-        ),
-      ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

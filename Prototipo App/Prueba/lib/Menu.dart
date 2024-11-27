@@ -206,7 +206,9 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
     return TweenAnimationBuilder<Color?>(
       tween: ColorTween(
         begin: Colors.grey.withOpacity(0.7),
-        end: isExpanded ? Color(0xFFD6F6DD) : Colors.grey.withOpacity(0.7),
+        end: isExpanded
+            ? Color.fromARGB(255, 149, 255, 172)
+            : Colors.grey.withOpacity(0.7),
       ),
       duration: Duration(milliseconds: 300),
       builder: (context, value, child) {
@@ -223,7 +225,7 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
       tween: ColorTween(
         begin: Colors.grey.withOpacity(0.7), // Color cuando está colapsado
         end: isExpanded
-            ? Color(0xFFD6F6DD)
+            ? Color.fromARGB(255, 149, 255, 172)
             : Colors.grey, // Color cuando está expandido
       ),
       duration: Duration(milliseconds: 300), // Duración para el cambio suave

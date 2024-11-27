@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:prueba2/AcountHistoryPage.dart';
+import 'package:prueba2/MeInteresaPage.dart'; // Asegúrate de importar la página correcta
+import 'package:prueba2/NoMeInteresaPage.dart'; // Asegúrate de importar la página correcta
 import 'package:prueba2/LinkHistoryPage.dart';
 import 'package:prueba2/RecentSearchPage.dart';
 import 'package:prueba2/TimePage.dart';
@@ -13,24 +15,6 @@ class _TuActividadPageState extends State<TuActividadPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
-
-  bool showMeInteresa = false; // Control para mostrar/ocultar "Me interesa"
-  bool showNoMeInteresa =
-      false; // Control para mostrar/ocultar "No me interesa"
-  List<int> likes = List.filled(6, 0); // Contador de likes por tarjeta
-  List<String> comentarios = List.filled(6, ""); // Comentarios por tarjeta
-  List<String> descripciones = [
-    'Descripción llamativa de la actividad 1',
-    'Descripción llamativa de la actividad 2',
-    'Descripción llamativa de la actividad 3',
-    'Descripción llamativa de la actividad 4',
-    'Descripción llamativa de la actividad 5',
-    'Descripción llamativa de la actividad 6',
-  ]; // Descripciones para las tarjetas
-  List<int> noMeInteresaLikes =
-      List.filled(6, 0); // Contador de "No me interesa"
-  List<String> noMeInteresaComentarios =
-      List.filled(6, ""); // Comentarios de "No me interesa"
 
   @override
   void initState() {
@@ -94,27 +78,24 @@ class _TuActividadPageState extends State<TuActividadPage>
                 _buildAnimatedSection(
                   'Contenido sugerido',
                   [
-                    _buildOption(Icons.visibility_off, 'No me interesa', true),
-                    _buildOption(Icons.visibility, 'Me interesa', true),
+                    _buildOption(Icons.visibility, 'Me interesa',
+                        page: MeInteresaPage()), // Página Me Interesa
+                    _buildOption(Icons.visibility_off, 'No me interesa',
+                        page: NoMeInteresaPage()), // Página No Me Interesa
                   ],
                 ),
-                if (showMeInteresa) ...[
-                  SizedBox(height: 20),
-                  _buildMeInteresaSection(),
-                ],
-                if (showNoMeInteresa) ...[
-                  SizedBox(height: 20),
-                  _buildNoMeInteresaSection(),
-                ],
                 SizedBox(height: 30),
                 _buildAnimatedSection(
                   'Cómo usas la aplicación',
                   [
-                    _buildOption(Icons.access_time, 'Tiempo en la app'),
-                    _buildOption(
-                        Icons.calendar_today, 'Historial de la cuenta'),
-                    _buildOption(Icons.search, 'Búsquedas recientes'),
-                    _buildOption(Icons.link, 'Historial de enlaces'),
+                    _buildOption(Icons.access_time, 'Tiempo en la app',
+                        page: TimePage()),
+                    _buildOption(Icons.calendar_today, 'Historial de la cuenta',
+                        page: AccountHistoryPage()),
+                    _buildOption(Icons.search, 'Búsquedas recientes',
+                        page: RecentSearchPage()),
+                    _buildOption(Icons.link, 'Historial de enlaces',
+                        page: LinkHistoryPage()),
                   ],
                 ),
               ],
@@ -179,36 +160,13 @@ class _TuActividadPageState extends State<TuActividadPage>
     );
   }
 
-  Widget _buildOption(IconData icon, String title, [bool toggle = false]) {
+  Widget _buildOption(IconData icon, String title, {required Widget page}) {
     return GestureDetector(
       onTap: () {
-        if (title == 'Me interesa') {
-          setState(() {
-            showMeInteresa = !showMeInteresa;
-          });
-        } else if (title == 'No me interesa') {
-          setState(() {
-            showNoMeInteresa = !showNoMeInteresa;
-          });
-        } else if (title == 'Búsquedas recientes') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => RecentSearchPage()),
-          );
-        } else if (title == 'Historial de enlaces') {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => LinkHistoryPage()));
-        } else if (title == 'Historial de la cuenta') {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (context) => AccountHistoryPage()));
-        } else if (title == 'Tiempo en la app') {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context) => TimePage()), // Aquí agregas la navegación
-          );
-        }
-        // Otras opciones pueden agregarse aquí con lógica similar
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => page),
+        );
       },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
@@ -258,205 +216,6 @@ class _TuActividadPageState extends State<TuActividadPage>
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  Widget _buildMeInteresaSection() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.cyanAccent.withOpacity(0.6),
-            blurRadius: 15,
-            spreadRadius: 5,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            '¡Me interesa! 💬',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.cyanAccent,
-            ),
-          ),
-          SizedBox(height: 20),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 1.0,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-            ),
-            itemCount: 6,
-            itemBuilder: (context, index) {
-              return _buildCard(index, likes, comentarios, true);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildNoMeInteresaSection() {
-    return Container(
-      padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.black.withOpacity(0.8),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.redAccent.withOpacity(0.6),
-            blurRadius: 15,
-            spreadRadius: 5,
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'No me interesa 💬',
-            style: TextStyle(
-              fontSize: 26,
-              fontWeight: FontWeight.bold,
-              color: Colors.redAccent,
-            ),
-          ),
-          SizedBox(height: 20),
-          GridView.builder(
-            shrinkWrap: true,
-            physics: NeverScrollableScrollPhysics(),
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 1.0,
-              mainAxisSpacing: 10,
-              crossAxisSpacing: 10,
-            ),
-            itemCount: 6,
-            itemBuilder: (context, index) {
-              return _buildCard(
-                  index, noMeInteresaLikes, noMeInteresaComentarios, false);
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildCard(int index, List<int> likesList,
-      List<String> comentariosList, bool isMeInteresa) {
-    TextEditingController comentarioController = TextEditingController();
-
-    return Container(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.blueGrey.shade700, Colors.black],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.cyanAccent.withOpacity(0.6),
-            blurRadius: 8,
-            spreadRadius: 4,
-          ),
-        ],
-      ),
-      padding: EdgeInsets.all(16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(8),
-            child: Image.asset(
-              'assets/montaña1.png', // Asegúrate de tener imágenes en la carpeta assets
-              height: 120,
-              width: double.infinity,
-              fit: BoxFit.cover,
-            ),
-          ),
-          SizedBox(height: 8),
-          Text(
-            descripciones[index],
-            style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-            ),
-          ),
-          SizedBox(height: 8),
-          Row(
-            children: [
-              IconButton(
-                icon: Icon(Icons.thumb_up, color: Colors.white),
-                onPressed: () {
-                  setState(() {
-                    likesList[index]++;
-                  });
-                },
-              ),
-              Text(
-                '${likesList[index]} Likes',
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.white.withOpacity(0.7),
-                ),
-              ),
-            ],
-          ),
-          SizedBox(height: 8),
-          // Campo para añadir comentarios
-          TextField(
-            controller: comentarioController,
-            onChanged: (value) {
-              setState(() {
-                comentariosList[index] = value;
-              });
-            },
-            decoration: InputDecoration(
-              hintText: 'Añadir un comentario...',
-              hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
-              fillColor: Colors.white.withOpacity(0.2),
-              filled: true,
-              border: OutlineInputBorder(
-                borderRadius: BorderRadius.circular(8),
-                borderSide: BorderSide.none,
-              ),
-            ),
-            style: TextStyle(color: Colors.white),
-          ),
-          SizedBox(height: 8),
-          // Mostrar el comentario si existe
-          comentariosList[index].isNotEmpty
-              ? Row(
-                  children: [
-                    Text(
-                      comentariosList[index],
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.clear, color: Colors.white),
-                      onPressed: () {
-                        setState(() {
-                          comentariosList[index] = ""; // Elimina el comentario
-                        });
-                      },
-                    ),
-                  ],
-                )
-              : SizedBox.shrink(),
-        ],
       ),
     );
   }

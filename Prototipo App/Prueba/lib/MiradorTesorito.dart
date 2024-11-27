@@ -688,7 +688,7 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
               return ListTile(
                 title: Text(item),
                 leading: Icon(Icons.check, color: Colors.teal),
-                textColor: Colors.black12,
+                textColor: Colors.black,
               );
             }).toList()
           : [
