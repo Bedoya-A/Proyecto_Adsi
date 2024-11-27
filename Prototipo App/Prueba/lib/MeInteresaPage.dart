@@ -287,6 +287,9 @@ class _MeInteresaPageState extends State<MeInteresaPage> {
                       fontSize: 14,
                       color: Colors.white70,
                     ),
+                    overflow: TextOverflow
+                        .ellipsis, // Asegura que el texto se corte con puntos suspensivos si es largo
+                    maxLines: 2, // Limita la cantidad de líneas
                   ),
                 ),
               ],
@@ -327,26 +330,31 @@ class _MeInteresaPageState extends State<MeInteresaPage> {
               ),
               SizedBox(width: 16),
               // Título y descripción
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    title,
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 8),
-                  Text(
-                    description,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.white70,
+                    SizedBox(height: 8),
+                    Text(
+                      description,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.white70,
+                      ),
+                      overflow: TextOverflow
+                          .ellipsis, // Asegura que el texto no se desborde
+                      maxLines: 2, // Limita la cantidad de líneas
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ],
           ),

@@ -1,133 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('App Futurista de Seguimiento de Tiempo'),
-        backgroundColor: Colors.blueAccent,
-        elevation: 10,
-        leading: IconButton(
-          icon: Icon(Icons.arrow_back),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            // Título de la página
-            AnimatedOpacity(
-              opacity: 1.0,
-              duration: Duration(seconds: 2),
-              child: Text(
-                'Monitorea tu Tiempo',
-                style: TextStyle(
-                  fontSize: 35,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 2,
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-
-            // Descripción de la aplicación
-            AnimatedOpacity(
-              opacity: 1.0,
-              duration: Duration(seconds: 3),
-              child: Text(
-                'Nuestra app registra el tiempo exacto que llevas conectado, ayudándote a gestionar mejor tu tiempo en cada sesión.',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: Colors.white70,
-                  fontWeight: FontWeight.w400,
-                  letterSpacing: 1.5,
-                ),
-                textAlign: TextAlign.center,
-              ),
-            ),
-            SizedBox(height: 40),
-
-            // Estadísticas de tiempo
-            AnimatedOpacity(
-              opacity: 1.0,
-              duration: Duration(seconds: 4),
-              child: Container(
-                padding: EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.blueAccent.withOpacity(0.8),
-                  borderRadius: BorderRadius.circular(15),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blueAccent.withOpacity(0.7),
-                      blurRadius: 15,
-                      offset: Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Tiempo Total Transcurrido:',
-                      style: TextStyle(fontSize: 22, color: Colors.white),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      '0:00:00', // Aquí se actualizará el tiempo real
-                      style: TextStyle(
-                        fontSize: 45,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-
-            // Botón para ir a la página de TimePage
-            AnimatedContainer(
-              duration: Duration(seconds: 1),
-              padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-              decoration: BoxDecoration(
-                color: Colors.greenAccent.withOpacity(0.8),
-                borderRadius: BorderRadius.circular(15),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.greenAccent.withOpacity(0.7),
-                    blurRadius: 15,
-                    offset: Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Text(
-                'Ir a la Página de Tiempo',
-                style: TextStyle(fontSize: 20, color: Colors.white),
-              ),
-            ),
-            SizedBox(height: 20),
-
-            // Botón flotante
-            FloatingActionButton(
-              onPressed: () {
-                Navigator.pushNamed(context, '/time');
-              },
-              backgroundColor: Colors.blueAccent,
-              child: Icon(Icons.watch_later),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 class TimePage extends StatefulWidget {
   @override
   _TimePageState createState() => _TimePageState();
@@ -191,7 +64,7 @@ class _TimePageState extends State<TimePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Página de Tiempo'),
+        title: Text('Tiempo en la app'),
         backgroundColor: Colors.blueAccent,
         elevation: 10,
         leading: IconButton(
@@ -212,9 +85,8 @@ class _TimePageState extends State<TimePage> {
         child: SafeArea(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Título de la página
+              // Título de la página con animación
               AnimatedOpacity(
                 opacity: 1.0,
                 duration: Duration(seconds: 2),
@@ -230,7 +102,7 @@ class _TimePageState extends State<TimePage> {
               ),
               SizedBox(height: 20),
 
-              // Descripción de la página
+              // Descripción de la página con animación
               AnimatedOpacity(
                 opacity: 1.0,
                 duration: Duration(seconds: 3),
@@ -247,28 +119,31 @@ class _TimePageState extends State<TimePage> {
               ),
               SizedBox(height: 40),
 
-              // Reloj con animación
+              // Reloj con animación, cajón más pequeño
               AnimatedOpacity(
                 opacity: 1.0,
                 duration: Duration(seconds: 2),
                 child: Container(
-                  padding: EdgeInsets.symmetric(vertical: 10, horizontal: 30),
+                  padding: EdgeInsets.symmetric(
+                      vertical: 5, horizontal: 20), // Reducido
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius:
+                        BorderRadius.circular(15), // Borde más redondeado
                     border: Border.all(
-                        color: Colors.white.withOpacity(0.5), width: 3),
+                        color: Colors.white.withOpacity(0.5),
+                        width: 2), // Borde más fino
                     boxShadow: [
                       BoxShadow(
                         color: Colors.blueAccent.withOpacity(0.5),
-                        blurRadius: 20,
-                        offset: Offset(0, 8),
+                        blurRadius: 10, // Menos difuso
+                        offset: Offset(0, 4), // Menos desplazamiento
                       ),
                     ],
                   ),
                   child: Text(
                     currentTime,
                     style: TextStyle(
-                      fontSize: 100,
+                      fontSize: 50, // Reducido el tamaño de la fuente
                       fontWeight: FontWeight.bold,
                       color: Colors.white,
                       letterSpacing: 2,
@@ -277,56 +152,24 @@ class _TimePageState extends State<TimePage> {
                 ),
               ),
               SizedBox(height: 40),
-
-              // Temporizador con borde y sombra
               Text(
-                'Cuenta Regresiva:',
+                'Cuenta Regresiva: $countdown',
                 style: TextStyle(
-                  fontSize: 30,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white.withOpacity(0.7),
-                ),
+                    fontSize: 25, color: Colors.white), // Reducido el tamaño
               ),
-              SizedBox(height: 10),
-              AnimatedContainer(
-                duration: Duration(seconds: 1),
-                padding: EdgeInsets.symmetric(vertical: 20, horizontal: 40),
-                decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.1),
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.greenAccent.withOpacity(0.7),
-                      blurRadius: 30,
-                      spreadRadius: 5,
-                      offset: Offset(0, 8),
-                    ),
-                  ],
-                ),
-                child: Text(
-                  countdown,
-                  style: TextStyle(
-                    fontSize: 60,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 2,
-                  ),
-                ),
-              ),
-              SizedBox(height: 40),
-
-              // Progreso visual del tiempo restante
+              SizedBox(height: 20),
               LinearProgressIndicator(
                 value: secondsRemaining / 600,
                 backgroundColor: Colors.white.withOpacity(0.2),
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.greenAccent),
               ),
               SizedBox(height: 20),
-
-              // Botón para guardar el tiempo
               ElevatedButton(
                 onPressed: _saveTime,
-                child: Text('Guardar Tiempo'),
+                child: Text(
+                  'Guardar Tiempo',
+                  style: TextStyle(color: Colors.grey),
+                ),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.greenAccent,
                   padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
