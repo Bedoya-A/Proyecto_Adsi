@@ -1,29 +1,5 @@
 import 'package:flutter/material.dart';
 
-class AccesoSeguridadPage extends StatelessWidget {
-  const AccesoSeguridadPage({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData.dark().copyWith(
-        primaryColor: Colors.deepPurple,
-        scaffoldBackgroundColor: Colors.black,
-        textTheme: TextTheme(
-          displayLarge: TextStyle(
-            fontSize: 24,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
-          bodyLarge: TextStyle(color: Colors.grey[400]),
-        ),
-      ),
-      home: const AccessAndSecurityScreen(),
-    );
-  }
-}
-
 class AccessAndSecurityScreen extends StatefulWidget {
   const AccessAndSecurityScreen({super.key});
 

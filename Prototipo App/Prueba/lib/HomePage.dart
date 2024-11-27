@@ -115,7 +115,8 @@ class _HomePageState extends State<HomePage> {
           onSeguridad: () {
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => AccesoSeguridadPage()),
+              MaterialPageRoute(
+                  builder: (context) => AccessAndSecurityScreen()),
             );
           },
           onSoporte: () {
