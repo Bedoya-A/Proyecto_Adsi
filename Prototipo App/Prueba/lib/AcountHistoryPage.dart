@@ -172,7 +172,8 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
                             borderRadius: BorderRadius.circular(15),
                           ),
                           padding: EdgeInsets.all(16),
-                          child: Stack(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Row(
                                 children: [
@@ -247,78 +248,74 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
                                   ),
                                 ],
                               ),
-                              Positioned(
-                                bottom: 10,
-                                right: 10,
-                                child: GestureDetector(
-                                  onTap: () async {
-                                    double? newRating = await showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return RatingDialog(
-                                          initialRating: destination['rating'],
-                                        );
-                                      },
-                                    );
-                                    if (newRating != null) {
-                                      updateRating(index, newRating);
-                                    }
-                                  },
-                                  child: AnimatedContainer(
-                                    duration: Duration(milliseconds: 300),
-                                    padding: EdgeInsets.symmetric(
-                                        vertical: 10, horizontal: 16),
-                                    decoration: BoxDecoration(
-                                      gradient: LinearGradient(
-                                        colors: [
-                                          Colors.orange.shade400,
-                                          Colors.redAccent,
-                                        ],
-                                        begin: Alignment.topLeft,
-                                        end: Alignment.bottomRight,
+                              SizedBox(height: 8),
+                              GestureDetector(
+                                onTap: () async {
+                                  double? newRating = await showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return RatingDialog(
+                                        initialRating: destination['rating'],
+                                      );
+                                    },
+                                  );
+                                  if (newRating != null) {
+                                    updateRating(index, newRating);
+                                  }
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 10, horizontal: 16),
+                                  decoration: BoxDecoration(
+                                    gradient: LinearGradient(
+                                      colors: [
+                                        Colors.orange.shade400,
+                                        Colors.redAccent,
+                                      ],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(12),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color:
+                                            Colors.redAccent.withOpacity(0.5),
+                                        blurRadius: 10,
+                                        spreadRadius: 2,
+                                        offset: Offset(0, 3),
                                       ),
-                                      borderRadius: BorderRadius.circular(12),
-                                      boxShadow: [
-                                        BoxShadow(
-                                          color:
-                                              Colors.redAccent.withOpacity(0.5),
-                                          blurRadius: 10,
-                                          spreadRadius: 2,
-                                          offset: Offset(0, 3),
-                                        ),
-                                        BoxShadow(
-                                          color: Colors.orange.withOpacity(0.3),
-                                          blurRadius: 6,
-                                          offset: Offset(-2, -2),
-                                        ),
-                                      ],
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.star_rate_rounded,
+                                      BoxShadow(
+                                        color: Colors.orange.withOpacity(0.3),
+                                        blurRadius: 6,
+                                        offset: Offset(-2, -2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.star_rate_rounded,
+                                        color: Colors.white,
+                                        size: 24,
+                                      ),
+                                      SizedBox(width: 8),
+                                      Text(
+                                        'Calificar',
+                                        style: TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.bold,
                                           color: Colors.white,
-                                          size: 24,
+                                          shadows: [
+                                            Shadow(
+                                              color:
+                                                  Colors.black.withOpacity(0.3),
+                                              offset: Offset(1, 1),
+                                              blurRadius: 2,
+                                            ),
+                                          ],
                                         ),
-                                        SizedBox(width: 8),
-                                        Text(
-                                          'Calificar',
-                                          style: TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            shadows: [
-                                              Shadow(
-                                                color: Colors.black
-                                                    .withOpacity(0.3),
-                                                offset: Offset(1, 1),
-                                                blurRadius: 2,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),

@@ -164,21 +164,6 @@ class _TimePageState extends State<TimePage> {
                 valueColor: AlwaysStoppedAnimation<Color>(Colors.greenAccent),
               ),
               SizedBox(height: 20),
-              ElevatedButton(
-                onPressed: _saveTime,
-                child: Text(
-                  'Guardar Tiempo',
-                  style: TextStyle(color: Colors.grey),
-                ),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.greenAccent,
-                  padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  textStyle: TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-              ),
             ],
           ),
         ),

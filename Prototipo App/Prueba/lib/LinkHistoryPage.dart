@@ -76,7 +76,6 @@ class _LinkHistoryPageState extends State<LinkHistoryPage> {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.link, color: Colors.cyanAccent, size: 30),
             SizedBox(width: 10),
             Text(
               'Historial de Enlaces',
