@@ -16,6 +16,7 @@ class CustomTextField extends StatelessWidget {
     return TextField(
       controller: controller,
       obscureText: isPassword,
+      style: TextStyle(color: Colors.white),
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: TextStyle(color: Colors.white),
