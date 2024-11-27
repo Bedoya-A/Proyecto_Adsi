@@ -368,17 +368,6 @@ class _AutoctonosState extends State<Autoctonos> {
             // Contenido que se encuentra debajo del título
 
             Text(
-              title,
-              style: TextStyle(
-                fontSize: 25,
-                fontWeight: FontWeight.bold,
-                color: Colors
-                    .teal[800], // Mantener el color original para el título
-              ),
-            ),
-            SizedBox(height: 8),
-
-            Text(
               content,
               style: TextStyle(
                 fontSize: 16,

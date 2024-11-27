@@ -62,6 +62,8 @@ class Cabanas extends StatelessWidget {
                 cabana['description'],
                 cabana['screen'],
               ),
+            SizedBox(
+                height: 80), // Espaciado adicional para evitar superposición
           ],
         ),
       ),

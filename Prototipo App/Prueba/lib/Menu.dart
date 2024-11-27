@@ -28,7 +28,6 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
   bool _isExpandedAmbala = false;
 
   late AnimationController _rotationController;
-  bool _isHomeIconVisible = false;
 
   @override
   void initState() {
@@ -43,12 +42,6 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
   void dispose() {
     _rotationController.dispose();
     super.dispose();
-  }
-
-  void _onLogoTap() {
-    setState(() {
-      _isHomeIconVisible = !_isHomeIconVisible;
-    });
   }
 
   @override
@@ -134,6 +127,7 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
           ),
           buildAnimatedDrawerItem('Servicio de Transporte', 9,
               Icons.directions_bus, context, Transporte()),
+          Divider(),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Center(
@@ -153,10 +147,6 @@ class MenuState extends State<Menu> with SingleTickerProviderStateMixin {
               ),
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: LanguageSwitchButton(),
-          )
         ],
       ),
     );

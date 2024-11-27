@@ -646,19 +646,23 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
         children: [
           Icon(icon, color: Colors.teal[700]),
           SizedBox(width: 10),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white, // Color de título en blanco
-              shadows: [
-                Shadow(
-                  color: Colors.black45,
-                  offset: Offset(2, 2),
-                  blurRadius: 4,
-                ),
-              ], // Sombra para hacerlo más llamativo
+          Expanded(
+            // Aseguramos que el texto ocupe solo el espacio disponible
+            child: Text(
+              title,
+              style: TextStyle(
+                fontSize: 22,
+                fontWeight: FontWeight.bold,
+                color: Colors.white, // Color de título en blanco
+                shadows: [
+                  Shadow(
+                    color: Colors.black45,
+                    offset: Offset(2, 2),
+                    blurRadius: 4,
+                  ),
+                ], // Sombra para hacerlo más llamativo
+              ),
+              overflow: TextOverflow.ellipsis, // Evitar desbordamiento de texto
             ),
           ),
         ],
@@ -679,26 +683,33 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
           }
         });
       },
-      children: items.map((item) {
-        return ListTile(
-          title: Text(item),
-          leading: Icon(Icons.check, color: Colors.teal),
-        );
-      }).toList(),
+      children: items.isNotEmpty
+          ? items.map((item) {
+              return ListTile(
+                title: Text(item),
+                leading: Icon(Icons.check, color: Colors.teal),
+                textColor: Colors.black12,
+              );
+            }).toList()
+          : [
+              ListTile(
+                title: Text('No items available'),
+              ),
+            ],
     );
   }
-}
 
-Widget _buildSectionTitle(String title) {
-  return Container(
-    padding: EdgeInsets.symmetric(vertical: 8.0),
-    child: Text(
-      title,
-      style: TextStyle(
-        fontSize: 18,
-        fontWeight: FontWeight.bold,
-        color: Colors.teal[900],
+  Widget _buildSectionTitle(String title) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Colors.teal[900],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }

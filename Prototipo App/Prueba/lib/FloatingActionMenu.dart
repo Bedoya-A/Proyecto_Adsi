@@ -5,13 +5,14 @@ import 'package:prueba2/FormularioReserva.dart';
 class FloatingActionMenu extends StatefulWidget {
   final String siteName; // Nombre del sitio turístico
   final String mapUrl; // URL del mapa para el sitio
+  final VoidCallback onPressed;
 
-  const FloatingActionMenu({
-    Key? key,
-    required this.siteName,
-    required this.mapUrl,
-    required Null Function() onPressed,
-  }) : super(key: key);
+  const FloatingActionMenu(
+      {Key? key,
+      required this.siteName,
+      required this.mapUrl,
+      required this.onPressed})
+      : super(key: key);
 
   @override
   _FloatingActionMenuState createState() => _FloatingActionMenuState();
@@ -33,25 +34,25 @@ class _FloatingActionMenuState extends State<FloatingActionMenu> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
+        // Botones del menú con IgnorePointer
         Positioned(
-          bottom: 0,
+          bottom: 50,
           right: 0,
-          child: AbsorbPointer(
-            absorbing: !_isMenuOpen,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                // Botón para hacer una reserva
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 300),
-                  opacity: _isMenuOpen ? 1.0 : 0.0,
-                  child: Row(
+          child: IgnorePointer(
+            ignoring: !_isMenuOpen, // Ignora eventos si el menú está cerrado
+            child: AnimatedOpacity(
+              duration: const Duration(milliseconds: 300),
+              opacity: _isMenuOpen ? 1.0 : 0.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  // Botón para hacer una reserva
+                  Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       FloatingActionButton(
                         onPressed: () {
-                          // Acción de reserva
                           Navigator.push(
                             context,
                             MaterialPageRoute(
@@ -80,19 +81,14 @@ class _FloatingActionMenuState extends State<FloatingActionMenu> {
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 8),
+                  const SizedBox(height: 8),
 
-                // Botón para ver el mapa
-                AnimatedOpacity(
-                  duration: const Duration(milliseconds: 300),
-                  opacity: _isMenuOpen ? 1.0 : 0.0,
-                  child: Row(
+                  // Botón para ver el mapa
+                  Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       FloatingActionButton(
-                        onPressed:
-                            _openMap, // Llama a la función para abrir el mapa
+                        onPressed: _openMap,
                         backgroundColor: const Color(0xFF88BDA4),
                         child: const Icon(Icons.map),
                       ),
@@ -101,29 +97,19 @@ class _FloatingActionMenuState extends State<FloatingActionMenu> {
                         padding: const EdgeInsets.all(8),
                         color: Colors.white,
                         child: Text(
-                          'Mapa: ${widget.siteName}', // Muestra el nombre del sitio
+                          'Mapa: ${widget.siteName}',
                           style: const TextStyle(color: Colors.black),
                         ),
                       ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 8),
-
-                // Botón para abrir/cerrar el menú
-                FloatingActionButton(
-                  onPressed: () {
-                    setState(() {
-                      _isMenuOpen = !_isMenuOpen;
-                    });
-                  },
-                  backgroundColor: Color.fromARGB(255, 98, 142, 122),
-                  child: const Icon(Icons.close),
-                ),
-              ],
+                  const SizedBox(height: 8),
+                ],
+              ),
             ),
           ),
         ),
+
         // Botón principal para abrir/cerrar el menú
         Positioned(
           bottom: 0,
@@ -134,7 +120,7 @@ class _FloatingActionMenuState extends State<FloatingActionMenu> {
                 _isMenuOpen = !_isMenuOpen;
               });
             },
-            backgroundColor: Color.fromARGB(255, 104, 139, 122),
+            backgroundColor: const Color.fromARGB(255, 104, 139, 122),
             child:
                 _isMenuOpen ? const Icon(Icons.close) : const Icon(Icons.menu),
           ),

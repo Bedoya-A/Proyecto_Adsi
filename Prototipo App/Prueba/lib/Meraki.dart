@@ -153,13 +153,15 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
             ),
             SizedBox(width: 10),
             Flexible(
-              child: Text(
-                'Parque Temático Meraki',
-                overflow: TextOverflow.ellipsis,
-                maxLines: 1,
-                style: TextStyle(
-                  fontFamily: 'Raleway',
-                  fontWeight: FontWeight.bold,
+              child: Center(
+                child: Text(
+                  'Parque Meraki',
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 1,
+                  style: TextStyle(
+                    fontFamily: 'Raleway',
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
             ),
@@ -497,12 +499,17 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
           children: [
             Icon(icon, color: Colors.white, size: 28),
             SizedBox(width: 8),
-            Text(
-              title,
-              style: TextStyle(
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
                   fontSize: 26,
                   fontWeight: FontWeight.bold,
-                  color: Colors.white),
+                  color: Colors.white,
+                ),
+                overflow: TextOverflow
+                    .ellipsis, // Agrega puntos suspensivos si el texto es demasiado largo
+              ),
             ),
           ],
         ),

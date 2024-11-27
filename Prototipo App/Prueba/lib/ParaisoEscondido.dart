@@ -15,9 +15,6 @@ class _ParaisoEscondidoState extends State<ParaisoEscondido>
     with TickerProviderStateMixin {
   bool _isHomeIconVisible = false;
   late TabController _tabController;
-  double _rating = 0; // Initial rating value
-  TextEditingController _reviewController = TextEditingController();
-  List<Map<String, dynamic>> _reviews = [];
 
   int selectedDrawerIndex = 1;
 
@@ -246,6 +243,7 @@ Widget _buildParaisoEscondidoDescription() {
               ),
               _buildFeatureTile(
                 icon: Icons.hiking,
+
                 title: 'Senderos Naturales',
                 description:
                     'Explora senderos rodeados de flora y fauna autóctona, ideales para caminatas y aventuras.',
@@ -296,6 +294,7 @@ Widget _buildFeatureTile({
 }) {
   return ListTile(
     leading: Icon(icon),
+    iconColor: Colors.black,
     title: Text(
       title,
       style: TextStyle(color: titleColor), // Aplicar color al título
