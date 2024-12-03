@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:prueba2/RatingDialog.dart'; // Para formatear la fecha
+import 'package:prueba2/RatingDialog.dart';
 
 class AccountHistoryPage extends StatefulWidget {
   @override
@@ -80,15 +80,11 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Historial de la Cuenta"),
-        backgroundColor: Colors.cyan,
+        backgroundColor: Colors.teal.shade300, // Color más suave y tranquilo
       ),
       body: Container(
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.lightBlue.shade200, Colors.purple.shade100],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
+          color: Colors.grey.shade100, // Fondo neutro y suave
         ),
         child: SingleChildScrollView(
           child: Padding(
@@ -100,7 +96,10 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
                   child: ShaderMask(
                     shaderCallback: (Rect bounds) {
                       return LinearGradient(
-                        colors: [Colors.cyan, Colors.purple],
+                        colors: [
+                          const Color.fromARGB(255, 101, 160, 154),
+                          Colors.teal.shade300
+                        ], // Gradiente más sutil
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ).createShader(bounds);
@@ -108,7 +107,7 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
                     child: Text(
                       'Historial de Recompensas y Destinos Visitados',
                       style: TextStyle(
-                        fontSize: 28,
+                        fontSize: 26,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                       ),
@@ -120,7 +119,7 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
                   'Aquí puedes ver un resumen de tus puntos de fidelidad acumulados por los destinos que has visitado. También puedes calificar los lugares para dejar tu opinión sobre tu experiencia.',
                   style: TextStyle(
                     fontSize: 16,
-                    color: Colors.black87,
+                    color: Colors.black87, // Gris oscuro y claro
                   ),
                 ),
                 SizedBox(height: 20),
@@ -128,7 +127,11 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
                   padding: const EdgeInsets.symmetric(vertical: 20.0),
                   child: Text(
                     'Puntos de Fidelidad: $totalPoints',
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black87,
+                    ),
                   ),
                 ),
                 TextField(
@@ -161,15 +164,17 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Colors.lightBlueAccent.withOpacity(0.8),
-                                Colors.blueAccent.withOpacity(0.5),
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
+                            color: Colors.white, // Fondo blanco más neutro
                             borderRadius: BorderRadius.circular(15),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey
+                                    .withOpacity(0.2), // Sombra suave
+                                blurRadius: 6,
+                                spreadRadius: 2,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
                           ),
                           padding: EdgeInsets.all(16),
                           child: Column(
@@ -197,21 +202,23 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
                                           style: TextStyle(
                                             fontSize: 18,
                                             fontWeight: FontWeight.bold,
-                                            color: Colors.white,
+                                            color:
+                                                Colors.black87, // Gris oscuro
                                           ),
                                         ),
                                         Row(
                                           children: [
                                             Icon(
                                               Icons.star,
-                                              color: Colors.yellow,
+                                              color: Colors.amber
+                                                  .shade600, // Amarillo suave
                                               size: 16,
                                             ),
                                             SizedBox(width: 4),
                                             Text(
                                               '${destination['rating']}',
                                               style: TextStyle(
-                                                color: Colors.white,
+                                                color: Colors.black87,
                                                 fontSize: 16,
                                               ),
                                             ),
@@ -222,14 +229,15 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
                                           children: [
                                             Icon(
                                               Icons.card_giftcard,
-                                              color: Colors.greenAccent,
+                                              color: Colors.green
+                                                  .shade600, // Verde suave
                                               size: 16,
                                             ),
                                             SizedBox(width: 4),
                                             Text(
                                               'Puntos: ${destination['points']}',
                                               style: TextStyle(
-                                                color: Colors.white70,
+                                                color: Colors.black54,
                                                 fontSize: 16,
                                               ),
                                             ),
@@ -239,7 +247,7 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
                                         Text(
                                           'Visitado el: ${formatDate(destination['date'])}',
                                           style: TextStyle(
-                                            color: Colors.white70,
+                                            color: Colors.black54,
                                             fontSize: 14,
                                           ),
                                         ),
@@ -267,55 +275,26 @@ class _AccountHistoryPageState extends State<AccountHistoryPage> {
                                   padding: EdgeInsets.symmetric(
                                       vertical: 10, horizontal: 16),
                                   decoration: BoxDecoration(
-                                    gradient: LinearGradient(
-                                      colors: [
-                                        Colors.orange.shade400,
-                                        Colors.redAccent,
-                                      ],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
+                                    color: const Color.fromARGB(
+                                        255, 101, 158, 152), // Botón suave
                                     borderRadius: BorderRadius.circular(12),
                                     boxShadow: [
                                       BoxShadow(
-                                        color:
-                                            Colors.redAccent.withOpacity(0.5),
-                                        blurRadius: 10,
-                                        spreadRadius: 2,
-                                        offset: Offset(0, 3),
-                                      ),
-                                      BoxShadow(
-                                        color: Colors.orange.withOpacity(0.3),
+                                        color: Colors.teal
+                                            .withOpacity(0.3), // Sombra ligera
                                         blurRadius: 6,
-                                        offset: Offset(-2, -2),
+                                        spreadRadius: 2,
+                                        offset: Offset(0, 2),
                                       ),
                                     ],
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Icon(
-                                        Icons.star_rate_rounded,
-                                        color: Colors.white,
-                                        size: 24,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        'Calificar',
-                                        style: TextStyle(
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                          shadows: [
-                                            Shadow(
-                                              color:
-                                                  Colors.black.withOpacity(0.3),
-                                              offset: Offset(1, 1),
-                                              blurRadius: 2,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
+                                  child: Text(
+                                    'Calificar Destino',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ),
                               ),

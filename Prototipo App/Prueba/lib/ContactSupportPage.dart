@@ -89,20 +89,29 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
                 const SizedBox(height: 10),
                 ListTile(
                   leading: const Icon(Icons.email, color: Colors.purple),
-                  title: const Text('Correo Electrónico'),
+                  title: const Text(
+                    'Correo Electrónico',
+                    style: TextStyle(color: Colors.black),
+                  ),
                   subtitle: const Text('soporte@tuempresa.com'),
                   onTap: _launchEmail,
                 ),
                 ListTile(
                   leading: const Icon(Icons.phone, color: Colors.purple),
-                  title: const Text('Teléfono'),
+                  title: const Text(
+                    'Teléfono',
+                    style: TextStyle(color: Colors.black),
+                  ),
                   subtitle: const Text('+1 800 123 456'),
                   onTap: _launchPhone,
                 ),
                 ListTile(
                   leading: const Icon(Icons.help, color: Colors.purple),
                   title: const Text('FAQ'),
-                  subtitle: const Text('Preguntas frecuentes'),
+                  subtitle: const Text(
+                    'Preguntas frecuentes',
+                    style: TextStyle(color: Colors.black),
+                  ),
                   onTap: () {
                     Navigator.pop(context);
                     Navigator.push(
@@ -290,12 +299,15 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
           .toList(),
       decoration: InputDecoration(
         labelText: 'Idioma',
+        labelStyle: TextStyle(color: Colors.black),
         filled: true,
         fillColor: Colors.white.withOpacity(0.8),
         border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(15),
         ),
       ),
+      style: TextStyle(
+          color: Colors.black), // Cambia el color del texto ingresado a negro
     );
   }
 
@@ -310,6 +322,7 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
       validator: validator,
       decoration: InputDecoration(
         labelText: label,
+        labelStyle: TextStyle(color: Colors.black),
         filled: true,
         fillColor: Colors.white.withOpacity(0.8),
         border: OutlineInputBorder(
@@ -317,23 +330,26 @@ class _ContactSupportPageState extends State<ContactSupportPage> {
         ),
         prefixIcon: Icon(icon, color: Colors.blue.shade700),
       ),
+      style: TextStyle(
+          color: Colors.black), // Cambia el color del texto ingresado a negro
     );
   }
 
   Widget _buildMessageField() {
     return TextFormField(
-      controller: _messageController,
-      validator: _validateMessage,
-      maxLines: 4,
-      decoration: InputDecoration(
-        labelText: 'Mensaje',
-        filled: true,
-        fillColor: Colors.white.withOpacity(0.8),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(15),
+        controller: _messageController,
+        validator: _validateMessage,
+        maxLines: 4,
+        decoration: InputDecoration(
+          labelText: 'Mensaje',
+          labelStyle: TextStyle(color: Colors.black),
+          filled: true,
+          fillColor: Colors.white.withOpacity(0.8),
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
         ),
-      ),
-    );
+        style: TextStyle(color: Colors.black));
   }
 
   Widget _buildRobotCheck() {
