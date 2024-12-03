@@ -12,7 +12,7 @@ class CabanaDelArbol extends StatefulWidget {
 
 class _CabanaDelArbolState extends State<CabanaDelArbol> {
   int selectedDrawerIndex = 1;
-  bool _isHomeIconVisible = false; // Controla la visibilidad del ícono
+
   double _rating = 0; // Initial rating value
   TextEditingController _reviewController = TextEditingController();
 

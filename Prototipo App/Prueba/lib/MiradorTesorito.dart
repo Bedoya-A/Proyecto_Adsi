@@ -228,16 +228,8 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
         },
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [
-              Color.fromARGB(255, 70, 254, 236),
-              Color.fromARGB(255, 199, 245, 223),
-            ],
-          ),
-        ),
+        color: Color.fromARGB(255, 98, 129, 100), // Fondo blanco
+
         child: SingleChildScrollView(
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
@@ -309,75 +301,90 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
           SizedBox(height: 20),
           Center(child: _buildVideoLink()),
           SizedBox(height: 20),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.6),
-            child: _buildSectionTitle("Califica tu experiencia"),
-          ),
-          SizedBox(height: 20), // Separación adicional
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: _buildStarRating(),
-          ),
-          SizedBox(height: 20), // Separación adicional
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: TextField(
-              controller: _reviewController,
-              decoration: InputDecoration(
-                labelText: 'Escribe tu reseña',
-                border: OutlineInputBorder(),
-              ),
-              maxLines: 4,
+          Card(
+            margin: EdgeInsets.all(16),
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-          ),
-          SizedBox(height: 10),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _reviews.add({
-                    'rating': _rating,
-                    'review': _reviewController.text,
-                  });
-                  _reviewController.clear();
-                });
-              },
-              child: Text('Enviar Reseña'),
-            ),
-          ),
-          SizedBox(height: 20),
-          // Mostrar las reseñas con opción de eliminar
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: _reviews.map((review) {
-                int index = _reviews.indexOf(review); // Obtener índice
-                return Card(
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  elevation: 4,
-                  child: ListTile(
-                    title: Row(
-                      children: [
-                        Icon(Icons.star, color: Colors.amber),
-                        SizedBox(width: 5),
-                        Text('${review['rating']} estrellas'),
-                      ],
-                    ),
-                    subtitle: Text(review['review']),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
-                      onPressed: () {
-                        setState(() {
-                          _reviews.removeAt(index); // Eliminar reseña
-                        });
-                      },
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.6),
+                    child: _buildSectionTitle("Califica tu experiencia"),
+                  ),
+                  SizedBox(height: 20), // Separación adicional
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: _buildStarRating(),
+                  ),
+                  SizedBox(height: 20), // Separación adicional
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: TextField(
+                      controller: _reviewController,
+                      decoration: InputDecoration(
+                        labelText: 'Escribe tu reseña',
+                        border: OutlineInputBorder(),
+                      ),
+                      maxLines: 4,
                     ),
                   ),
-                );
-              }).toList(),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        setState(() {
+                          _reviews.add({
+                            'rating': _rating,
+                            'review': _reviewController.text,
+                          });
+                          _reviewController.clear();
+                        });
+                      },
+                      child: Text('Enviar Reseña'),
+                    ),
+                  ),
+                  SizedBox(height: 20),
+                  // Mostrar las reseñas con opción de eliminar
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: _reviews.map((review) {
+                        int index = _reviews.indexOf(review); // Obtener índice
+                        return Card(
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          elevation: 4,
+                          child: ListTile(
+                            title: Row(
+                              children: [
+                                Icon(Icons.star, color: Colors.amber),
+                                SizedBox(width: 5),
+                                Text('${review['rating']} estrellas'),
+                              ],
+                            ),
+                            subtitle: Text(review['review']),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                setState(() {
+                                  _reviews.removeAt(index); // Eliminar reseña
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
+          )
         ])),
       ),
       floatingActionButton: FloatingActionMenu(
@@ -400,7 +407,7 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
       child: Text(
         "Ver video del Mirador Tesorito",
         style: TextStyle(
-          color: Colors.blue,
+          color: const Color.fromARGB(255, 28, 61, 88),
           fontSize: 16,
           decoration: TextDecoration.underline,
         ),
@@ -464,7 +471,10 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
         style: TextStyle(
           fontSize: 28,
           fontWeight: FontWeight.bold,
-          color: Colors.white, // Cambia el color a blanco
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white // Color para modo oscuro
+              : Colors
+                  .black87, // Color para modo claro, // Cambia el color a blanco
           shadows: [
             Shadow(
               color: Colors.black45,
@@ -707,7 +717,9 @@ class _MiradorTesoritoState extends State<MiradorTesorito>
         style: TextStyle(
           fontSize: 18,
           fontWeight: FontWeight.bold,
-          color: Colors.teal[900],
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white // Color para modo oscuro
+              : Colors.black87, // Color para modo claro,
         ),
       ),
     );

@@ -236,111 +236,123 @@ class _JardinBotanicoState extends State<JardinBotanico>
     return Padding(
         padding: const EdgeInsets.all(16.0),
         child: SingleChildScrollView(
-            child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _buildTitle(),
-            SizedBox(height: 10),
-            _buildDescription(),
-            SizedBox(height: 20),
-            _buildSectionTitleText("60 Hectáreas Llenas de Magia"),
-            SizedBox(height: 10),
-            _buildMagicDescription(),
-            SizedBox(height: 20),
-            _buildExplorationZones(),
-            SizedBox(height: 30),
-
-            Center(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: ElevatedButton.icon(
-                  onPressed: _launchYoutube,
-                  icon: Icon(Icons.video_library,
-                      color: const Color.fromARGB(255, 0, 0, 0)),
-                  label: Text(
-                    "Ver video en YouTube",
-                    style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor:
-                        Color.fromARGB(255, 101, 161, 154), // Color del botón
-                  ),
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          _buildTitle(),
+          SizedBox(height: 10),
+          _buildDescription(),
+          SizedBox(height: 20),
+          _buildSectionTitleText("60 Hectáreas Llenas de Magia"),
+          SizedBox(height: 10),
+          _buildMagicDescription(),
+          SizedBox(height: 20),
+          _buildExplorationZones(),
+          SizedBox(height: 30),
+          Center(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: ElevatedButton.icon(
+                onPressed: _launchYoutube,
+                icon: Icon(Icons.video_library,
+                    color: const Color.fromARGB(255, 0, 0, 0)),
+                label: Text(
+                  "Ver video en YouTube",
+                  style: TextStyle(color: const Color.fromARGB(255, 0, 0, 0)),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor:
+                      Color.fromARGB(255, 101, 161, 154), // Color del botón
                 ),
               ),
             ),
-
-            SizedBox(height: 30),
-            SizedBox(height: 20),
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0), // Espacio horizontal
-              child:
-                  _buildSectionTitleWithIcon("DEJA TU RESEÑA", Icons.star_rate),
+          ),
+          SizedBox(height: 30),
+          SizedBox(height: 20),
+          Card(
+            margin: EdgeInsets.all(16),
+            elevation: 5,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(12),
             ),
-            SizedBox(height: 20), // Separación adicional
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: _buildStarRating(),
-            ),
-            SizedBox(height: 20), // Separación adicional
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: TextField(
-                controller: _reviewController,
-                decoration: InputDecoration(
-                  labelText: 'Escribe tu reseña',
-                  border: OutlineInputBorder(),
-                ),
-                maxLines: 4,
-              ),
-            ),
-            SizedBox(height: 10),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16.0),
-              child: ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _reviews.add({
-                      'rating': _rating,
-                      'review': _reviewController.text,
-                    });
-                    _reviewController.clear();
-                  });
-                },
-                child: Text('Enviar Reseña'),
-              ),
-            ),
-            SizedBox(height: 20),
-            // Mostrar las reseñas con opción de eliminar
-            Column(
-              children: _reviews.map((review) {
-                int index = _reviews.indexOf(review); // Obtener índice
-                return Card(
-                  margin: EdgeInsets.symmetric(vertical: 8),
-                  elevation: 4,
-                  child: ListTile(
-                    title: Row(
-                      children: [
-                        Icon(Icons.star, color: Colors.amber),
-                        SizedBox(width: 5),
-                        Text('${review['rating']} estrellas'),
-                      ],
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.6),
+                    child: _buildSectionTitle("Califica tu experiencia"),
+                  ),
+                  SizedBox(height: 20), // Separación adicional
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: _buildStarRating(),
+                  ),
+                  SizedBox(height: 20), // Separación adicional
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: TextField(
+                      controller: _reviewController,
+                      decoration: InputDecoration(
+                        labelText: 'Escribe tu reseña',
+                        border: OutlineInputBorder(),
+                      ),
+                      maxLines: 4,
                     ),
-                    subtitle: Text(review['review']),
-                    trailing: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.red),
+                  ),
+                  SizedBox(height: 10),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ElevatedButton(
                       onPressed: () {
                         setState(() {
-                          _reviews.removeAt(index); // Eliminar reseña
+                          _reviews.add({
+                            'rating': _rating,
+                            'review': _reviewController.text,
+                          });
+                          _reviewController.clear();
                         });
                       },
+                      child: Text('Enviar Reseña'),
                     ),
                   ),
-                );
-              }).toList(),
+                  SizedBox(height: 20),
+                  // Mostrar las reseñas con opción de eliminar
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: _reviews.map((review) {
+                        int index = _reviews.indexOf(review); // Obtener índice
+                        return Card(
+                          margin: EdgeInsets.symmetric(vertical: 8),
+                          elevation: 4,
+                          child: ListTile(
+                            title: Row(
+                              children: [
+                                Icon(Icons.star, color: Colors.amber),
+                                SizedBox(width: 5),
+                                Text('${review['rating']} estrellas'),
+                              ],
+                            ),
+                            subtitle: Text(review['review']),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () {
+                                setState(() {
+                                  _reviews.removeAt(index); // Eliminar reseña
+                                });
+                              },
+                            ),
+                          ),
+                        );
+                      }).toList(),
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ],
-        )));
+          )
+        ])));
   }
 
   Widget _buildTitle() {
@@ -391,6 +403,22 @@ class _JardinBotanicoState extends State<JardinBotanico>
         _buildImageCard('assets/arboretum.jpeg', 'Arboretum',
             'Donde se pueden encontrar los árboles más representativos del departamento.'),
       ],
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 8.0),
+      child: Text(
+        title,
+        style: TextStyle(
+          fontSize: 18,
+          fontWeight: FontWeight.bold,
+          color: Theme.of(context).brightness == Brightness.dark
+              ? Colors.white // Color para modo oscuro
+              : Colors.black87, // Color para modo claro,
+        ),
+      ),
     );
   }
 

@@ -89,7 +89,7 @@ class _FloatingActionMenuState extends State<FloatingActionMenu> {
                     children: [
                       FloatingActionButton(
                         onPressed: _openMap,
-                        backgroundColor: const Color(0xFF88BDA4),
+                        backgroundColor: Color.fromARGB(255, 92, 122, 108),
                         child: const Icon(Icons.map),
                       ),
                       const SizedBox(width: 8),
@@ -120,7 +120,7 @@ class _FloatingActionMenuState extends State<FloatingActionMenu> {
                 _isMenuOpen = !_isMenuOpen;
               });
             },
-            backgroundColor: const Color.fromARGB(255, 104, 139, 122),
+            backgroundColor: Color.fromARGB(255, 78, 104, 91),
             child:
                 _isMenuOpen ? const Icon(Icons.close) : const Icon(Icons.menu),
           ),
