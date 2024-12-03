@@ -12,6 +12,7 @@ class CabanaEncanto extends StatefulWidget {
 }
 
 class _CabanaEncantoState extends State<CabanaEncanto> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int selectedDrawerIndex = 1;
 
   double _rating = 0; // Initial rating value
@@ -85,7 +86,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cabaña el Encanto', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.brown[400],
+        backgroundColor: Color(0xff8b4513),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back), // Icono para retroceder
@@ -110,13 +111,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
         onSelectDrawerItem: onSelectDrawerItem,
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color.fromARGB(255, 153, 255, 204), Colors.teal],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        color: Color(0xffd2b48c),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -225,57 +220,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
                     "Ingreso", Icons.access_time, _buildIngresoText()),
                 _buildSectionCard(
                     "Salida", Icons.exit_to_app, _buildSalidaText()),
-                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
-                SizedBox(height: 20),
-                _buildStarRating(),
-                SizedBox(height: 20),
-                TextField(
-                  controller: _reviewController,
-                  decoration: InputDecoration(
-                    labelText: 'Escribe tu reseña',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 4,
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _reviews.add({
-                        'rating': _rating,
-                        'review': _reviewController.text,
-                      });
-                      _reviewController.clear();
-                    });
-                  },
-                  child: Text('Enviar Reseña'),
-                ),
-                SizedBox(height: 20),
-                // Mostrar las reseñas con opción de eliminar
-                Column(
-                  children: _reviews.map((review) {
-                    int index = _reviews.indexOf(review);
-                    return Card(
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      elevation: 4,
-                      child: ListTile(
-                        title: Row(
-                          children: [
-                            Icon(Icons.star, color: Colors.amber),
-                            SizedBox(width: 5),
-                            Text('${review['rating']} estrellas'),
-                          ],
-                        ),
-                        subtitle: Text(review['review']),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed: () =>
-                              _removeReview(index), // Eliminar reseña
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
+                _buildReviewForm(context)
               ],
             ),
           ),
@@ -306,11 +251,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           Container(
             padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Colors.orangeAccent, Colors.purpleAccent],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
+              color: Color(0xff2e8b57),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(15),
                 topRight: Radius.circular(15),
@@ -362,7 +303,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
           padding: const EdgeInsets.symmetric(vertical: 5),
           child: Row(
             children: [
-              Icon(feature['icon'] as IconData, color: Colors.brown[600]),
+              Icon(feature['icon'] as IconData, color: Color(0xffd2b48c)),
               const SizedBox(width: 8),
               Expanded(
                 // Envuelve el Text con Expanded
@@ -458,11 +399,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.orangeAccent, Colors.purpleAccent],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Color(0xff2e8b57),
         borderRadius: BorderRadius.only(
           topLeft: Radius.circular(15),
           topRight: Radius.circular(15),
@@ -470,7 +407,7 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
       ),
       child: Row(
         children: [
-          Icon(icon, size: 24, color: Colors.white),
+          Icon(icon, size: 24, color: Color(0xffd2b48c)),
           SizedBox(width: 8),
           Text(
             title,
@@ -482,6 +419,82 @@ class _CabanaEncantoState extends State<CabanaEncanto> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildReviewForm(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 30), // Espaciado adicional
+              // Sección de reseñas
+              _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+              SizedBox(height: 20), // Separación adicional
+              _buildStarRating(),
+              SizedBox(height: 20), // Separación adicional
+              TextField(
+                controller: _reviewController,
+                decoration: InputDecoration(
+                  labelText: 'Escribe tu reseña',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 4,
+              ),
+              SizedBox(height: 10),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
+                    });
+                  },
+                  child: Text('Enviar Reseña'),
+                ),
+              ),
+              SizedBox(height: 20),
+              // Mostrar las reseñas con opción de eliminar
+              Column(
+                children: _reviews.map((review) {
+                  int index = _reviews.indexOf(review); // Obtener índice
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    elevation: 4,
+                    child: ListTile(
+                      title: Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.amber),
+                          SizedBox(width: 5),
+                          Text('${review['rating']} estrellas'),
+                        ],
+                      ),
+                      subtitle: Text(review['review']),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          setState(() {
+                            _reviews.removeAt(index); // Eliminar reseña
+                          });
+                        },
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

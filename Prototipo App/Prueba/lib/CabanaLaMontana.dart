@@ -10,6 +10,7 @@ class CabanaLaMontana extends StatefulWidget {
 }
 
 class _CabanaLaMontanaState extends State<CabanaLaMontana> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int selectedDrawerIndex = 1;
   double _rating = 0; // Initial rating value
   TextEditingController _reviewController = TextEditingController();
@@ -83,7 +84,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cabaña la Montaña', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.teal[800],
+        backgroundColor: Color(0xff8b4513),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back), // Icono para retroceder
@@ -108,13 +109,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
         onSelectDrawerItem: onSelectDrawerItem,
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color.fromARGB(255, 193, 255, 122), Colors.green],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        color: Color(0xffd2b48c),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -132,7 +127,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
 
                 // Descripción general
                 Text(
-                  '¡Un lugar mágico donde la naturaleza te envuelve! 🌿🏞\n\n'
+                  '¡Un lugar mágico donde la naturaleza te envuelve! \n\n'
                   'La Montaña te ofrece una experiencia inolvidable, perfecta para aventureros que buscan tranquilidad y conexión con la naturaleza. '
                   'Descubre las vistas más impresionantes de Ibagué y respira el aire puro de las alturas. ¡Es un refugio que te recargará de energía!',
                   style: TextStyle(fontSize: 16, color: Colors.black87),
@@ -141,13 +136,15 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
                 SizedBox(height: 20),
 
                 // Distancia
-                Text(
-                  '📍 A solo 10 minutos de la Universidad de Ibagué en el barrio Ambalá',
-                  style: TextStyle(
+                Card(
+                  child: Text(
+                    ' A solo 10 minutos de la Universidad de Ibagué en el barrio Ambalá',
+                    style: TextStyle(
                       fontSize: 16,
                       fontStyle: FontStyle.italic,
-                      color: Colors.black54),
-                  textAlign: TextAlign.center,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
                 ),
                 SizedBox(height: 10), // Espacio entre el texto y la imagen
 
@@ -158,57 +155,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
                 buildInfoSection(),
                 SizedBox(height: 30),
                 // Sección de reseñas
-                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
-                SizedBox(height: 20),
-                _buildStarRating(),
-                SizedBox(height: 20),
-                TextField(
-                  controller: _reviewController,
-                  decoration: InputDecoration(
-                    labelText: 'Escribe tu reseña',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 4,
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _reviews.add({
-                        'rating': _rating,
-                        'review': _reviewController.text,
-                      });
-                      _reviewController.clear();
-                    });
-                  },
-                  child: Text('Enviar Reseña'),
-                ),
-                SizedBox(height: 20),
-                // Mostrar las reseñas con opción de eliminar
-                Column(
-                  children: _reviews.map((review) {
-                    int index = _reviews.indexOf(review);
-                    return Card(
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      elevation: 4,
-                      child: ListTile(
-                        title: Row(
-                          children: [
-                            Icon(Icons.star, color: Colors.amber),
-                            SizedBox(width: 5),
-                            Text('${review['rating']} estrellas'),
-                          ],
-                        ),
-                        subtitle: Text(review['review']),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed: () =>
-                              _removeReview(index), // Eliminar reseña
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
+                _buildReviewForm(context)
               ],
             ),
           ),
@@ -231,11 +178,11 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Text(
-          '✨ SERVICIOS ✨',
+          ' SERVICIOS ',
           style: TextStyle(
             fontSize: 24,
             fontWeight: FontWeight.bold,
-            color: Colors.green[800],
+            color: Color(0xff2e8b57),
           ),
           textAlign: TextAlign.center,
         ),
@@ -332,18 +279,18 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         infoCard(
-          title: '💵 PRECIOS',
+          title: ' PRECIOS',
           content: '• Lunes a Jueves: \$60.000 por noche\n'
               '• Viernes o Domingos: \$70.000 por noche\n'
               '• Sábados o día antes de festivo: \$100.000 por noche',
         ),
         infoCard(
-          title: '🚶 SENDERISMO',
+          title: ' SENDERISMO',
           content:
               '30 minutos (1.2 km) desde la entrada del parque hasta la cabaña.',
         ),
         infoCard(
-          title: '🍽 DESAYUNO OPCIONAL',
+          title: ' DESAYUNO OPCIONAL',
           content:
               'Huevos al gusto, patacón, arroz, café o chocolate (10.000 adicionales).',
         ),
@@ -356,7 +303,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
       margin: EdgeInsets.symmetric(vertical: 6.0),
       elevation: 4.0,
       child: ListTile(
-        leading: Icon(icono, size: 30, color: Colors.green[700]),
+        leading: Icon(icono, size: 30, color: Color(0xffd2b48c)),
         title: Text(
           texto,
           style: TextStyle(
@@ -372,14 +319,7 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color.fromARGB(255, 60, 157, 79),
-            Color.fromARGB(255, 117, 240, 36)
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Color(0xff2e8b57),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -410,12 +350,88 @@ class _CabanaLaMontanaState extends State<CabanaLaMontana> {
           style: TextStyle(
             fontSize: 20,
             fontWeight: FontWeight.bold,
-            color: Colors.green[700],
+            color: Color(0xff2e8b57),
           ),
         ),
         subtitle: Text(
           content,
           style: TextStyle(fontSize: 16),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildReviewForm(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 30), // Espaciado adicional
+              // Sección de reseñas
+              _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+              SizedBox(height: 20), // Separación adicional
+              _buildStarRating(),
+              SizedBox(height: 20), // Separación adicional
+              TextField(
+                controller: _reviewController,
+                decoration: InputDecoration(
+                  labelText: 'Escribe tu reseña',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 4,
+              ),
+              SizedBox(height: 10),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
+                    });
+                  },
+                  child: Text('Enviar Reseña'),
+                ),
+              ),
+              SizedBox(height: 20),
+              // Mostrar las reseñas con opción de eliminar
+              Column(
+                children: _reviews.map((review) {
+                  int index = _reviews.indexOf(review); // Obtener índice
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    elevation: 4,
+                    child: ListTile(
+                      title: Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.amber),
+                          SizedBox(width: 5),
+                          Text('${review['rating']} estrellas'),
+                        ],
+                      ),
+                      subtitle: Text(review['review']),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          setState(() {
+                            _reviews.removeAt(index); // Eliminar reseña
+                          });
+                        },
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -558,34 +558,33 @@ class _AutoctonosState extends State<Autoctonos> {
   }
 
   Widget _buildReviewForm(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                SizedBox(height: 30), // Espaciado adicional
-                // Sección de reseñas
-                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
-                SizedBox(height: 20), // Separación adicional
-                _buildStarRating(),
-                SizedBox(height: 20), // Separación adicional
-                TextField(
-                  controller: _reviewController,
-                  decoration: InputDecoration(
-                    labelText: 'Escribe tu reseña',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 4,
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 30), // Espaciado adicional
+              // Sección de reseñas
+              _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+              SizedBox(height: 20), // Separación adicional
+              _buildStarRating(),
+              SizedBox(height: 20), // Separación adicional
+              TextField(
+                controller: _reviewController,
+                decoration: InputDecoration(
+                  labelText: 'Escribe tu reseña',
+                  border: OutlineInputBorder(),
                 ),
-                SizedBox(height: 10),
-                ElevatedButton(
+                maxLines: 4,
+              ),
+              SizedBox(height: 10),
+              Center(
+                child: ElevatedButton(
                   onPressed: () {
                     setState(() {
                       _reviews.add({
@@ -597,37 +596,37 @@ class _AutoctonosState extends State<Autoctonos> {
                   },
                   child: Text('Enviar Reseña'),
                 ),
-                SizedBox(height: 20),
-                // Mostrar las reseñas con opción de eliminar
-                Column(
-                  children: _reviews.map((review) {
-                    int index = _reviews.indexOf(review); // Obtener índice
-                    return Card(
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      elevation: 4,
-                      child: ListTile(
-                        title: Row(
-                          children: [
-                            Icon(Icons.star, color: Colors.amber),
-                            SizedBox(width: 5),
-                            Text('${review['rating']} estrellas'),
-                          ],
-                        ),
-                        subtitle: Text(review['review']),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed: () {
-                            setState(() {
-                              _reviews.removeAt(index); // Eliminar reseña
-                            });
-                          },
-                        ),
+              ),
+              SizedBox(height: 20),
+              // Mostrar las reseñas con opción de eliminar
+              Column(
+                children: _reviews.map((review) {
+                  int index = _reviews.indexOf(review); // Obtener índice
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    elevation: 4,
+                    child: ListTile(
+                      title: Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.amber),
+                          SizedBox(width: 5),
+                          Text('${review['rating']} estrellas'),
+                        ],
                       ),
-                    );
-                  }).toList(),
-                ),
-              ],
-            ),
+                      subtitle: Text(review['review']),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          setState(() {
+                            _reviews.removeAt(index); // Eliminar reseña
+                          });
+                        },
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
           ),
         ),
       ),

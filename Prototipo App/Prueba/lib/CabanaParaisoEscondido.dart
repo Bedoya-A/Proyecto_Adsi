@@ -10,6 +10,7 @@ class CabanaParaisoEscondido extends StatefulWidget {
 }
 
 class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int selectedDrawerIndex = 1; // Selected index for menu
   double _rating = 0; // Initial rating value
   TextEditingController _reviewController = TextEditingController();
@@ -85,7 +86,7 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cabaña Paraíso', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.teal[800],
+        backgroundColor: Color(0xff8B4513),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back), // Icono para retroceder
@@ -110,13 +111,7 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
         onSelectDrawerItem: onSelectDrawerItem,
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color.fromARGB(255, 153, 255, 204), Colors.teal],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        color: Color(0xffD2B48C),
         child: SingleChildScrollView(
           child: Padding(
             padding: const EdgeInsets.all(16.0),
@@ -138,7 +133,7 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
                 SizedBox(height: 20), // Espaciado adicional
                 // Descripción llamativa
                 Text(
-                  '🌲 Vive una experiencia única en nuestra cabaña del árbol...',
+                  'Vive una experiencia única en nuestra cabaña del árbol...',
                   style: TextStyle(
                     fontSize: 16,
                     color: Colors.black87,
@@ -270,59 +265,7 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
                     "Confirma disponibilidad y abona tu reserva llamando al 312 564 56 78 o escribiendo al WhatsApp"),
                 SizedBox(height: 30),
                 // Sección de reservas
-                SizedBox(height: 30),
-                // Sección de reseñas
-                _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
-                SizedBox(height: 20),
-                _buildStarRating(),
-                SizedBox(height: 20),
-                TextField(
-                  controller: _reviewController,
-                  decoration: InputDecoration(
-                    labelText: 'Escribe tu reseña',
-                    border: OutlineInputBorder(),
-                  ),
-                  maxLines: 4,
-                ),
-                SizedBox(height: 10),
-                ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      _reviews.add({
-                        'rating': _rating,
-                        'review': _reviewController.text,
-                      });
-                      _reviewController.clear();
-                    });
-                  },
-                  child: Text('Enviar Reseña'),
-                ),
-                SizedBox(height: 20),
-                // Mostrar las reseñas con opción de eliminar
-                Column(
-                  children: _reviews.map((review) {
-                    int index = _reviews.indexOf(review);
-                    return Card(
-                      margin: EdgeInsets.symmetric(vertical: 8),
-                      elevation: 4,
-                      child: ListTile(
-                        title: Row(
-                          children: [
-                            Icon(Icons.star, color: Colors.amber),
-                            SizedBox(width: 5),
-                            Text('${review['rating']} estrellas'),
-                          ],
-                        ),
-                        subtitle: Text(review['review']),
-                        trailing: IconButton(
-                          icon: Icon(Icons.delete, color: Colors.red),
-                          onPressed: () =>
-                              _removeReview(index), // Eliminar reseña
-                        ),
-                      ),
-                    );
-                  }).toList(),
-                ),
+                _buildReviewForm(context)
               ],
             ),
           ),
@@ -396,14 +339,7 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color.fromARGB(255, 60, 157, 79),
-            Color.fromARGB(255, 117, 240, 36)
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Color(0xff2E8B57),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -425,6 +361,84 @@ class _CabanaParaisoEscondidoState extends State<CabanaParaisoEscondido> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildReviewForm(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 30), // Espaciado adicional
+              // Sección de reseñas
+              _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+              SizedBox(height: 20), // Separación adicional
+              _buildStarRating(),
+              SizedBox(height: 20), // Separación adicional
+              TextField(
+                controller: _reviewController,
+                decoration: InputDecoration(
+                  labelText: 'Escribe tu reseña',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 4,
+              ),
+              SizedBox(height: 10),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
+                    });
+                  },
+                  child: Text(
+                    'Enviar Reseña',
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              // Mostrar las reseñas con opción de eliminar
+              Column(
+                children: _reviews.map((review) {
+                  int index = _reviews.indexOf(review); // Obtener índice
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    elevation: 4,
+                    child: ListTile(
+                      title: Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.amber),
+                          SizedBox(width: 5),
+                          Text('${review['rating']} estrellas'),
+                        ],
+                      ),
+                      subtitle: Text(review['review']),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          setState(() {
+                            _reviews.removeAt(index); // Eliminar reseña
+                          });
+                        },
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

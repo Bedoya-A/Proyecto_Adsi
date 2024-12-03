@@ -1,6 +1,5 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
-import 'package:prueba2/FormularioReserva.dart';
 import 'package:prueba2/Menu.dart';
 import 'package:prueba2/FloatingActionMenu.dart';
 import 'package:url_launcher/url_launcher.dart'; // Importa tu HomePage para la navegación
@@ -11,6 +10,7 @@ class CabanaDelArbol extends StatefulWidget {
 }
 
 class _CabanaDelArbolState extends State<CabanaDelArbol> {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int selectedDrawerIndex = 1;
 
   double _rating = 0; // Initial rating value
@@ -81,35 +81,12 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
     });
   }
 
-  void _showReservationForm() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: ReservationForm(
-            onSubmit: (name, phone, startDate, endDate, numPeople) {
-              // Aquí puedes hacer lo que quieras con los datos de la reserva, como guardarlos
-              print(
-                  "Reserva: $name, $phone, Fecha de inicio: $startDate, Fecha de finalización: $endDate, Número de personas: $numPeople");
-
-              // Mostrar el SnackBar de confirmación
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text('¡Reserva realizada con éxito!'),
-                backgroundColor: Colors.green,
-              ));
-            },
-          ),
-        );
-      },
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Cabaña del árbol', style: TextStyle(color: Colors.white)),
-        backgroundColor: Colors.brown[400],
+        backgroundColor: Color(0xff8B4513),
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back), // Icono para retroceder
@@ -134,13 +111,7 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
         onSelectDrawerItem: onSelectDrawerItem,
       ),
       body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.green[200]!, Colors.green[400]!],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+        color: Color(0xffD2B48C),
         child: SingleChildScrollView(
             child: Padding(
                 padding: const EdgeInsets.all(16.0),
@@ -167,11 +138,11 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
 
                       // Servicios
                       Text(
-                        '✨ SERVICIOS ✨',
+                        ' SERVICIOS ',
                         style: TextStyle(
                           fontSize: 24,
                           fontWeight: FontWeight.bold,
-                          color: Colors.green[900],
+                          color: Color(0xff2e8b57),
                         ),
                         textAlign: TextAlign.center,
                       ),
@@ -291,7 +262,7 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                                       .start, // Cambiar a start
                                   children: [
                                     Icon(Icons.directions_walk,
-                                        color: Colors.green[700]),
+                                        color: Color(0xffd2b48c)),
                                     SizedBox(width: 8),
                                     Expanded(
                                       // Añadir Expanded para evitar overflow
@@ -326,14 +297,14 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                               Row(
                                 children: [
                                   Icon(Icons.attach_money,
-                                      color: Colors.green[700], size: 24),
+                                      color: Color(0xffd2b48c), size: 24),
                                   SizedBox(width: 8),
                                   Text(
-                                    '💵 PRECIOS:',
+                                    'PRECIOS:',
                                     style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,
-                                      color: Colors.green[900],
+                                      color: Color(0xff2e8b57),
                                     ),
                                   ),
                                 ],
@@ -342,9 +313,9 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                               Column(
                                 children: [
                                   precioItem('Lunes a Jueves', '150.000',
-                                      Colors.green[600]!),
+                                      Color(0xff2e8b57)),
                                   precioItem('Viernes o Domingos', '200.000',
-                                      Colors.green[700]!),
+                                      Color(0xff2e8b57)),
                                   precioItem('Sábados o día antes de festivo',
                                       '250.000', Colors.green[800]!),
                                 ],
@@ -367,18 +338,18 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                           child: Row(
                             children: [
                               Icon(Icons.directions_walk,
-                                  color: Colors.green[700], size: 24),
+                                  color: Color(0xffd2b48c), size: 24),
                               SizedBox(width: 8),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '🚶 SENDERISMO:',
+                                      'SENDERISMO:',
                                       style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.green[900],
+                                        color: Color(0xff2e8b57),
                                       ),
                                     ),
                                     SizedBox(height: 8),
@@ -407,18 +378,18 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
                           child: Row(
                             children: [
                               Icon(Icons.local_parking,
-                                  color: Colors.green[700], size: 24),
+                                  color: Color(0xffd2b48c), size: 24),
                               SizedBox(width: 8),
                               Expanded(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      '🚗 PARQUEADERO:',
+                                      'PARQUEADERO:',
                                       style: TextStyle(
                                         fontSize: 24,
                                         fontWeight: FontWeight.bold,
-                                        color: Colors.green[900],
+                                        color: Color(0xff2E8B57),
                                       ),
                                     ),
                                     SizedBox(height: 8),
@@ -436,70 +407,7 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
 
                       SizedBox(height: 20),
 
-                      Text(
-                        'CALIFICA TU ESTANCIA',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.green[900],
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-
-                      SizedBox(height: 30), // Espaciado adicional
-                      // Sección de reseñas
-                      _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
-                      SizedBox(height: 20), // Separación adicional
-                      _buildStarRating(),
-                      SizedBox(height: 20), // Separación adicional
-                      TextField(
-                        controller: _reviewController,
-                        decoration: InputDecoration(
-                          labelText: 'Escribe tu reseña',
-                          border: OutlineInputBorder(),
-                        ),
-                        maxLines: 4,
-                      ),
-                      SizedBox(height: 10),
-                      ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _reviews.add({
-                              'rating': _rating,
-                              'review': _reviewController.text,
-                            });
-                            _reviewController.clear();
-                          });
-                        },
-                        child: Text('Enviar Reseña'),
-                      ),
-                      SizedBox(height: 20),
-                      // Mostrar las reseñas con opción de eliminar
-                      Column(
-                        children: _reviews.map((review) {
-                          int index =
-                              _reviews.indexOf(review); // Obtener índice
-                          return Card(
-                            margin: EdgeInsets.symmetric(vertical: 8),
-                            elevation: 4,
-                            child: ListTile(
-                              title: Row(
-                                children: [
-                                  Icon(Icons.star, color: Colors.amber),
-                                  SizedBox(width: 5),
-                                  Text('${review['rating']} estrellas'),
-                                ],
-                              ),
-                              subtitle: Text(review['review']),
-                              trailing: IconButton(
-                                icon: Icon(Icons.delete, color: Colors.red),
-                                onPressed: () =>
-                                    _removeReview(index), // Eliminar reseña
-                              ),
-                            ),
-                          );
-                        }).toList(),
-                      ),
+                      _buildReviewForm(context)
                     ]))),
       ),
       floatingActionButton: FloatingActionMenu(
@@ -518,7 +426,7 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
       margin: EdgeInsets.symmetric(vertical: 5),
       elevation: 3,
       child: ListTile(
-        leading: Icon(icon, color: Colors.green[600]),
+        leading: Icon(icon, color: Color(0xffd2b48c)),
         title: Text(servicio, style: TextStyle(fontSize: size)),
       ),
     );
@@ -538,14 +446,7 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
     return Container(
       padding: EdgeInsets.symmetric(vertical: 10),
       decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            Color.fromARGB(255, 60, 157, 79),
-            Color.fromARGB(255, 117, 240, 36)
-          ],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-        ),
+        color: Color(0xff2E8B57),
         borderRadius: BorderRadius.circular(10),
       ),
       child: Row(
@@ -567,6 +468,82 @@ class _CabanaDelArbolState extends State<CabanaDelArbol> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildReviewForm(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 30), // Espaciado adicional
+              // Sección de reseñas
+              _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
+              SizedBox(height: 20), // Separación adicional
+              _buildStarRating(),
+              SizedBox(height: 20), // Separación adicional
+              TextField(
+                controller: _reviewController,
+                decoration: InputDecoration(
+                  labelText: 'Escribe tu reseña',
+                  border: OutlineInputBorder(),
+                ),
+                maxLines: 4,
+              ),
+              SizedBox(height: 10),
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
+                    });
+                  },
+                  child: Text('Enviar Reseña'),
+                ),
+              ),
+              SizedBox(height: 20),
+              // Mostrar las reseñas con opción de eliminar
+              Column(
+                children: _reviews.map((review) {
+                  int index = _reviews.indexOf(review); // Obtener índice
+                  return Card(
+                    margin: EdgeInsets.symmetric(vertical: 8),
+                    elevation: 4,
+                    child: ListTile(
+                      title: Row(
+                        children: [
+                          Icon(Icons.star, color: Colors.amber),
+                          SizedBox(width: 5),
+                          Text('${review['rating']} estrellas'),
+                        ],
+                      ),
+                      subtitle: Text(review['review']),
+                      trailing: IconButton(
+                        icon: Icon(Icons.delete, color: Colors.red),
+                        onPressed: () {
+                          setState(() {
+                            _reviews.removeAt(index); // Eliminar reseña
+                          });
+                        },
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

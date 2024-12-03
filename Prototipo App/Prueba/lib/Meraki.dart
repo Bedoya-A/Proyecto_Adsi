@@ -11,6 +11,7 @@ class Meraki extends StatefulWidget {
 }
 
 class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   int selectedDrawerIndex = 0;
   bool _isHomeIconVisible = false;
 
@@ -167,7 +168,7 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
             ),
           ],
         ),
-        backgroundColor: Colors.teal[800],
+        backgroundColor: Color(0xff6f4f1f),
         automaticallyImplyLeading: false,
         actions: [
           Builder(
@@ -186,13 +187,7 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
       ),
       body: SingleChildScrollView(
         child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Colors.teal[50]!, Colors.teal[200]!],
-              begin: Alignment.topCenter,
-              end: Alignment.bottomCenter,
-            ),
-          ),
+          color: Color(0xfff1e0c6),
           padding: EdgeInsets.all(16.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -388,6 +383,144 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
               _buildText('Tel: 3187156890 (Logística), 3122751769 (Nelson)'),
               SizedBox(height: 30), // Espaciado adicional
               // Sección de reseñas
+              _buildReviewForm(context)
+            ],
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionMenu(
+        siteName: "Parque tematico Meraki", // Nombre del sitio
+        mapUrl:
+            "https://maps.app.goo.gl/kXKamkkND1u1Epgq6", // URL del mapa (Waze o Google Maps)
+        onPressed: () {
+          _openMap(); // Acción al presionar el botón para abrir el mapa
+        },
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title, IconData icon) {
+    return Container(
+      padding: EdgeInsets.symmetric(vertical: 10),
+      decoration: BoxDecoration(
+        color: Color(0xffa0d6b4),
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        children: [
+          Icon(icon, size: 24, color: Colors.white),
+          SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+              color: Colors.white,
+              letterSpacing: 1.2,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildAnimatedHeader(String title, IconData icon) {
+    return SlideTransition(
+      position: _offsetAnimation,
+      child: Container(
+        decoration: BoxDecoration(
+          color: Color(0xffa0d6b4),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        padding: EdgeInsets.all(8),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.white, size: 28),
+            SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                title,
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+                overflow: TextOverflow
+                    .ellipsis, // Agrega puntos suspensivos si el texto es demasiado largo
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildText(String text) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      child: Text(
+        text,
+        style: TextStyle(fontSize: 16, color: Colors.black),
+      ),
+    );
+  }
+
+  Widget _buildListTile(String title, String description,
+      [String additionalInfo = '']) {
+    return Card(
+      elevation: 6,
+      margin: const EdgeInsets.symmetric(vertical: 12),
+      child: ListTile(
+        title: Text(title,
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Color(0xff2f6a4a))),
+        subtitle: Text('$description\n$additionalInfo'),
+      ),
+    );
+  }
+
+  Widget _buildExpandableMenu(String title, IconData icon, List<String> items) {
+    return ExpansionTile(
+      title: Row(
+        children: [
+          Icon(icon, color: Colors.teal[800]),
+          SizedBox(width: 8),
+          Text(
+            title,
+            style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+                color: Colors.teal[800]),
+          ),
+        ],
+      ),
+      children: items
+          .map((item) => Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Text(
+                  item,
+                  style: TextStyle(color: Colors.grey[800]),
+                ),
+              ))
+          .toList(),
+    );
+  }
+
+  Widget _buildReviewForm(BuildContext context) {
+    return Card(
+      elevation: 4,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 30), // Espaciado adicional
+              // Sección de reseñas
               _buildSectionTitle("DEJA TU RESEÑA", Icons.star_rate),
               SizedBox(height: 20), // Separación adicional
               _buildStarRating(),
@@ -401,17 +534,19 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
                 maxLines: 4,
               ),
               SizedBox(height: 10),
-              ElevatedButton(
-                onPressed: () {
-                  setState(() {
-                    _reviews.add({
-                      'rating': _rating,
-                      'review': _reviewController.text,
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      _reviews.add({
+                        'rating': _rating,
+                        'review': _reviewController.text,
+                      });
+                      _reviewController.clear();
                     });
-                    _reviewController.clear();
-                  });
-                },
-                child: Text('Enviar Reseña'),
+                  },
+                  child: Text('Enviar Reseña'),
+                ),
               ),
               SizedBox(height: 20),
               // Mostrar las reseñas con opción de eliminar
@@ -446,127 +581,6 @@ class _MerakiState extends State<Meraki> with SingleTickerProviderStateMixin {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionMenu(
-        siteName: "Parque tematico Meraki", // Nombre del sitio
-        mapUrl:
-            "https://maps.app.goo.gl/kXKamkkND1u1Epgq6", // URL del mapa (Waze o Google Maps)
-        onPressed: () {
-          _openMap(); // Acción al presionar el botón para abrir el mapa
-        },
-      ),
-    );
-  }
-
-  Widget _buildSectionTitle(String title, IconData icon) {
-    return Container(
-      padding: EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [Colors.teal[300]!, Colors.teal[800]!],
-        ),
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 24, color: Colors.white),
-          SizedBox(width: 8),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 22,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-              letterSpacing: 1.2,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildAnimatedHeader(String title, IconData icon) {
-    return SlideTransition(
-      position: _offsetAnimation,
-      child: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Colors.teal[300]!, Colors.teal[800]!],
-          ),
-          borderRadius: BorderRadius.circular(10),
-        ),
-        padding: EdgeInsets.all(8),
-        child: Row(
-          children: [
-            Icon(icon, color: Colors.white, size: 28),
-            SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                title,
-                style: TextStyle(
-                  fontSize: 26,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-                overflow: TextOverflow
-                    .ellipsis, // Agrega puntos suspensivos si el texto es demasiado largo
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildText(String text) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
-      child: Text(
-        text,
-        style: TextStyle(fontSize: 16, color: Colors.grey[800]),
-      ),
-    );
-  }
-
-  Widget _buildListTile(String title, String description,
-      [String additionalInfo = '']) {
-    return Card(
-      elevation: 6,
-      margin: const EdgeInsets.symmetric(vertical: 12),
-      child: ListTile(
-        title: Text(title,
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.teal[800])),
-        subtitle: Text('$description\n$additionalInfo'),
-      ),
-    );
-  }
-
-  Widget _buildExpandableMenu(String title, IconData icon, List<String> items) {
-    return ExpansionTile(
-      title: Row(
-        children: [
-          Icon(icon, color: Colors.teal[800]),
-          SizedBox(width: 8),
-          Text(
-            title,
-            style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.teal[800]),
-          ),
-        ],
-      ),
-      children: items
-          .map((item) => Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  item,
-                  style: TextStyle(color: Colors.grey[800]),
-                ),
-              ))
-          .toList(),
     );
   }
 }

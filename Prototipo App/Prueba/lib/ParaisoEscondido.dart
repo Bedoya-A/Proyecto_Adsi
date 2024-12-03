@@ -66,14 +66,14 @@ class _ParaisoEscondidoState extends State<ParaisoEscondido>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color.fromARGB(255, 213, 202, 249),
+      backgroundColor: Color(0xFFD2B48C), // Beige Arena
       appBar: AppBar(
         title: _buildAppBarTitle(),
-        backgroundColor: Color.fromARGB(255, 87, 85, 134),
+        backgroundColor: Color(0xFF8B4513), // Marrón Madera
         automaticallyImplyLeading: false,
         bottom: TabBar(
           controller: _tabController,
-          indicatorColor: Colors.white,
+          indicatorColor: Color(0xFF2E8B57), // Verde Pino
           labelColor: Colors.white,
           unselectedLabelColor: Colors.white70,
           tabs: [
@@ -182,7 +182,7 @@ Widget _buildParaisoEscondidoDescription() {
             Positioned.fill(
               child: Center(
                 child: Text(
-                  '¡Bienvenido al Paraíso Escondido!',
+                  '¡Bienvenido a Paraíso Escondido!',
                   style: TextStyle(
                     fontSize: 28,
                     fontWeight: FontWeight.bold,
@@ -207,11 +207,11 @@ Widget _buildParaisoEscondidoDescription() {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                '🌿 La Experiencia',
+                'La Experiencia',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.green[800],
+                  color: Color(0xFF2E8B57), // Verde Pino
                 ),
               ),
               SizedBox(height: 10),
@@ -224,11 +224,11 @@ Widget _buildParaisoEscondidoDescription() {
               ),
               SizedBox(height: 20),
               Text(
-                '✨ Lo que ofrecemos:',
+                'Lo que ofrecemos:',
                 style: TextStyle(
                   fontSize: 20,
                   fontWeight: FontWeight.bold,
-                  color: Colors.deepPurple[800],
+                  color: Color(0XFF8B4513),
                 ),
               ),
               SizedBox(height: 10),
@@ -237,8 +237,7 @@ Widget _buildParaisoEscondidoDescription() {
                 title: 'Vistas Panorámicas',
                 description:
                     'Disfruta de paisajes que te quitarán el aliento y llenarán tu corazón de paz.',
-                titleColor:
-                    const Color.fromARGB(255, 39, 127, 198), // Color del título
+                titleColor: const Color(0XFF8B4513),
                 descriptionColor: Colors.black, // Color de la descripción
               ),
               _buildFeatureTile(
@@ -247,7 +246,7 @@ Widget _buildParaisoEscondidoDescription() {
                 title: 'Senderos Naturales',
                 description:
                     'Explora senderos rodeados de flora y fauna autóctona, ideales para caminatas y aventuras.',
-                titleColor: Colors.green, // Color del título
+                titleColor: Color(0XFF8B4513), // Color del título
                 descriptionColor: Colors.black, // Color de la descripción
               ),
               _buildFeatureTile(
@@ -255,23 +254,23 @@ Widget _buildParaisoEscondidoDescription() {
                 title: 'Cabañas Exclusivas',
                 description:
                     'Relájate en cabañas rústicas con todas las comodidades modernas para una estancia inolvidable.',
-                titleColor: Colors.purple, // Color del título
+                titleColor: Color(0XFF8B4513), // Color del título
                 descriptionColor: Colors.black, // Color de la descripción
               ),
               SizedBox(height: 20),
               Container(
                 decoration: BoxDecoration(
-                  color: Colors.lightBlueAccent.withOpacity(0.1),
+                  color: Color(0xFF4B3621)
+                      .withOpacity(0.1), // Fondo Café rústico translúcido
                   borderRadius: BorderRadius.circular(10),
                 ),
                 padding: const EdgeInsets.all(16.0),
                 child: Center(
                   child: Text(
-                    '🌟 ¡Ven y vive la magia del Paraíso Escondido! 🌟',
+                    ' ¡Ven y vive la magia del Paraíso Escondido! ',
                     style: TextStyle(
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
-                      color: Colors.blueAccent,
                     ),
                     textAlign: TextAlign.center,
                   ),
